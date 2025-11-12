@@ -355,7 +355,7 @@ namespace SkillBuilder.Controllers
             var artisanId = GetUserId();
             if (string.IsNullOrEmpty(artisanId)) return Unauthorized();
 
-            var utcPlus8 = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time")
+            var utcPlus8 = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
             var currentUtcPlus8 = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, utcPlus8);
             var upcomingSessions = _context.SupportSessionRequests
                 .Include(s => s.User)
