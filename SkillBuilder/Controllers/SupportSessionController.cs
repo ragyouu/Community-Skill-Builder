@@ -355,13 +355,15 @@ namespace SkillBuilder.Controllers
             var artisanId = GetUserId();
             if (string.IsNullOrEmpty(artisanId)) return Unauthorized();
 
+            var utcPlus8 = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time")
+            var currentUtcPlus8 = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, utcPlus8);
             var upcomingSessions = _context.SupportSessionRequests
                 .Include(s => s.User)
                 .Include(s => s.Course)
                 .Where(s => s.Course != null &&
                             s.Course.CreatedBy == artisanId &&
                             s.Status == "Confirmed" &&
-                            s.SessionDate >= DateTime.Today)
+                            s.SessionDate >= currentUtcPlus8.Date) // Ensure SessionDate is compared with adjusted date
                 .OrderBy(s => s.SessionDate)
                 .ToList();
 
