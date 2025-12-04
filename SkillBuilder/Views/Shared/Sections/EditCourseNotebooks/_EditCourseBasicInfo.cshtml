@@ -211,7 +211,7 @@
     <!-- Overview -->
     <div class="basicinfo-form-group">
         <label for="Course_Overview">Course Overview *</label>
-        <textarea asp-for="Course.Overview" class="basicinfo-form-control" rows="4" placeholder="Write a brief overview..." required></textarea>
+        <textarea asp-for="Course.Overview" class="basicinfo-form-control tinymce-editor" rows="4" placeholder="Write a brief overview..." required></textarea>
     </div>
 
     <!-- Difficulty & Duration -->
@@ -242,7 +242,7 @@
     <!-- Requirements -->
     <div class="basicinfo-form-group">
         <label for="Course_Requirements">Requirements *</label>
-        <textarea asp-for="Course.Requirements" class="basicinfo-form-control" rows="3" placeholder="List required tools or skills" required></textarea>
+        <textarea asp-for="Course.Requirements" class="basicinfo-form-control tinymce-editor" rows="3" placeholder="List required tools or skills" required></textarea>
     </div>
 
     <!-- Learning Objectives -->
@@ -263,7 +263,7 @@
     <!-- Full Description -->
     <div class="basicinfo-form-group">
         <label for="Course_FullDescription">Full Course Description *</label>
-        <textarea asp-for="Course.FullDescription" class="basicinfo-form-control" rows="5" placeholder="Detailed explanation..." required></textarea>
+        <textarea asp-for="Course.FullDescription" class="basicinfo-form-control tinymce-editor" rows="5" placeholder="Detailed explanation..." required></textarea>
     </div>
 
     <!-- Image Upload -->
@@ -317,6 +317,23 @@
 
 <script>
 
+    tinymce.init({
+        selector: 'textarea.tinymce-editor',
+        menubar: false,
+        plugins: 'lists link image table code',
+        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
+        height: 250,
+        branding: false,
+        license_key: 'gpl',
+        setup: function (editor) {
+            // Optional: trigger form validation when content changes
+            editor.on('change', function () {
+                editor.save(); // Update underlying textarea
+                if (form) validateForm();
+            });
+        }
+    });
+
     // Category: Show the custom input when Other is selected
     const categorySelect = document.getElementById("CategorySelect");
     const customCategoryInput = document.getElementById("CustomCategoryInput");
@@ -347,12 +364,12 @@
     // ====================== FILE VALIDATION ======================
     const fileRules = {
         image: {
-            maxSize: 5 * 1024 * 1024, // 5 MB
+            maxSize: 20 * 1024 * 1024, // 20 MB
             allowed: [".jpg", ".jpeg", ".png", ".gif", ".webp"]
         },
         video: {
             maxSize: 200 * 1024 * 1024, // 200 MB
-            allowed: [".mp4", ".mov", ".avi"]
+            allowed: [".mp4", ".mov", ".avi", ".mkv"]
         }
     };
 

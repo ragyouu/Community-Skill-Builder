@@ -1,0 +1,639 @@
+﻿@using System.Text.Json
+@using SkillBuilder.Models.Analytics
+@model SkillBuilder.Models.ViewModels.AdminProfileViewModel
+
+@{
+    var a = Model.Analytics ?? new AnalyticsOverviewDto();
+
+    // Top cards
+    var totalLearners = a.TotalLearners;
+    var totalArtisans = a.TotalArtisans;
+    var totalCourses = a.TotalCourses;
+    var communityCount = Model.Communities?.Count ?? 0;
+
+    // Monthly line chart labels & data (ensure at least 7 points for nicer display)
+    var months = a.MonthlyEnrollments.Select(m => m.MonthLabel).ToList();
+    var monthCounts = a.MonthlyEnrollments.Select(m => m.Count).ToList();
+
+    // Category donut
+    var categoryLabels = a.CategoryEnrollments.Select(c => c.Category).ToList();
+    var categoryCounts = a.CategoryEnrollments.Select(c => c.TotalStudents).ToList();
+
+    // Top lists
+    var topCourses = a.TopCourses ?? new List<TopCourseDto>();
+    var topArtisans = a.TopArtisans ?? new List<TopArtisanDto>();
+
+    // Community engagement - best-effort estimate:
+    double communityEngagementPercent = 0;
+    try
+    {
+        var totalEnrolled = a.MonthlyEnrollments.Sum(m => m.Count);
+        if (communityCount > 0)
+        {
+            // rough engagement metric: enrollments per community normalized
+            communityEngagementPercent = Math.Round(Math.Min(100, (totalEnrolled / (communityCount * 10.0)) * 100), 1);
+        }
+    }
+    catch
+    {
+        communityEngagementPercent = 0;
+    }
+
+    var publishedCourses = Model.Analytics?.PublishedCourses ?? 0;
+    var unpublishedCourses = Model.Analytics?.UnpublishedCourses ?? 0;
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+    :root {
+        --bg: #f6f7fb;
+        --card: #ffffff;
+        --muted: #7b7f88;
+        --accent: #4543ff;
+        --accent-2: #7b6cff;
+        --border: #e6e9ef;
+        --radius: 12px;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    .admin-analytics {
+        padding: 20px;
+        min-height: 80vh;
+    }
+
+    .analytics-header {
+        margin-bottom: 1rem;
+    }
+
+    .analytics-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #344AEA;
+        margin-bottom: .25rem;
+    }
+
+    .analytics-subtitle {
+        color: var(--muted);
+        font-size: .95rem;
+    }
+
+    /* Top stat cards */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stat-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .stat-label {
+        color: var(--muted);
+        font-size: .85rem;
+        margin-bottom: .45rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    /* Middle columns: left small & right big */
+    .middle-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+        align-items: start;
+    }
+
+    .small-card, .large-card, .table-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 1rem;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* donut legend */
+    .donut-legend {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        margin-top: .6rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+    }
+
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .legend-label {
+        font-size: .9rem;
+        color: var(--muted);
+    }
+
+    /* top lists */
+    .lists-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .table-card h4 {
+        margin: 0 0 .6rem 0;
+        font-size: 1rem;
+        color: #111827;
+    }
+
+    table.analytics-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .95rem;
+    }
+
+        table.analytics-table thead th {
+            text-align: left;
+            color: var(--muted);
+            font-size: .82rem;
+            padding-bottom: .6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table.analytics-table tbody td {
+            padding: .6rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            color: #111827;
+        }
+
+    .rating-star {
+        color: #f6b400;
+        margin-right: .35rem;
+    }
+
+    /* bottom bar chart */
+    .bar-chart-card {
+        margin-top: 1rem;
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 1rem;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .large-card, .small-card, .table-card, {
+        width: 100%; /* fill the grid cell */
+        overflow-x: hidden; /* prevent horizontal overflow */
+    }
+
+    /* small controls */
+    .chart-control {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+    }
+
+    .toggle-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        padding: .35rem .6rem;
+        border-radius: 8px;
+        font-size: .82rem;
+        cursor: pointer;
+        color: var(--muted);
+    }
+
+        .toggle-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    #communitiesBar {
+        max-height: 260px; /* tightly packed */
+        height: 260px !important;
+    }
+
+    #coursesDonut {
+        width: 100% !important;
+        height: 238px !important; /* matches line chart height */
+    }
+
+    #activeUsersLine {
+        width: 100% !important;
+        height: 330px !important; /* match other charts or adjust as needed */
+    }
+
+    .analytics-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .analytics-modal-content {
+        background: #fff;
+        border-radius: 14px;
+        width: 82%;
+        max-width: 720px;
+        padding: 1.4rem;
+        max-height: 82%;
+        overflow-y: auto;
+        box-shadow: 0 5px 24px rgba(0,0,0,0.22);
+    }
+
+    .analytics-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .analytics-modal-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .analytics-modal-close {
+        cursor: pointer;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #444;
+    }
+
+        .analytics-modal-close:hover {
+            color: #111;
+        }
+
+    .analytics-modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="admin-analytics">
+    <div class="analytics-header">
+        <div class="analytics-title">Admin Analytics Dashboard</div>
+        <div class="analytics-subtitle">Here is all your analytics overview</div>
+    </div>
+
+    <!-- TOP STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Total Learners</div>
+            <div class="stat-value">@totalLearners</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Total Artisans</div>
+            <div class="stat-value">@totalArtisans</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Total Courses</div>
+            <div class="stat-value">@totalCourses</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Total Communities</div>
+            <div class="stat-value">@communityCount</div>
+        </div>
+    </div>
+
+    <!-- middle -->
+    <div class="middle-grid">
+        <!-- left donut & legend (small card) -->
+        <div class="small-card">
+            <h4 style="margin:0 0 .6rem 0; font-size:1rem;">Published vs. Unpublished Courses</h4>
+            <canvas id="coursesDonut"></canvas>
+
+            <div class="donut-legend">
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#2f5bff"></span>
+                    <div>
+                        <div class="stat-value">@publishedCourses</div>
+                        <div class="legend-label">Published</div>
+                    </div>
+                </div>
+
+                <div class="legend-item">
+                    <span class="legend-dot" style="background:#b19cff"></span>
+                    <div>
+                        <div class="stat-value">@unpublishedCourses</div>
+                        <div class="legend-label">Unpublished</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- right: big line chart -->
+        <div class="large-card">
+            <div style="position: relative; width: 100%; display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+                <h4 style="margin:0; font-size:1rem;">Active Users</h4>
+            </div>
+
+            <canvas id="activeUsersLine"></canvas>
+        </div>
+    </div>
+
+    <!-- top lists -->
+    <div class="lists-grid">
+        <div class="table-card">
+            <h4>
+                Top Courses
+                <span class="analytics-see-all" data-type="courses" style="float:right; color:var(--accent); font-size:.85rem; cursor:pointer;">
+                    See All
+                </span>
+            </h4>
+            <table class="analytics-table">
+                <thead>
+                    <tr><th>COURSES</th><th>RATING</th><th>TOTAL ENROLL</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in topCourses.Take(5))
+                    {
+                        <tr>
+                            <td style="max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                @c.Title
+                            </td>
+
+                            <td>
+                                <span class="rating-star">★</span>@String.Format("{0:0.0}", c.AverageRating)
+                            </td>
+
+                            <td style="text-align:center;">
+                                @c.TotalEnroll
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-card">
+            <h4>
+                Top Artisans
+                <span class="analytics-see-all" data-type="artisans" style="float:right; color:var(--accent); font-size:.85rem; cursor:pointer;">
+                    See All
+                </span>
+            </h4>
+            <table class="analytics-table">
+                <thead>
+                    <tr><th>ARTISAN</th><th>SKILL</th><th>LOCATION</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in topArtisans.Take(5))
+                    {
+                        <tr>
+                            <td>@t.Name</td>
+                            <td>@t.Skill</td>
+                            <td>@t.Location</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- bottom bar chart full width -->
+    <div class="bar-chart-card">
+        <h4 style="margin:0 0 .6rem 0;">Monthly Top Active Communities</h4>
+        <canvas id="communitiesBar"></canvas>
+    </div>
+</div>
+
+<!-- Analytics Modal -->
+<div id="analytics-modal-overlay" class="analytics-modal-overlay" style="display:none;">
+    <div class="analytics-modal-content">
+        <div class="analytics-modal-header">
+            <h4 id="analytics-modal-title">Title</h4>
+            <span id="analytics-modal-close" class="analytics-modal-close">&times;</span>
+        </div>
+
+        <div class="analytics-modal-body">
+            <table class="analytics-table" id="analytics-modal-table">
+                <thead>
+                    <tr id="analytics-modal-thead"></tr>
+                </thead>
+                <tbody id="analytics-modal-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const analyticsModalOverlay = document.getElementById('analytics-modal-overlay');
+    const analyticsModalTitle = document.getElementById('analytics-modal-title');
+    const analyticsModalThead = document.getElementById('analytics-modal-thead');
+    const analyticsModalTbody = document.getElementById('analytics-modal-tbody');
+    const analyticsModalClose = document.getElementById('analytics-modal-close');
+
+    // Convert server-side lists to JS arrays (unique variable names)
+    const analyticsModalCourses = @Html.Raw(JsonSerializer.Serialize(topCourses));
+    const analyticsModalArtisans = @Html.Raw(JsonSerializer.Serialize(topArtisans));
+
+    document.querySelectorAll('.analytics-see-all').forEach(btn => {
+        btn.addEventListener('click', () => {
+
+            const analyticsModalType = btn.dataset.type;
+
+            // Reset modal table
+            analyticsModalThead.innerHTML = '';
+            analyticsModalTbody.innerHTML = '';
+
+            /* ======================
+                LOAD COURSES
+            ====================== */
+            if (analyticsModalType === 'courses') {
+
+                analyticsModalTitle.innerText = 'All Courses';
+                analyticsModalThead.innerHTML = `
+                    <th>COURSE</th>
+                    <th>RATING</th>
+                    <th>TOTAL ENROLL</th>
+                `;
+
+                analyticsModalCourses.forEach(course => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            ${course.Title}
+                        </td>
+                        <td><span class="rating-star">★</span>${course.AverageRating.toFixed(1)}</td>
+                        <td style="text-align:center;">${course.TotalEnroll}</td>
+                    `;
+                    analyticsModalTbody.appendChild(row);
+                });
+            }
+
+            /* ======================
+                LOAD ARTISANS
+            ====================== */
+            else if (analyticsModalType === 'artisans') {
+                analyticsModalTitle.innerText = 'All Artisans';
+                analyticsModalThead.innerHTML = `
+                    <th>ARTISAN</th>
+                    <th>SKILL</th>
+                    <th>LOCATION</th>
+                `;
+
+                analyticsModalArtisans.forEach(artisan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${artisan.Name}</td>
+                        <td>${artisan.Skill}</td>
+                        <td>${artisan.Location}</td>
+                    `;
+                    analyticsModalTbody.appendChild(row);
+                });
+            }
+
+            // Show modal
+            analyticsModalOverlay.style.display = 'flex';
+        });
+    });
+
+    /* ============================
+        CLOSE MODAL
+    ============================ */
+    analyticsModalClose.addEventListener('click', () => {
+        analyticsModalOverlay.style.display = 'none';
+    });
+
+    // Click outside to close
+    window.addEventListener('click', (event) => {
+        if (event.target === analyticsModalOverlay) {
+            analyticsModalOverlay.style.display = 'none';
+        }
+    });
+
+    // Server -> client serialize
+    const monthLabels = @Html.Raw(JsonSerializer.Serialize(months));
+    const monthCounts = @Html.Raw(JsonSerializer.Serialize(monthCounts));
+
+    const categoryLabels = @Html.Raw(JsonSerializer.Serialize(categoryLabels));
+    const categoryCounts = @Html.Raw(JsonSerializer.Serialize(categoryCounts));
+
+    // Sample datasets for Daily/Weekly/Monthly toggles
+    // We'll derive daily/weekly/monthly from monthCounts for demo (you can replace with real endpoints later)
+    const datasetDaily = monthCounts.slice(); // consider as daily sample
+    const datasetWeekly = monthCounts.map(x => Math.round(x * 0.6));
+    const datasetMonthly = monthCounts.map(x => Math.round(x * 2.3));
+
+    // Courses Donut (Published vs Unpublished)
+    const ctxDonut = document.getElementById('coursesDonut').getContext('2d');
+
+    const publishedCourses = @JsonSerializer.Serialize(publishedCourses);
+    const unpublishedCourses = @JsonSerializer.Serialize(unpublishedCourses);
+
+    const donutChart = new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+            labels: ['Published', 'Unpublished'],
+            datasets: [{
+                data: [publishedCourses, unpublishedCourses],
+                backgroundColor: ['#2f5bff', '#ff8a8a'],
+                cutout: '68%',
+                hoverOffset: 6
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    // Active Users Line Chart
+    const ctxLine = document.getElementById('activeUsersLine').getContext('2d');
+    let activeLine = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: monthLabels.length ? monthLabels : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{
+                label: 'Active Users',
+                data: monthCounts.length ? monthCounts : [20,50,30,80,40,90,25],
+                borderColor: '#2f5bff',
+                backgroundColor: 'rgba(47,91,255,0.08)',
+                fill: true,
+                tension: 0.25,
+                pointRadius: 4,
+                pointBackgroundColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: { grid: { display: false } },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f3f4f6' },
+                    ticks: { stepSize: Math.max(1, Math.ceil((Math.max(...(monthCounts.length?monthCounts:[1])))/4)) }
+                }
+            }
+        }
+    });
+
+    // Use real top communities
+    const communityLabels = @Html.Raw(JsonSerializer.Serialize(Model.Analytics?.TopCommunities.Select(c => c.Name).ToList() ?? new List<string>()));
+    const communityValues = @Html.Raw(JsonSerializer.Serialize(Model.Analytics?.TopCommunities.Select(c => c.PostCount).ToList() ?? new List<int>()));
+
+    const barCount = communityLabels.length;
+    document.getElementById('communitiesBar').style.height = (barCount * 32) + "px"; // dynamic height
+
+    const ctxBar = document.getElementById('communitiesBar').getContext('2d');
+
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: communityLabels,
+            datasets: [{
+                label: 'Total Posts',
+                data: communityValues,
+                backgroundColor: function (context) {
+                    const i = context.dataIndex;
+                    const alphas = [0.9, 0.75, 0.55, 0.45, 0.35, 0.25];
+                    return `rgba(79,70,229, ${alphas[i] ?? 0.3})`;
+                },
+                borderRadius: 8,
+                barThickness: 18
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+</script>

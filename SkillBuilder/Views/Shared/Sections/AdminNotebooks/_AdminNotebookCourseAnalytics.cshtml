@@ -1,0 +1,301 @@
+﻿@model SkillBuilder.Models.ViewModels.AdminProfileViewModel
+@using System.Text.Json
+
+<!-- Admin Notebook: Course Analytics -->
+<div class="analytics-container" style="padding:20px; font-family:Inter, sans-serif; max-width:1200px; margin:0 auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+        <div>
+            <h1 style="font-size:1.75rem; font-weight:700; margin:0;color: #344AEA;">Course Performance Analytics</h1>
+            <p style="margin:4px 0 0;color:#666;">Monitor which traditional art forms resonate with your learners.</p>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <label for="dateRange" style="color:#666; font-size:0.95rem;">Date:</label>
+            <select id="dateRange" style="padding:8px 12px; border-radius:8px; border:1px solid #d1d5db; background:#fff;">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="lastweek">Last Week</option>
+                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastyear">Last Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- top cards -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:20px;">
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div style="font-size:1.75rem; font-weight:700;">@Model.Analytics.TotalCourses</div>
+            <div style="color:#666;">Active Courses</div>
+        </div>
+
+        <div class="card" id="completionCard" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div id="completionValue" style="font-size:1.75rem; font-weight:700;">0%</div>
+            <div style="color:#666;">Completion Rate</div>
+        </div>
+
+        <div class="card" id="growthCard" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div id="growthValue" style="font-size:1.75rem; font-weight:700;">0%</div>
+            <div style="color:#666;">Enrollment Growth</div>
+        </div>
+    </div>
+
+    <!-- Enrollment Trends -->
+    <div style="background:#fff; border-radius:12px; padding:20px; margin-top:25px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-weight:600; margin:0;">Enrollment Trends Based on Categories</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                @* <button class="trend-toggle" data-range="weekly" style="padding:6px 12px; border-radius:6px; border:1px solid #e5e7eb; background:#fff;">Weekly</button>
+                <button class="trend-toggle" data-range="monthly" style="padding:6px 12px; border-radius:6px; border:1px solid #e5e7eb; background:#fff;">Monthly</button> *@
+            </div>
+        </div>
+        <canvas id="categoryTrendChart" style="margin-top:16px; height:120px;"></canvas>
+    </div>
+
+    <!-- Course Popularity table -->
+    <div style="background:#fff; padding:20px; border-radius:12px; margin-top:25px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <h3 style="font-weight:600; margin:0 0 12px 0;">Course Popularity by Ranking</h3>
+
+        <table style="width:100%; margin-top:6px; border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:2px solid #eee; text-align:left;">
+                    <th style="padding:8px 6px; width:48px;">Rank</th>
+                    <th style="padding:8px 6px;">Course</th>
+                    <th style="padding:8px 6px; width:120px;">Enrollments</th>
+                    <th style="padding:8px 6px; width:140px;">Category</th>
+                    <th style="padding:8px 6px; width:120px;">Completion</th>
+                    <th style="padding:8px 6px; width:110px;">Status</th>
+                </tr>
+            </thead>
+            <tbody id="rankingBody">
+                @{
+                    var rank = 1;
+                }
+                @foreach (var course in Model.Analytics.TopCourses)
+                {
+                    <tr style="border-bottom:1px solid #f5f5f5;">
+                        <td style="padding:12px 6px; font-weight:600;">@rank</td>
+                        <td style="padding:12px 6px;">@course.Title</td>
+                        <td style="padding:12px 6px; font-weight:600;">@course.TotalEnroll</td>
+                        <td style="padding:12px 6px;">@( ( (course as dynamic)?.Category != null) ? ((course as dynamic).Category) : "N/A")</td>
+                        <td style="padding:12px 6px;">@(course.AverageRating > 0 ? course.AverageRating.ToString("F0") + "%" : "N/A")</td>
+                        <td style="padding:12px 6px; color:green; font-weight:600;">PUBLISHED</td>
+                    </tr>
+                    rank++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Server-provided initial analytics (safe-serialized)
+    const initialAnalytics = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics ?? new SkillBuilder.Models.Analytics.AnalyticsOverviewDto()));
+    console.log(initialAnalytics);
+
+    const TOP_CATEGORIES = ['Weaving','Pottery','Shoemaking','Woodcarving','Embroidery'];
+
+    // Generate time labels (last 6 months if no data)
+    function buildTimeLabels(analytics) {
+        const months = analytics?.MonthlyEnrollments || [];
+        if (!months || months.length === 0) {
+            // fallback: last 6 months
+            const now = new Date();
+            const labels = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                labels.push(d.toLocaleString('default', { month: 'short' }));
+            }
+            return labels;
+        }
+
+        months.sort((a, b) => (a.Year * 100 + a.Month) - (b.Year * 100 + b.Month));
+        return months.map(m => new Date(m.Year, m.Month - 1, 1)
+            .toLocaleString('default', { month: 'short' }));
+    }
+
+    // Build chart datasets per category
+    function buildCategoryDatasets(analytics, labels) {
+        const seriesMap = {};
+        const others = Array(labels.length).fill(0);
+        const cats = analytics?.CategoryMonthlyEnrollments || [];
+
+        cats.forEach(c => {
+            const key = c.Category?.trim() || 'Uncategorized';
+            if (!seriesMap[key]) seriesMap[key] = Array(labels.length).fill(0);
+
+            // Convert month+year to the same string as labels
+            const label = new Date(c.Year, c.Month - 1, 1)
+                .toLocaleString('default', { month: 'short' });
+
+            const idx = labels.indexOf(label);
+            if (idx >= 0) {
+                seriesMap[key][idx] += c.Count;
+            }
+        });
+
+        // Sum anything not in TOP_CATEGORIES into "Others"
+        const TOP_CATEGORIES = ['Weaving','Pottery','Shoemaking','Woodcarving','Embroidery'];
+        Object.keys(seriesMap).forEach(cat => {
+            if (!TOP_CATEGORIES.includes(cat)) {
+                for (let i = 0; i < labels.length; i++) {
+                    others[i] += seriesMap[cat][i];
+                }
+            }
+        });
+
+        // Build datasets
+        const datasets = [];
+        TOP_CATEGORIES.forEach(cat => {
+            datasets.push({
+                label: cat,
+                data: seriesMap[cat] || Array(labels.length).fill(0),
+                borderColor: getColor(cat),
+                backgroundColor: getColor(cat),
+                fill: false,
+                tension: 0.3,
+                pointRadius: 3,
+                borderWidth: 2
+            });
+        });
+
+        datasets.push({
+            label: 'Others',
+            data: others,
+            borderColor: getColor('Others'),
+            backgroundColor: getColor('Others'),
+            fill: false,
+            tension: 0.3,
+            pointRadius: 3,
+            borderWidth: 2
+        });
+
+        return datasets;
+    }
+
+    function getColor(cat) {
+        const colors = {
+            Weaving: '#2563EB',
+            Pottery: '#A78BFA',
+            Shoemaking: '#F472B6',
+            Woodcarving: '#F59E0B',
+            Embroidery: '#FCD34D',
+            Others: '#9CA3AF'
+        };
+        return colors[cat] || '#6B7280';
+    }
+
+    let categoryChart = null;
+    function renderCategoryChart(analytics, groupMode = 'monthly') {
+        if (!analytics) return;
+
+        // 1. Rebuild labels from the data or fallback to last 6 months
+        const labels = buildTimeLabels(analytics);
+
+        // 2. Rebuild datasets
+        const datasets = buildCategoryDatasets(analytics, labels);
+
+        // 3. Destroy old chart if exists
+        const ctx = document.getElementById('categoryTrendChart').getContext('2d');
+        if (categoryChart) categoryChart.destroy();
+
+        // 4. Recreate chart
+        categoryChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    tooltip: { enabled: true },
+                    legend: { position: 'bottom' }
+                },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function calculateEnrollmentGrowth(analytics) {
+        const totals = analytics?.MonthlyEnrollments || [];
+        if (!totals || totals.length < 2) return 0;
+        const last = totals[totals.length - 1].Count;
+        const prev = totals[totals.length - 2].Count;
+        if (prev === 0) return last > 0 ? 100 : 0;
+        return Math.round(((last - prev) / prev) * 100);
+    }
+
+    // ✅ Updated to calculate based on actual IsCompleted enrollments
+    function setTopCards(analytics) {
+        const enrollments = analytics?.TopCourses?.reduce((acc, c) => acc + (c.TotalEnroll || 0), 0) || 0;
+        const completed = analytics?.TopCourses?.reduce((acc, c) => acc + (c.CompletedEnrollments || 0), 0) || 0;
+        const completionRate = enrollments ? Math.round((completed / enrollments) * 100) : 0;
+        const growth = calculateEnrollmentGrowth(analytics);
+
+        const cv = document.getElementById('completionValue');
+        const gv = document.getElementById('growthValue');
+        if (cv) cv.textContent = completionRate + '%';
+        if (gv) gv.textContent = growth + '%';
+    }
+
+    // ✅ Updated ranking table to use CompletedEnrollments instead of AverageRating
+    function renderRankingTable(analytics) {
+        const tbody = document.getElementById('rankingBody');
+        if (!tbody) return;
+        const top = analytics?.TopCourses || [];
+        if (top.length === 0) return;
+
+        tbody.innerHTML = '';
+        let rank = 1;
+        top.forEach(course => {
+            const title = course.Title || 'Untitled';
+            const enroll = (course.TotalEnroll !== undefined && course.TotalEnroll !== null) ? course.TotalEnroll : 0;
+            const category = course.Category || 'N/A';
+            const completion = enroll > 0
+                ? Math.round((course.CompletedEnrollments || 0) / enroll * 100) + '%'
+                : '0%';
+            const status = (course.IsPublished === false) ? 'DRAFT' : 'PUBLISHED';
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #f5f5f5';
+            tr.innerHTML = `
+                <td style="padding:12px 6px; font-weight:600;">${rank}</td>
+                <td style="padding:12px 6px;">${title}</td>
+                <td style="padding:12px 6px; font-weight:600;">${enroll}</td>
+                <td style="padding:12px 6px;">${category}</td>
+                <td style="padding:12px 6px;">${completion}</td>
+                <td style="padding:12px 6px; color:green; font-weight:600;">${status}</td>
+            `;
+            tbody.appendChild(tr);
+            rank++;
+        });
+    }
+
+    async function fetchAnalytics(range = 'lastmonth') {
+        try {
+            const res = await fetch(`/AdminProfile/GetCourseAnalytics?range=${range}&group=monthly`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!res.ok) throw new Error('Failed to fetch analytics: ' + res.status);
+            return await res.json();
+        } catch(err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        setTopCards(initialAnalytics);
+        renderCategoryChart(initialAnalytics, 'monthly');
+        renderRankingTable(initialAnalytics);
+
+        document.getElementById('dateRange').addEventListener('change', async e => {
+            const range = e.target.value;
+            const analytics = await fetchAnalytics(range);
+            if (analytics) {
+                setTopCards(analytics);
+                renderCategoryChart(analytics);
+                renderRankingTable(analytics);
+            }
+        });
+    });
+</script>

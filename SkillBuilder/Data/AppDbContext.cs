@@ -11,6 +11,7 @@ namespace SkillBuilder.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserReport> UserReports { get; set; }
+        public DbSet<UserAchievement> UserAchievements { get; set; }
         public DbSet<CourseProjectSubmission> CourseProjectSubmissions { get; set; }
         public DbSet<Artisan> Artisans { get; set; }
         public DbSet<ArtisanApplication> ArtisanApplications { get; set; }
@@ -22,6 +23,7 @@ namespace SkillBuilder.Data
         public DbSet<CourseModule> CourseModules { get; set; }
         public DbSet<CourseMaterial> CourseMaterials { get; set; }
         public DbSet<ModuleContent> ModuleContents { get; set; }
+        public DbSet<InteractiveContent> InteractiveContents { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
         public DbSet<ModuleProgress> ModuleProgress { get; set; }
         public DbSet<SupportSessionRequest> SupportSessionRequests { get; set; }

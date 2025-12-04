@@ -1,9 +1,33 @@
-﻿@model SkillBuilder.Models.ViewModels.ArtisanProfileViewModel
+﻿@using SkillBuilder.Data
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext _context
+@model SkillBuilder.Models.ViewModels.ArtisanProfileViewModel
 
 @{
-    var isApproved = User.FindFirst("IsApproved")?.Value == "True";
-    var isVerified = User.FindFirst("IsVerified")?.Value == "True";
-    var isDeactivated = User.FindFirst("IsDeactivated")?.Value == "True";
+    // Get the current user from the DB
+    var userId = User.FindFirst("UserId")?.Value;
+    SkillBuilder.Models.User? user = null;
+    bool isApproved = false;
+    bool isVerified = false;
+    bool isDeactivated = false;
+
+    if (!string.IsNullOrEmpty(userId))
+    {
+        user = await _context.Users
+            .Include(u => u.Artisan)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user != null)
+        {
+            isVerified = user.IsVerified;
+            isDeactivated = user.IsDeactivated;
+
+            if (user.Artisan != null)
+            {
+                isApproved = user.Artisan.IsApproved;
+            }
+        }
+    }
 }
 
 <style>
@@ -22,7 +46,7 @@
 
     .artisan-courses-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 1.5rem;
     }
 

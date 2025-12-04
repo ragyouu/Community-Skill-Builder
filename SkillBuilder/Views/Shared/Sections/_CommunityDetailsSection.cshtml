@@ -26,26 +26,26 @@
     }
 
     .community-details-cover {
-        position: relative;
+        position: relative; 
         height: 200px;
         background: #f0f0f0;
         display: flex;
-        justify-content: flex-start;
+        justify-content: flex-start; 
         align-items: flex-end;
-        padding-left: 2rem;
+        padding-left: 2rem; 
     }
 
     .community-details-avatar {
         position: absolute;
         bottom: -60px;
-        left: 2rem;
+        left: 2rem; 
         width: 120px;
         height: 120px;
         border-radius: 50%;
         background-size: cover;
         background-position: center;
         border: 4px solid #fff;
-        box-shadow: 0 0 6px rgba(0,0,0,0.2);
+        box-shadow: 0 0 6px rgba(0,0,0,0.2); 
     }
 
     .community-details-title {
@@ -157,14 +157,14 @@
         gap: 8px;
     }
 
-    .community-details-modal-content h2 {
-        margin-bottom: 0.5rem;
-    }
+        .community-details-modal-content h2 {
+            margin-bottom: 0.5rem;
+        }
 
-    .community-details-modal-content p {
-        margin-bottom: 1.5rem;
-        color: #555;
-    }
+        .community-details-modal-content p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
 
     .community-details-modal-actions {
         display: flex;
@@ -370,12 +370,12 @@
                 color: #777;
             }
 
-        /* Comment text */
-        .comment-content .comment-text {
-            font-size: 0.85rem;
-            color: #333;
-            line-height: 1.4;
-        }
+    /* Comment text */
+    .comment-content .comment-text {
+        font-size: 0.85rem;
+        color: #333;
+        line-height: 1.4;
+    }
 
     .comments-section textarea {
         width: 100%;
@@ -723,9 +723,9 @@
         align-items: center;
     }
 
-        .comment-inside-delete-btn:hover {
-            color: #e74c3c;
-        }
+    .comment-inside-delete-btn:hover {
+        color: #e74c3c;
+    }
 
     /* === Community Inside Delete Comment Modal === */
     .community-inside-delete-modal {
@@ -819,6 +819,32 @@
         .community-inside-btn-cancel:active {
             transform: translateY(1px);
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .pagination button:hover {
+            background: #f0f0f0;
+        }
+
+        .pagination button.active-page {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
 </style>
 
 <section class="community-details-section">
@@ -861,7 +887,7 @@
     <div class="community-details-main">
         <!-- Left: Posts -->
         <div class="community-details-left community-details-posts">
-
+            
             <!-- Create Post Modal -->
             <div id="communityDetailsCreatePostModal" class="community-details-posts-modal-overlay" style="display:none;">
                 <div class="community-details-posts-modal-content">
@@ -915,71 +941,15 @@
                 </div>
             </div>
 
-            @if (Model.Posts != null && Model.Posts.Any())
-            {
-                @foreach (var post in Model.Posts)
-                {
-                    <div class="community-details-post-card" data-post-id="@post.Id">
+            <!-- Your new dynamic post container -->
+            <div class="community-details-posts" id="communityPostsContainer">
+                <!-- Post cards will be rendered here dynamically -->
+            </div>
 
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3>@post.Title</h3>
-                            <div class="post-options">
-                                <button class="post-options-btn" onclick="togglePostMenu(@post.Id)">⋮</button>
-                                <div class="post-options-menu" id="post-menu-@post.Id">
-                                    @if (Model.IsAdmin)
-                                    {
-                                        <button onclick="openAdminDeletePostModal(@post.Id)">Delete Post (Admin)</button>
-                                    }
-                                    else if (post.AuthorId == currentUserId)
-                                    {
-                                        <button onclick="editPost(@post.Id)">Edit Post</button>
-                                        <button onclick="deletePost(@post.Id)">Delete Post</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="report" onclick="reportPost(@post.Id)">Report Post</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
+            <div id="paginationContainer" class="pagination">
+                <!-- Pagination buttons will be inserted here -->
+            </div>
 
-                        @if (!string.IsNullOrEmpty(post.ImageUrl))
-                        {
-                            <img src="@post.ImageUrl" style="max-width:100%; margin:0.5rem 0; border-radius:6px;" />
-                        }
-
-                        <p>@post.Content</p>
-                        <small>By @post.AuthorName on @(post.SubmittedAt.ToString("MMM dd, yyyy"))</small>
-
-                        <!-- Comments -->
-                        <div style="margin-top:0.5rem; display:flex; gap:1rem; font-size:0.9rem;">
-                            <button class="comment-btn" onclick="toggleComments(@post.Id)">💬 <span id="comment-count-@post.Id">@post.CommentsCount</span></button>
-                        </div>
-
-                        <!-- Comments Section -->
-                        <div class="comments-section" id="comments-section-@post.Id" style="display:none; margin-top:0.5rem;">
-                            <div class="comments-list" id="comments-list-@post.Id"></div>
-                            <textarea id="comment-input-@post.Id" placeholder="Write a comment..." rows="2"></textarea>
-                            <button onclick="addComment(@post.Id)">Post Comment</button>
-                        </div>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="community-details-post-card">
-                    <p style="text-align:center; color:#777;">
-                        @if (Model.IsAdmin)
-                        {
-                            @:No posts yet.
-                        }
-                        else
-                        {
-                            @:No posts yet. Be the first to contribute!
-                        }
-                    </p>
-                </div>
-            }
         </div>
 
         <!-- Right: Info Card -->
@@ -988,6 +958,7 @@
                 <h2 class="community-details-info-title">Community Name: @community.Name</h2>
                 <p>Description: @community.Description</p>
                 <p><strong>Total Members: </strong> @community.MembersCount</p>
+                <p><strong>Owner: </strong> @($"{community.Creator.FirstName} {community.Creator.LastName}")</p>
             </div>
         </div>
     </div>
@@ -1245,6 +1216,22 @@
     const communityInsideConfirmDeleteCommentBtn = document.getElementById("communityInsideConfirmDeleteCommentBtn");
     const communityInsideCancelDeleteCommentBtn = document.getElementById("communityInsideCancelDeleteCommentBtn");
 
+    const postsPerPage = 10;
+    let currentPage = 1;
+    const allPosts = @Html.Raw(Json.Serialize(Model.Posts.Select(p => new {
+        id = p.Id,
+        title = p.Title,
+        content = p.Content,
+        imageUrl = p.ImageUrl,
+        authorName = p.AuthorName,
+        authorAvatarUrl = p.AuthorAvatarUrl,
+        communityName = p.CommunityName,
+        submittedAt = p.SubmittedAt,
+        category = p.Category,
+        commentsCount = p.CommentsCount,
+        authorId = p.AuthorId
+    })));
+
     if (agreeCheckbox && acceptBtn) {
         agreeCheckbox.addEventListener('change', () => {
             acceptBtn.disabled = !agreeCheckbox.checked;
@@ -1436,9 +1423,9 @@
                 return;
             }
 
-            const maxSizeKB = 700;
-            if (file.size > maxSizeKB * 1024) {
-                if (editFileErrorMsg) editFileErrorMsg.innerText = `File too large. Maximum ${maxSizeKB} KB allowed.`;
+            const maxSizeMB = 20;
+            if (file.size > maxSizeMB * 1024 * 1024) {
+                if (editFileErrorMsg) editFileErrorMsg.innerText = `File too large. Maximum ${maxSizeMB} MB allowed.`;
                 e.target.value = '';
                 imagePreview.style.display = 'none';
                 updateEditSaveButtonState();
@@ -1742,7 +1729,99 @@
         }
     });
 
+    function renderPosts(posts) {
+        const container = document.getElementById("communityPostsContainer");
+        container.innerHTML = "";
+
+        if (!posts || posts.length === 0) {
+            container.innerHTML = `<div class="community-details-post-card">
+                <p style="text-align:center; color:#777;">No posts yet. Be the first to contribute!</p>
+            </div>`;
+            document.getElementById("paginationContainer").innerHTML = "";
+            return;
+        }
+
+        const start = (currentPage - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const pagePosts = posts.slice(start, end);
+
+        const currentUserIsAdmin = "@currentUserIsAdmin".toLowerCase() === "true";
+        const currentUserId = "@currentUserId";
+
+        pagePosts.forEach(post => {
+            const postDiv = document.createElement("div");
+            postDiv.className = "community-details-post-card";
+            postDiv.dataset.postId = post.id;
+
+            postDiv.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>${post.title}</h3>
+                    <div class="post-options">
+                        <button class="post-options-btn" onclick="togglePostMenu(${post.id})">⋮</button>
+                        <div class="post-options-menu" id="post-menu-${post.id}">
+                            ${
+                                currentUserIsAdmin
+                                    ? `<button onclick="openAdminDeletePostModal(${post.id})">Delete Post (Admin)</button>`
+                                    : (post.authorId == currentUserId
+                                        ? `<button onclick="editPost(${post.id})">Edit Post</button>
+                                           <button onclick="deletePost(${post.id})">Delete Post</button>`
+                                        : `<button class="report" onclick="reportPost(${post.id})">Report Post</button>`
+                                      )
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                ${post.imageUrl ? `<img src="${post.imageUrl}" style="max-width:100%; margin:0.5rem 0; border-radius:6px;" />` : ""}
+                <p>${post.content}</p>
+                <small>By ${post.authorName} on ${new Date(post.submittedAt).toLocaleDateString()}</small>
+
+                <div style="margin-top:0.5rem; display:flex; gap:1rem; font-size:0.9rem;">
+                    <button class="comment-btn" onclick="toggleComments(${post.id})">💬 <span id="comment-count-${post.id}">${post.commentsCount || 0}</span></button>
+                </div>
+
+                <div class="comments-section" id="comments-section-${post.id}" style="display:none; margin-top:0.5rem;">
+                    <div class="comments-list" id="comments-list-${post.id}"></div>
+                    <textarea id="comment-input-${post.id}" placeholder="Write a comment..." rows="2"></textarea>
+                    <button onclick="addComment(${post.id})">Post Comment</button>
+                </div>
+            `;
+
+            container.appendChild(postDiv);
+        });
+
+        renderPagination(posts.length);
+    }
+
+    function renderPagination(totalPosts) {
+        const totalPages = Math.ceil(totalPosts / postsPerPage);
+        const pagination = document.getElementById("paginationContainer");
+        pagination.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+            btn.className = i === currentPage ? "active-page" : "";
+            btn.addEventListener("click", () => {
+                currentPage = i;
+                renderPosts(allPosts);
+            });
+            pagination.appendChild(btn);
+        }
+    }
+
+    // Initial render
     document.addEventListener("DOMContentLoaded", () => {
+        renderPosts(allPosts);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const storedPosts = JSON.parse(localStorage.getItem('allPosts')) || [];
+        renderPosts(storedPosts.length ? storedPosts : allPosts);
+
         const titleEl = document.getElementById("communityDetailsEditPostTitle");
         const contentEl = document.getElementById("communityDetailsEditPostContent");
         const imageInputEl = document.getElementById("communityDetailsEditPostImage");
@@ -2015,9 +2094,9 @@
                 }
 
                 // ✅ File size validation (max 700 KB)
-                const maxSizeKB = 700;
-                if (file.size > maxSizeKB * 1024) {
-                    if (fileErrorMsg) fileErrorMsg.innerText = `File is too large. Maximum allowed size is ${maxSizeKB} KB.`;
+                const maxSizeMB = 20;
+                if (file.size > maxSizeMB * 1024 * 1024) {
+                    if (fileErrorMsg) fileErrorMsg.innerText = `File is too large. Maximum allowed size is ${maxSizeMB} MB.`;
                     e.target.value = '';
                     postImagePreview.style.display = 'none';
                     return;

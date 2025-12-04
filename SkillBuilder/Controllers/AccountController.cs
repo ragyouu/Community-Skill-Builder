@@ -54,12 +54,14 @@ namespace SkillBuilder.Controllers
                 Id = await GenerateUserId("Learner"),
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                BirthDate = model.BirthDate,
                 Email = model.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 Role = "Learner",
                 CreatedAt = DateTime.UtcNow,
                 IsVerified = false,
-                UserAvatar = "/assets/Avatar/Sample10.svg"
+                UserAvatar = "/assets/Avatar/Sample10.svg",
+                Threads = 0.00M
             };
 
             _context.Users.Add(newUser);
@@ -73,9 +75,7 @@ namespace SkillBuilder.Controllers
                 new Claim(ClaimTypes.NameIdentifier, newUser.Id),
                 new Claim(ClaimTypes.Name, newUser.FirstName + " " + newUser.LastName),
                 new Claim(ClaimTypes.Email, newUser.Email),
-                new Claim(ClaimTypes.Role, newUser.Role),
-                new Claim("IsVerified", newUser.IsVerified.ToString()),
-                new Claim("IsDeactivated", newUser.IsDeactivated.ToString())
+                new Claim(ClaimTypes.Role, newUser.Role)
             };
 
             var identity = new ClaimsIdentity(claims, "TahiAuth");
@@ -152,10 +152,7 @@ namespace SkillBuilder.Controllers
                 new Claim(ClaimTypes.NameIdentifier, newUser.Id),
                 new Claim(ClaimTypes.Name, newUser.FirstName + " " + newUser.LastName),
                 new Claim(ClaimTypes.Email, newUser.Email),
-                new Claim(ClaimTypes.Role, newUser.Role),
-                new Claim("IsVerified", newUser.IsVerified.ToString()),
-                new Claim("IsDeactivated", newUser.IsDeactivated.ToString()),
-                new Claim("IsApproved", artisan.IsApproved.ToString())
+                new Claim(ClaimTypes.Role, newUser.Role)
             };
 
             var identity = new ClaimsIdentity(claims, "TahiAuth");
@@ -323,9 +320,7 @@ namespace SkillBuilder.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim("IsVerified", user.IsVerified.ToString()),
-                new Claim("IsDeactivated", user.IsDeactivated.ToString())
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             if (user.Role == "Artisan")

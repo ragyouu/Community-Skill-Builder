@@ -615,6 +615,9 @@ namespace SkillBuilder.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("DesiredThreads")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Difficulty")
                         .IsRequired()
                         .HasColumnType("text");
@@ -639,6 +642,9 @@ namespace SkillBuilder.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsFree")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsPublished")
@@ -924,6 +930,50 @@ namespace SkillBuilder.Migrations
                     b.ToTable("CommunityReports");
                 });
 
+            modelBuilder.Entity("SkillBuilder.Models.InteractiveContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CorrectAnswer")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ModuleContentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("OptionA")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionB")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionC")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionD")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ReflectionMinChars")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleContentId");
+
+                    b.ToTable("InteractiveContents");
+                });
+
             modelBuilder.Entity("SkillBuilder.Models.ModuleContent", b =>
                 {
                     b.Property<int>("Id")
@@ -1133,6 +1183,9 @@ namespace SkillBuilder.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<DateOnly?>("BirthDate")
+                        .HasColumnType("date");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1180,6 +1233,9 @@ namespace SkillBuilder.Migrations
                     b.Property<string>("SelectedInterests")
                         .HasColumnType("text");
 
+                    b.Property<decimal>("Threads")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("UserAvatar")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text")
@@ -1188,6 +1244,33 @@ namespace SkillBuilder.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SkillBuilder.Models.UserAchievement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateAchieved")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("ThreadsAwarded")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserAchievements");
                 });
 
             modelBuilder.Entity("SkillBuilder.Models.UserReport", b =>
@@ -1473,6 +1556,17 @@ namespace SkillBuilder.Migrations
                     b.Navigation("Reporter");
                 });
 
+            modelBuilder.Entity("SkillBuilder.Models.InteractiveContent", b =>
+                {
+                    b.HasOne("SkillBuilder.Models.ModuleContent", "ModuleContent")
+                        .WithMany("InteractiveContents")
+                        .HasForeignKey("ModuleContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ModuleContent");
+                });
+
             modelBuilder.Entity("SkillBuilder.Models.ModuleContent", b =>
                 {
                     b.HasOne("SkillBuilder.Models.CourseModule", "CourseModule")
@@ -1576,6 +1670,8 @@ namespace SkillBuilder.Migrations
 
             modelBuilder.Entity("SkillBuilder.Models.ModuleContent", b =>
                 {
+                    b.Navigation("InteractiveContents");
+
                     b.Navigation("QuizQuestions");
                 });
 

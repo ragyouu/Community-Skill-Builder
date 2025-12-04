@@ -828,13 +828,32 @@
                                 });
 
                         <text>
+                            @{
+                                    var interactiveContents = (content.InteractiveContents ?? new List<SkillBuilder.Models.InteractiveContent>())
+                                            .Select(ic => new
+                                            {
+                                                        id = ic.Id,
+                                                        type = ic.ContentType,
+                                                        contentText = ic.ContentText,
+                                                        optionA = ic.OptionA,
+                                                        optionB = ic.OptionB,
+                                                        optionC = ic.OptionC,
+                                                        optionD = ic.OptionD,
+                                                        correctAnswer = ic.CorrectAnswer,
+                                                        reflectionMinChars = ic.ReflectionMinChars
+                                            });
+                            }
+
                             moduleData.push({
                                 title: @Html.Raw(JsonSerializer.Serialize(content.Title)),
                                 type: @Html.Raw(JsonSerializer.Serialize(content.ContentType ?? "Text")),
                                 contentText: @Html.Raw(JsonSerializer.Serialize(content.ContentText ?? "")),
                                 mediaUrl: @Html.Raw(JsonSerializer.Serialize(content.MediaUrl ?? "")),
                                 quizQuestions: @Html.Raw(JsonSerializer.Serialize(quizList)),
-                                showDetails: @Html.Raw(JsonSerializer.Serialize(i == 0 && j == 0))
+                                interactiveContents: @Html.Raw(JsonSerializer.Serialize(interactiveContents)),
+                                showDetails: @Html.Raw(JsonSerializer.Serialize(i == 0 && j == 0)),
+                                moduleIndex: @i,
+                                lessonIndex: @j + 1
                             });
                         </text>
                 }
@@ -910,15 +929,14 @@
             regularTabs.forEach((tab, idx) => {
                 tab.classList.remove("active", "completed", "locked");
 
-                if (completedModules.includes(idx)) {
-                    tab.classList.add("completed");
-                }
+                if (completedModules.includes(idx)) tab.classList.add("completed");
+                if (idx === 0 || completedModules.includes(idx - 1)) tab.classList.remove("locked");
+                else tab.classList.add("locked");
 
-                if (idx === 0 || completedModules.includes(idx - 1)) {
-                    tab.classList.remove("locked"); // first module unlocked
-                } else {
-                    tab.classList.add("locked");
-                }
+                // ✅ Use lessonIndex for numbering
+                const lessonNumber = moduleData[idx].lessonIndex || (idx + 1);
+                tab.innerText = `Lesson ${lessonNumber}: ${moduleData[idx].title}`;
+
                 checkFinalProjectUnlock();
             });
             // Handle finalProjectTab class (locked/unlocked) relative to regular tabs completion
@@ -1052,12 +1070,12 @@
             wrapper.style.marginTop = "2rem";
             wrapper.style.textAlign = "right";
 
-            const btn = document.createElement("button");
-            btn.innerText = "Next";
-            btn.className = "quiz-launch-btn";
-            btn.onclick = () => goToNextTab(index);
+            nextBtn = document.createElement("button"); // global nextBtn
+            nextBtn.className = "quiz-launch-btn";
+            nextBtn.innerText = "Next Lesson";
+            nextBtn.onclick = () => goToNextTab(index);
 
-            wrapper.appendChild(btn);
+            wrapper.appendChild(nextBtn);
             moduleContent.appendChild(wrapper);
         }
 
@@ -1077,10 +1095,166 @@
             // TEXT CONTENT
             if (data.type === "Text") {
                 inner.innerHTML = `
-                    <h1>${data.title}</h1>
-                    <p>${data.contentText}</p>
+                    <h1 style="margin-bottom:1rem; font-size:1.8rem; color:#222; text-align:left;">${data.title}</h1>
+                    <p style="margin-bottom:1.5rem; font-size:1rem; color:#444; line-height:1.6; text-align:left;">${data.contentText}</p>
                 `;
+
                 showNextButton(index);
+
+                if (Array.isArray(data.interactiveContents)) {
+
+                    // Ensure every content has completed flag
+                    data.interactiveContents.forEach(content => {
+                        if (typeof content.completed === "undefined") content.completed = false;
+                    });
+
+                    // Helper to update Next button based on all contents
+                    function updateNextButtonState() {
+                        nextBtn.disabled = !data.interactiveContents.every(c => c.completed);
+                    }
+
+                    data.interactiveContents.forEach(content => {
+                        let contentBlock = document.createElement("div");
+                        contentBlock.style.marginTop = "1.5rem";
+                        contentBlock.style.textAlign = "left";
+
+                        switch (content.type) {
+                            case "Text":
+                                contentBlock.innerHTML = `<p style="font-size:1rem; color:#444; line-height:1.6;">${content.contentText}</p>`;
+                                break;
+
+                            case "Link":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; color:#333;">
+                                        Please visit this link in order to proceed with the next lesson.
+                                    </p>
+                                `;
+
+                                const linkEl = document.createElement("a");
+                                linkEl.href = content.contentText;
+                                linkEl.target = "_blank";
+                                linkEl.innerText = content.contentText;
+                                linkEl.style.cursor = "pointer";
+                                linkEl.style.color = "#007bff";
+                                linkEl.style.textDecoration = "underline";
+                                linkEl.style.display = "inline-block";
+                                linkEl.style.marginTop = "0.5rem";
+                                contentBlock.appendChild(linkEl);
+
+                                const linkKey = `link-completed-${content.id}`;
+                                const linkCompleted = localStorage.getItem(linkKey) === "true";
+                                content.completed = linkCompleted;
+                                updateNextButtonState();
+
+                                linkEl.addEventListener("click", () => {
+                                    content.completed = true;
+                                    localStorage.setItem(linkKey, "true");
+                                    updateNextButtonState();
+                                });
+                                break;
+
+                            case "Question":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; color:#333;">
+                                        Please Select the correct answers for the questions to proceed to next lesson.
+                                    </p>
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; color:#333;">
+                                        ${content.contentText}
+                                    </p>
+                                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                                        ${["A","B","C","D"].map((l) => {
+                                            let optionText = content["option" + l] || "";
+                                            return `
+                                            <button class="question-btn"
+                                                data-value="Option${l}"
+                                                style="
+                                                    flex:1 1 calc(25% - 0.75rem);
+                                                    padding:0.8rem 1rem;
+                                                    border:2px solid #007bff;
+                                                    border-radius:8px;
+                                                    background:#fff;
+                                                    color:#007bff;
+                                                    cursor:pointer;
+                                                    font-weight:500;
+                                                    transition: all 0.2s;
+                                                ">
+                                                ${optionText}
+                                            </button>
+                                            `;
+                                        }).join("")}
+                                    </div>
+                                `;
+
+                                const questionKey = `question-completed-${content.id}`;
+                                const questionCompleted = localStorage.getItem(questionKey) === "true";
+                                content.completed = questionCompleted;
+                                updateNextButtonState();
+
+                                const buttons = contentBlock.querySelectorAll(".question-btn");
+
+                                if (questionCompleted) {
+                                    buttons.forEach(btn => {
+                                        if (btn.dataset.value === content.correctAnswer) {
+                                            btn.style.background = "#007bff";
+                                            btn.style.color = "#fff";
+                                        }
+                                    });
+                                }
+
+                                buttons.forEach(btn => {
+                                    btn.addEventListener("click", () => {
+                                        // Deselect all buttons
+                                        buttons.forEach(b => {
+                                            b.style.background = "#fff";
+                                            b.style.color = "#007bff";
+                                        });
+
+                                        // Select clicked button
+                                        btn.style.background = "#007bff";
+                                        btn.style.color = "#fff";
+
+                                        // Mark completed only if correct
+                                        content.completed = btn.dataset.value === content.correctAnswer;
+                                        if (content.completed) localStorage.setItem(questionKey, "true");
+
+                                        updateNextButtonState();
+                                    });
+                                });
+                                break;
+
+                            case "Reflection":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; color:#333;">
+                                        ${content.contentText}
+                                    </p>
+                                    <div class="curriculum-form-group">
+                                        <label>Write your reflection:</label>
+                                        <textarea class="reflection-input" rows="5" style="width:100%; padding:0.5rem;">${content.userInput || ''}</textarea>
+                                        <small>Minimum characters: <span class="min-chars">${content.reflectionMinChars ?? 0}</span></small>
+                                    </div>
+                                `;
+
+                                const reflectionTextarea = contentBlock.querySelector(".reflection-input");
+                                const minChars = Number(content.reflectionMinChars || 0);
+
+                                // Restore previous user input if exists
+                                if (content.userInput) reflectionTextarea.value = content.userInput;
+
+                                // Set initial completed state
+                                content.completed = reflectionTextarea.value.trim().length >= minChars;
+                                updateNextButtonState();
+
+                                reflectionTextarea.addEventListener("input", () => {
+                                    content.userInput = reflectionTextarea.value;
+                                    content.completed = reflectionTextarea.value.trim().length >= minChars;
+                                    updateNextButtonState();
+                                });
+                                break;
+                        }
+
+                        inner.appendChild(contentBlock);
+                    });
+                }
             }
 
             // IMAGE + TEXT
@@ -1090,7 +1264,137 @@
                     <img src="${data.mediaUrl}" alt="Image content" style="max-width:100%; border-radius:8px; margin-bottom:1rem;" />
                     <p style="text-align: left; white-space: pre-wrap;">${data.contentText}</p>
                 `;
+
                 showNextButton(index);
+
+                // ------------------ RENDER INTERACTIVE CONTENTS ------------------
+                if (Array.isArray(data.interactiveContents)) {
+                    data.interactiveContents.forEach(content => {
+                        if (typeof content.completed === "undefined") content.completed = false;
+                    });
+
+                    function updateNextButtonState() {
+                        nextBtn.disabled = !data.interactiveContents.every(c => c.completed);
+                    }
+
+                    data.interactiveContents.forEach(content => {
+                        let contentBlock = document.createElement("div");
+                        contentBlock.style.marginTop = "1.5rem";
+                        contentBlock.style.textAlign = "left";
+
+                        switch (content.type) {
+                            case "Text":
+                                contentBlock.innerHTML = `<p style="font-size:1rem; color:#444; line-height:1.6;">${content.contentText}</p>`;
+                                break;
+
+                            case "Link":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.5rem; color:#333;">
+                                        Please visit this link to proceed with the next lesson:
+                                    </p>
+                                `;
+                                const linkEl = document.createElement("a");
+                                linkEl.href = content.contentText;
+                                linkEl.target = "_blank";
+                                linkEl.innerText = content.contentText;
+                                linkEl.style.cursor = "pointer";
+                                linkEl.style.color = "#007bff";
+                                linkEl.style.textDecoration = "underline";
+                                linkEl.style.display = "inline-block";
+                                contentBlock.appendChild(linkEl);
+
+                                const linkKey = `link-completed-${content.id}`;
+                                const linkCompleted = localStorage.getItem(linkKey) === "true";
+                                content.completed = linkCompleted;
+                                updateNextButtonState();
+
+                                linkEl.addEventListener("click", () => {
+                                    content.completed = true;
+                                    localStorage.setItem(linkKey, "true");
+                                    updateNextButtonState();
+                                });
+                                break;
+
+                            case "Question":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; color:#333;">
+                                        ${content.contentText}
+                                    </p>
+                                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                                        ${["A","B","C","D"].map(l => {
+                                            const optionText = content["option" + l] || "";
+                                            return `
+                                                <button class="question-btn" data-value="Option${l}"
+                                                    style="
+                                                        flex:1 1 calc(25% - 0.75rem);
+                                                        padding:0.8rem 1rem;
+                                                        border:2px solid #007bff;
+                                                        border-radius:8px;
+                                                        background:#fff;
+                                                        color:#007bff;
+                                                        cursor:pointer;
+                                                        font-weight:500;
+                                                        transition: all 0.2s;
+                                                    ">
+                                                    ${optionText}
+                                                </button>
+                                            `;
+                                        }).join("")}
+                                    </div>
+                                `;
+
+                                const questionKey = `question-completed-${content.id}`;
+                                const questionCompleted = localStorage.getItem(questionKey) === "true";
+                                content.completed = questionCompleted;
+                                updateNextButtonState();
+
+                                const buttons = contentBlock.querySelectorAll(".question-btn");
+                                if (questionCompleted) {
+                                    buttons.forEach(btn => {
+                                        if (btn.dataset.value === content.correctAnswer) {
+                                            btn.style.background = "#007bff";
+                                            btn.style.color = "#fff";
+                                        }
+                                    });
+                                }
+
+                                buttons.forEach(btn => {
+                                    btn.addEventListener("click", () => {
+                                        buttons.forEach(b => { b.style.background = "#fff"; b.style.color = "#007bff"; });
+                                        btn.style.background = "#007bff";
+                                        btn.style.color = "#fff";
+                                        content.completed = btn.dataset.value === content.correctAnswer;
+                                        if (content.completed) localStorage.setItem(questionKey, "true");
+                                        updateNextButtonState();
+                                    });
+                                });
+                                break;
+
+                            case "Reflection":
+                                contentBlock.innerHTML = `
+                                    <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.5rem; color:#333;">
+                                        ${content.contentText}
+                                    </p>
+                                    <textarea class="reflection-input" rows="5" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:6px;">${content.userInput || ''}</textarea>
+                                    <small>Minimum characters: <span class="min-chars">${content.reflectionMinChars ?? 0}</span></small>
+                                `;
+                                const reflectionTextarea = contentBlock.querySelector(".reflection-input");
+                                const minChars = Number(content.reflectionMinChars || 0);
+                                if (content.userInput) reflectionTextarea.value = content.userInput;
+                                content.completed = reflectionTextarea.value.trim().length >= minChars;
+                                updateNextButtonState();
+
+                                reflectionTextarea.addEventListener("input", () => {
+                                    content.userInput = reflectionTextarea.value;
+                                    content.completed = reflectionTextarea.value.trim().length >= minChars;
+                                    updateNextButtonState();
+                                });
+                                break;
+                        }
+
+                        inner.appendChild(contentBlock);
+                    });
+                }
             }
 
             // VIDEO + TEXT
@@ -1124,7 +1428,7 @@
                 nextBtnWrapper.style.textAlign = "right";
 
                 nextBtn = document.createElement("button");
-                nextBtn.innerText = "Next";
+                nextBtn.innerText = "Next Lesson";
                 nextBtn.className = "quiz-launch-btn";
                 nextBtn.disabled = true; // enable after video ends
                 nextBtn.onclick = () => goToNextTab(index);
@@ -1153,7 +1457,7 @@
                 nextBtnWrapper.style.textAlign = "right";
 
                 nextBtn = document.createElement("button");
-                nextBtn.innerText = "Next";
+                nextBtn.innerText = "Next Lesson";
                 nextBtn.className = "quiz-launch-btn";
                 nextBtn.disabled = true;
                 nextBtn.onclick = () => goToNextTab(index);
@@ -1368,18 +1672,28 @@
 
                     closeBtn.onclick = () => {
                         modal.style.display = "none";
-                        // Optional: refresh or update progress
                         updateProgressDisplay(true);
                     };
 
-                    // Disable submit button to prevent multiple submissions
+                    // ✅ Mark this final project as submitted (prevents resubmission)
+                    const courseId = parseInt("@Model.Id");
+                    localStorage.setItem(`finalProjectCompleted_${userId}_${courseId}`, "true");
+
+                    // Disable submit button
                     submitBtn.disabled = true;
                     submitBtn.innerText = "Submitted";
 
-                    // Persist Final Project completion for this user
-                    localStorage.setItem(`finalProjectCompleted_${userId}_@Model.Id`, "true");
+                    // ✅ Show achievement only once per user (not per course)
+                    const achievementKey = `finalProjectAchievement_${userId}`;
+                    if (!localStorage.getItem(achievementKey)) {
+                        showAchievementCelebration(
+                            "Final Project & Course Completed!",
+                            "Congratulations! You successfully submitted your final project and completed the course!",
+                            70
+                        );
+                        localStorage.setItem(achievementKey, "true");
+                    }
 
-                    // Add the "Give Feedback" button dynamically
                     addFeedbackButton();
 
                     const finalProjectPoints = 100;
@@ -1883,6 +2197,9 @@
                 const comment = document.getElementById("tahi-cc-comment").value;
                 const courseId = parseInt("@Model.Id");
 
+                // ✅ User-wide achievement key
+                const achievementKey = `reviewAchievement_${userId}`;
+
                 try {
                     const res = await fetch("/Courses/SubmitReview", {
                         method: "POST",
@@ -1892,13 +2209,22 @@
                     const data = await res.json();
                     if (!data.success) throw new Error("Failed to submit review");
 
-                    // Mark rating as sent
+                    // Mark rating as sent for this course
                     localStorage.setItem(`course_${courseId}_ratingSent`, true);
+
+                    // ✅ Show achievement only once per user
+                    if (!localStorage.getItem(achievementKey)) {
+                        showAchievementCelebration(
+                            "Review Submitted!",
+                            "Thanks for sharing your feedback.",
+                            10 // optional: points/threads
+                        );
+                        localStorage.setItem(achievementKey, "true");
+                    }
 
                     // Show Congrats section
                     document.getElementById("tahi-cc-rating-section").style.display = "none";
                     document.getElementById("tahi-cc-congrats-section").style.display = "block";
-
 
                 } catch (err) {
                     console.error(err);

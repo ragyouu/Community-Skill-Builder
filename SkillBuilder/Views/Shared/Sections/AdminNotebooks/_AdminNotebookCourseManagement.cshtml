@@ -8,10 +8,10 @@
 
 <style>
     /* =======================
-               Layout / Sections
-           ======================== */
+                   Layout / Sections
+               ======================== */
     .course-mgmt-section {
-        padding: 2rem;
+        padding: 20px;
     }
 
     .course-mgmt-header {
@@ -30,8 +30,8 @@
     }
 
     /* =======================
-               Search Bar
-           ======================== */
+                   Search Bar
+               ======================== */
     .course-mgmt-search-bar {
         display: flex;
         width: 100%;
@@ -71,8 +71,8 @@
             }
 
     /* =======================
-               Table
-           ======================== */
+                   Table
+               ======================== */
     .course-mgmt-table {
         width: 100%;
         border-collapse: separate;
@@ -279,7 +279,7 @@
         .course-mgmt-modal-confirm:disabled {
             background-color: #ccc;
             cursor: not-allowed;
-            opacity: 0.6; 
+            opacity: 0.6;
             transform: none !important;
         }
 
@@ -344,11 +344,11 @@
     </div>
 
     <table class="course-mgmt-table">
-            <colgroup>
-                <col style="width: 33%;">
-                <col style="width: 33%; text-align:center;">
-                <col style="width: 33%; text-align:right;">
-            </colgroup>
+        <colgroup>
+            <col style="width: 33%;">
+            <col style="width: 33%; text-align:center;">
+            <col style="width: 33%; text-align:right;">
+        </colgroup>
         <thead>
             <tr>
                 <th>Course Name</th>
@@ -549,17 +549,19 @@
     const courseSearchInput = document.querySelector(".course-mgmt-search-bar input");
     const courseSearchButton = document.querySelector(".course-mgmt-search-bar button");
 
-    // Add a "No courses found" row
     const tbody = courseRows[0]?.parentElement;
-    let noCoursesRow = document.getElementById("noCoursesMessage");
-    if (!noCoursesRow) {
-        noCoursesRow = document.createElement("tr");
-        noCoursesRow.id = "noCoursesMessage";
-        noCoursesRow.style.display = "none";
-        noCoursesRow.innerHTML = `<td colspan="3" class="course-mgmt-cell" style="text-align:center; font-style:italic; color:#888;">
-            No courses found.
-        </td>`;
-        tbody.appendChild(noCoursesRow);
+
+    if (tbody) { // only append if tbody exists
+        let noCoursesRow = document.getElementById("noCoursesMessage");
+        if (!noCoursesRow) {
+            noCoursesRow = document.createElement("tr");
+            noCoursesRow.id = "noCoursesMessage";
+            noCoursesRow.style.display = "none";
+            noCoursesRow.innerHTML = `<td colspan="3" class="course-mgmt-cell" style="text-align:center; font-style:italic; color:#888;">
+                No courses found.
+            </td>`;
+            tbody.appendChild(noCoursesRow);
+        }
     }
 
     function filterCourses() {

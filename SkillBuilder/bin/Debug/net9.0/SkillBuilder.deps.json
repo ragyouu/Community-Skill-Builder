@@ -17,7 +17,8 @@
           "MimeKit": "4.12.0",
           "Newtonsoft.Json": "13.0.3",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
-          "QuestPDF": "2025.7.2"
+          "QuestPDF": "2025.7.2",
+          "TinyMCE": "8.2.2"
         },
         "runtime": {
           "SkillBuilder.dll": {}
@@ -1558,7 +1559,8 @@
             "fileVersion": "6.0.21.52210"
           }
         }
-      }
+      },
+      "TinyMCE/8.2.2": {}
     }
   },
   "libraries": {
@@ -2490,6 +2492,13 @@
       "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "TinyMCE/8.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uPRuUmDaekSWmpVoKcjbxEMVkYcCqlGKiLUbJvRy+2ue3KtmtdF/fIt18+mLsKk7/VejBNg7NRYfNH7BDpvwcg==",
+      "path": "tinymce/8.2.2",
+      "hashPath": "tinymce.8.2.2.nupkg.sha512"
     }
   }
 }

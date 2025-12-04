@@ -15,11 +15,13 @@ namespace SkillBuilder.Controllers
     {
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IAchievementService _achievementService;
 
-        public CoursesController(AppDbContext context, INotificationService notificationService)
+        public CoursesController(AppDbContext context, INotificationService notificationService, IAchievementService achievementService)
         {
             _context = context;
             _notificationService = notificationService;
+            _achievementService = achievementService;
         }
 
         [HttpGet("")]
@@ -35,10 +37,21 @@ namespace SkillBuilder.Controllers
                 .Include(c => c.Materials)
                 .AsQueryable();
 
+            var userId = User.FindFirstValue("UserId");
+            decimal userThreads = 0;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+                if (user != null)
+                    userThreads = user.Threads;
+            }
+
+            ViewData["UserThreads"] = userThreads;
+
             // Only show published courses for normal users
             if (!User.IsInRole("Admin"))
             {
-                var userId = User.FindFirstValue("UserId");
                 courses = courses.Where(c => c.IsPublished || c.Artisan.UserId == userId);
             }
 
@@ -134,9 +147,9 @@ namespace SkillBuilder.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new { success = false, message = "Login required." });
 
-            var user = _context.Users
+            var user = await _context.Users
                 .Include(u => u.Enrollments)
-                .FirstOrDefault(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
                 return NotFound(new { success = false, message = "User not found." });
@@ -147,9 +160,9 @@ namespace SkillBuilder.Controllers
             if (user.IsDeactivated)
                 return BadRequest(new { success = false, message = "Your account is deactivated. Please contact support." });
 
-            var course = _context.Courses
+            var course = await _context.Courses
                 .Include(c => c.Artisan)
-                .FirstOrDefault(c => c.Id == request.CourseId);
+                .FirstOrDefaultAsync(c => c.Id == request.CourseId);
 
             if (course == null)
                 return NotFound(new { success = false, message = "Course not found." });
@@ -161,6 +174,14 @@ namespace SkillBuilder.Controllers
             if (alreadyEnrolled)
                 return BadRequest(new { success = false, message = "Already enrolled." });
 
+            // ✅ Deduct threads based on course.DesiredThreads
+            decimal threadsToDeduct = course.DesiredThreads;
+
+            if (user.Threads < threadsToDeduct)
+                return BadRequest(new { success = false, message = "Not enough threads to enroll in this course." });
+
+            user.Threads -= threadsToDeduct;
+
             int previousCount = user.Enrollments?.Count() ?? 0;
 
             _context.Enrollments.Add(new Enrollment
@@ -170,17 +191,26 @@ namespace SkillBuilder.Controllers
                 EnrolledAt = DateTime.UtcNow
             });
 
-            await _context.SaveChangesAsync(); // async version of SaveChanges
+            await _context.SaveChangesAsync();
 
             int currentCount = _context.Enrollments.Count(e => e.UserId == userId);
 
             List<string> achievements = new();
-            if (previousCount == 0 && currentCount >= 1)
-                achievements.Add("Welcome to Tahi!");
-            if (previousCount < 3 && currentCount >= 3)
-                achievements.Add("Lifelong Learner");
 
-            // Notifications
+            // ✅ Use AchievementService here
+            if (previousCount == 0 && currentCount >= 1)
+            {
+                var firstCourse = await _achievementService.AwardAchievementAsync(userId, "FirstCourseEnrolled");
+                if (firstCourse != null) achievements.Add(firstCourse.Title);
+            }
+
+            if (previousCount < 3 && currentCount >= 3)
+            {
+                var threeCourses = await _achievementService.AwardAchievementAsync(userId, "ThreeCoursesEnrolled");
+                if (threeCourses != null) achievements.Add(threeCourses.Title);
+            }
+
+            // Notifications to course artisan
             if (course.Artisan != null)
             {
                 await _notificationService.AddNotificationAsync(
@@ -189,6 +219,7 @@ namespace SkillBuilder.Controllers
                 );
             }
 
+            // Notifications to user
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"You successfully enrolled in the course \"{course.Title}\"."
@@ -198,7 +229,8 @@ namespace SkillBuilder.Controllers
             {
                 success = true,
                 showAchievement = achievements.Any(),
-                achievements
+                achievements,
+                threads = user.Threads  // optional: return updated threads
             });
         }
 
@@ -229,6 +261,9 @@ namespace SkillBuilder.Controllers
                 .Include(c => c.CourseModules)
                     .ThenInclude(m => m.Contents)
                         .ThenInclude(content => content.QuizQuestions)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(content => content.InteractiveContents)
                 .Include(c => c.Artisan)
                 .Include(c => c.Enrollments)
                 .Include(c => c.Reviews)
@@ -322,6 +357,13 @@ namespace SkillBuilder.Controllers
             {
                 enrollment.IsCompleted = true;
                 enrollment.CompletedAt = DateTime.UtcNow;
+
+                // ✅ Award 100 threads
+                if (enrollment.User != null)
+                {
+                    enrollment.User.Threads += 100;
+                }
+
                 await _context.SaveChangesAsync();
             }
         }
@@ -332,22 +374,27 @@ namespace SkillBuilder.Controllers
         {
             var userId = User.FindFirstValue("UserId");
             if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+                return Unauthorized(new { success = false, message = "Unauthorized" });
 
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null) return NotFound();
+            var user = await _context.Users
+                .Include(u => u.ProjectSubmissions)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return NotFound(new { success = false, message = "User not found." });
 
             var course = await _context.Courses
-                .Include(c => c.Artisan) // include Artisan to get owner
+                .Include(c => c.Artisan)
                 .FirstOrDefaultAsync(c => c.Id == dto.CourseId);
-            if (course == null) return NotFound();
+            if (course == null)
+                return NotFound(new { success = false, message = "Course not found." });
 
             string mediaUrl = null;
 
             if (dto.File != null && dto.File.Length > 0)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "projects");
-                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
 
                 var fileName = $"{Guid.NewGuid()}_{dto.File.FileName}";
                 var filePath = Path.Combine(uploadsFolder, fileName);
@@ -374,14 +421,29 @@ namespace SkillBuilder.Controllers
             _context.CourseProjectSubmissions.Add(submission);
             await _context.SaveChangesAsync();
 
+            // 🔄 Recalculate course progress
             await RecalculateProgress(userId, dto.CourseId);
 
-            // ✅ Notifications
+            // 🏆 Award ProjectSubmitted achievement
+            var achievements = new List<AchievementViewModel>();
+
+            // First project submission
+            var projectAchievement = await _achievementService.AwardAchievementAsync(userId, "ProjectSubmitted");
+            if (projectAchievement != null)
+                achievements.Add(projectAchievement);
+
+            // Check if course completed achievement should also be awarded
+            var completedAchievement = await _achievementService.AwardAchievementAsync(userId, "CourseCompleted");
+            if (completedAchievement != null)
+                achievements.Add(completedAchievement);
+
+            // 🔔 Notifications to user
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"Your final project \"{submission.Title}\" has been submitted successfully."
             );
 
+            // 🔔 Notify Artisan
             if (course.Artisan != null)
             {
                 await _notificationService.AddNotificationAsync(
@@ -390,7 +452,13 @@ namespace SkillBuilder.Controllers
                 );
             }
 
-            return Ok(new { success = true, submissionId = submission.Id });
+            return Ok(new
+            {
+                success = true,
+                submissionId = submission.Id,
+                achievements, // return all awarded achievements
+                threads = user.Threads
+            });
         }
 
         public class FinalProjectDto
@@ -424,6 +492,18 @@ namespace SkillBuilder.Controllers
 
             _context.CourseReviews.Add(review);
             await _context.SaveChangesAsync();
+
+            // ✅ Award 10 threads only once per user
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null)
+            {
+                bool firstReview = !_context.CourseReviews.Any(r => r.UserId == userId && r.Id != review.Id);
+                if (firstReview)
+                {
+                    user.Threads += 10; // give 10 threads
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             // Recalculate average rating
             var reviews = _context.CourseReviews.Where(r => r.CourseId == request.CourseId);
@@ -689,12 +769,15 @@ namespace SkillBuilder.Controllers
                 .Include(c => c.CourseModules)
                     .ThenInclude(m => m.Contents)
                         .ThenInclude(mc => mc.QuizQuestions)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(mc => mc.InteractiveContents) // ✅ include interactive contents
                 .Include(c => c.Artisan)
                 .FirstOrDefault(c => c.Id == id);
 
             if (course == null) return NotFound();
 
-            // Build module DTOs (preserve Order and Id for later mapping)
+            // Build module DTOs
             var modules = course.CourseModules
                 .OrderBy(m => m.Order)
                 .Select(m => new ModuleJson
@@ -724,7 +807,19 @@ namespace SkillBuilder.Controllers
                                 q.OptionC ?? "",
                                 q.OptionD ?? ""
                                     },
-                                    CorrectAnswer = q.CorrectAnswer ?? ""   // <-- populate correct answer here
+                                    CorrectAnswer = q.CorrectAnswer ?? ""
+                                }).ToList(),
+                            InteractiveContents = l.InteractiveContents
+                                .Select(ic => new InteractiveContentJson
+                                {
+                                    Id = ic.Id,
+                                    ContentType = ic.ContentType ?? "Text",
+                                    ContentText = ic.ContentText ?? "",
+                                    OptionA = ic.OptionA,
+                                    OptionB = ic.OptionB,
+                                    OptionC = ic.OptionC,
+                                    OptionD = ic.OptionD,
+                                    CorrectAnswer = ic.CorrectAnswer
                                 }).ToList()
                         }).ToList()
                 }).ToList();
@@ -735,7 +830,7 @@ namespace SkillBuilder.Controllers
                 Description = course.FinalProjectDescription ?? ""
             };
 
-            // Map to view model. Use the DTO's Order/Id values (no need to reorder again).
+            // Map to view model
             var model = new CourseDetailsViewModel
             {
                 Id = course.Id,
@@ -763,19 +858,28 @@ namespace SkillBuilder.Controllers
                                         OptionB = q.Options.Length > 1 ? q.Options[1] : "",
                                         OptionC = q.Options.Length > 2 ? q.Options[2] : "",
                                         OptionD = q.Options.Length > 3 ? q.Options[3] : "",
-                                        CorrectAnswer = q.CorrectAnswer ?? ""   // <-- carry it through
-                                    })
-                                    .ToList()
-                            })
-                            .ToList()
-                    })
-                    .ToList()
+                                        CorrectAnswer = q.CorrectAnswer ?? ""
+                                    }).ToList(),
+                                InteractiveContents = (l.InteractiveContents ?? new List<InteractiveContentJson>())
+                                    .Select(ic => new InteractiveContentViewModel
+                                    {
+                                        Id = ic.Id,
+                                        ContentType = ic.ContentType ?? "Text",
+                                        ContentText = ic.ContentText ?? "",
+                                        OptionA = ic.OptionA,
+                                        OptionB = ic.OptionB,
+                                        OptionC = ic.OptionC,
+                                        OptionD = ic.OptionD,
+                                        CorrectAnswer = ic.CorrectAnswer
+                                    }).ToList()
+                            }).ToList()
+                    }).ToList()
             };
 
             return View("~/Views/Shared/Sections/_CourseModuleViewing.cshtml", model);
         }
 
-        // DTOs / helper classes — ensure these are in the same controller file or a nested namespace/class
+        // Updated DTOs / helper classes
         public class LessonJson
         {
             public int Id { get; set; }
@@ -785,6 +889,19 @@ namespace SkillBuilder.Controllers
             public string MediaUrl { get; set; } = "";
             public int Order { get; set; }
             public List<QuizQuestionJson> QuizQuestions { get; set; } = new();
+            public List<InteractiveContentJson> InteractiveContents { get; set; } = new(); // ✅ added
+        }
+
+        public class InteractiveContentJson
+        {
+            public int Id { get; set; }
+            public string ContentType { get; set; } = "Text";
+            public string ContentText { get; set; } = "";
+            public string? OptionA { get; set; }
+            public string? OptionB { get; set; }
+            public string? OptionC { get; set; }
+            public string? OptionD { get; set; }
+            public string? CorrectAnswer { get; set; }
         }
 
         public class QuizQuestionJson
@@ -792,7 +909,7 @@ namespace SkillBuilder.Controllers
             public int Id { get; set; }
             public string Question { get; set; } = "";
             public string[] Options { get; set; } = new string[4];
-            public string CorrectAnswer { get; set; } = "";    // <-- added
+            public string CorrectAnswer { get; set; } = "";
         }
 
         public class ModuleJson
@@ -807,6 +924,19 @@ namespace SkillBuilder.Controllers
         {
             public string Title { get; set; } = "";
             public string Description { get; set; } = "";
+        }
+
+        [HttpGet("Forum/{id}")]
+        public IActionResult Forum(int id)
+        {
+            var course = _context.Courses.FirstOrDefault(c => c.Id == id);
+            if (course == null)
+                return NotFound();
+
+            ViewBag.CourseId = id;
+            ViewBag.CourseTitle = course.Title; // pass the title
+
+            return View("~/Views/Shared/Sections/_CourseForum.cshtml");
         }
     }
 }

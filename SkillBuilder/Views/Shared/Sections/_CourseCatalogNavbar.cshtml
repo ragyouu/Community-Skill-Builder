@@ -1,8 +1,37 @@
-﻿@{
+﻿@using SkillBuilder.Data
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext _context
+
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     var userId = User.FindFirst("UserId")?.Value;
     var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+    // Declare user here so it's available everywhere
+    SkillBuilder.Models.User? user = null;
+
+    decimal currentThreads = 0;
+
+    if (!string.IsNullOrEmpty(userId))
+    {
+        user = await _context.Users
+            .Include(u => u.Artisan) // <-- important!
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        currentThreads = user?.Threads ?? 0;
+    }
+
+    // Now you can safely use user below
+    bool isApproved = false;
+    bool isVerified = user?.IsVerified ?? false;
+    bool isDeactivated = user?.IsDeactivated ?? false;
+
+    // Only check IsApproved if the user is an Artisan
+    if (userRole == "Artisan" && user?.Artisan != null)
+    {
+        isApproved = user.Artisan.IsApproved;
+    }
 
     string homeLink = "/";
     if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(userRole))
@@ -398,6 +427,63 @@
             opacity: 0.7;
         }
 
+    .coin-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        vertical-align: middle;
+    }
+
+    .threads {
+        position: relative;
+        cursor: pointer;
+        font-weight: bold;
+        color: #334af1;
+    }
+
+    /* Tooltip box */
+    .tooltip-text {
+        visibility: hidden;
+        width: 260px;
+        max-width: 260px;
+        height: auto;
+        background: linear-gradient(145deg, #334af1, #5566ff); /* gradient effect */
+        color: #fff;
+        text-align: center;
+        font-size: 1rem;
+        line-height: 1.4;
+        padding: 12px 15px;
+        border-radius: 10px;
+        position: absolute;
+        top: 130%; /* below the coin */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+        /* Tooltip arrow */
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            bottom: 100%; /* arrow pointing up to the coin */
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent #334af1 transparent; /* arrow color */
+        }
+
+    /* Show tooltip on hover */
+    .threads:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-50%) translateY(5px);
+    }
+
 </style>
 <nav class="custom-navbar">
     <!-- Left: Logo -->
@@ -433,10 +519,6 @@
     <div class="navbar-right">
         @if (User.Identity.IsAuthenticated && userRole == "Artisan")
         {
-            var isApproved = User.FindFirst("IsApproved")?.Value == "True";
-            var isVerified = User.FindFirst("IsVerified")?.Value == "True";
-            var isDeactivated = User.FindFirst("IsDeactivated")?.Value == "True";
-
             if (isDeactivated)
             {
                 <a class="navbar-item create-course-btn disabled" style="pointer-events:none; opacity:0.5;">
@@ -474,6 +556,24 @@
 
         @if (!string.IsNullOrEmpty(userId))
         {
+
+            @if (!string.IsNullOrEmpty(userId) && userRole != "Artisan" && userRole != "Admin")
+            {
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="coin-display" style="display:flex; align-items:center; gap:0.4rem; margin-right:1rem; position:relative;">
+                        <span class="threads">
+                            @currentThreads.ToString("0.00")
+                            <img src="/assets/icons/coin.ico" class="coin-icon" />
+                            <span class="tooltip-text">
+                                This is your current threads.<br>
+                                These threads are very useful for unlocking live sessions, courses, and community creation.
+                            </span>
+                        </span>
+                    </div>
+                }
+            }
+
             <div class="profile-menu-wrapper">
                 <a href="javascript:void(0);" class="profile-menu-trigger">
                     <img src="/assets/icons/Profile.ico" alt="Profile" class="profile-menu-avatar" />

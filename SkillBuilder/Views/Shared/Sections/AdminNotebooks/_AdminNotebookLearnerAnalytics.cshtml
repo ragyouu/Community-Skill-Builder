@@ -1,0 +1,206 @@
+﻿@model SkillBuilder.Models.ViewModels.AdminProfileViewModel
+
+<div class="analytics-container" style="padding:20px; font-family:Inter, sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h1 style="font-size:1.75rem; font-weight:700; margin:0;color: #344AEA;">Learners Analytics</h1>
+            <p style="color:#666; margin: 4px 0 0;">Here is tahi learners analytics.</p>
+        </div>
+
+        <!-- Learner Analytics Date Filter -->
+        <div style="display:flex; align-items:center; gap:12px;">
+            <label for="learnerDateRange" style="color:#666; font-size:0.95rem;">Date:</label>
+            <select id="learnerDateRange" style="padding:8px 12px; border-radius:8px; border:1px solid #d1d5db; background:#fff;">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="lastweek">Last Week</option>
+                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastyear">Last Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- TOP CARDS -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:20px;">
+
+        <!-- Total Learners -->
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div style="font-size:2rem; font-weight:700;">
+                @Model.Analytics.TotalLearners
+            </div>
+            <div style="color:#666;">Total Number of Learners</div>
+        </div>
+
+        <!-- Total Enrolled Students -->
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div style="font-size:2rem; font-weight:700;">
+                @Model.Analytics.TotalEnrollments
+            </div>
+            <div style="color:#666;">Enrolled Students</div>
+        </div>
+
+        <!-- Unenrolled Students -->
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div style="font-size:2rem; font-weight:700;">
+                @Model.Analytics.LearnerCharts.UnenrolledStudents
+            </div>
+            <div style="color:#666;">Unenrolled Students</div>
+        </div>
+
+        <!-- Student Enrollment Rate -->
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div style="font-size:2rem; font-weight:700;">
+                @Model.Analytics.LearnerCharts.EnrollmentRate%
+            </div>
+            <div style="color:#666;">Enrollment Rate</div>
+        </div>
+
+    </div>
+
+    <!-- LINE CHART -->
+    <div style="background:#fff; border-radius:12px; padding:20px;
+            margin-top:25px; box-shadow:0 2px 12px rgba(0,0,0,0.1);
+            height:380px; width:100%;">
+        <h3 style="font-weight:600; margin-bottom: 1rem;">Average Enrollment Based on Top Courses</h3>
+        <canvas id="courseLineChart" style="width:100%; height:100%; padding:0; margin:0;" "></canvas>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; margin-top:25px;">
+
+        <!-- Donut Chart -->
+        <div style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <h3 style="font-weight:600;">Gen Z vs. Millennials</h3>
+
+            <canvas id="genDonutChart"></canvas>
+
+            <div style="display:flex; justify-content:center; gap:40px; margin-top:20px;">
+                <div style="text-align:center;">
+                    <div style="font-size:1.5rem; font-weight:700;">
+                        @Model.Analytics.LearnerCharts.GenZ
+                    </div>
+                    <div style="color:#666;">Gen Z</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:1.5rem; font-weight:700;">
+                        @Model.Analytics.LearnerCharts.Millennials
+                    </div>
+                    <div style="color:#666;">Millennials</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Age Graph (Expanded) -->
+        <div style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <h3 style="font-weight:600;">Enrollment by Age</h3>
+            <canvas id="ageBarChart" style="height:180px;"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    async function fetchLearnerAnalytics(range = 'lastmonth') {
+        try {
+            const res = await fetch(`/AdminProfile/GetLearnerAnalytics?range=${range}`, { headers: { 'Accept':'application/json' } });
+            if (!res.ok) throw new Error('Failed to fetch learner analytics: ' + res.status);
+            return await res.json();
+        } catch(err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    function updateLearnerCards(analytics) {
+        if (!analytics) return;
+        document.getElementById('enrolledValue').textContent = analytics.TotalEnrollments || 0;
+        document.getElementById('unenrolledValue').textContent = analytics.LearnerCharts.UnenrolledStudents || 0;
+        document.getElementById('enrollmentRate').textContent = (analytics.LearnerCharts.EnrollmentRate || 0) + '%';
+    }
+
+    document.getElementById('learnerDateRange').addEventListener('change', async e => {
+        const range = e.target.value;
+        const analytics = await fetchLearnerAnalytics(range);
+        if (analytics) updateLearnerCards(analytics);
+    });
+
+    const lineCtx = document.getElementById('courseLineChart').getContext('2d');
+    const courseLabels = @Html.Raw(Json.Serialize(Model.Analytics.LearnerCharts.TopCourseLabels));
+    const totalEnrolls = @Html.Raw(Json.Serialize(Model.Analytics.LearnerCharts.TopCourseTotalEnrollments));
+    const genZ = @Html.Raw(Json.Serialize(Model.Analytics.LearnerCharts.TopCourseGenZ));
+    const millennials = @Html.Raw(Json.Serialize(Model.Analytics.LearnerCharts.TopCourseMillennials));
+
+    new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: courseLabels,
+            datasets: [
+                { label: "Total Enrollment", data: totalEnrolls, borderWidth: 2, tension: 0.4, pointRadius: 4 },
+                { label: "Gen Z", data: genZ, borderWidth: 2, tension: 0.4, pointRadius: 4 },
+                { label: "Millennials", data: millennials, borderWidth: 2, tension: 0.4, pointRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: 0 },
+            scales: {
+                y: { beginAtZero: true, ticks: { padding: 2 } },
+                x: {
+                    ticks: {
+                        padding: 2,
+                        callback: function(val, index) {
+                            let label = this.getLabelForValue(val);
+                            return label.length > 19 ? label.substr(0, 19) + '…' : label; // truncate to 9 chars + ellipsis
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    const donutCtx = document.getElementById('genDonutChart').getContext('2d');
+    new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ["Gen Z", "Millennials"],
+            datasets: [{
+                data: [
+                    @Model.Analytics.LearnerCharts.GenZ,
+                    @Model.Analytics.LearnerCharts.Millennials
+                ]
+            }]
+        },
+        options: {
+            cutout: "60%",
+            plugins: { legend: { position: "bottom" } }
+        }
+    });
+
+    const ageCtx = document.getElementById('ageBarChart').getContext('2d');
+    new Chart(ageCtx, {
+        type: 'bar',
+        data: {
+            labels: ["13-17", "18-24", "25-34", "35+"],
+            datasets: [{
+                label: "Students",
+                data: [
+                    @Model.Analytics.LearnerCharts.Age_13_17,
+                    @Model.Analytics.LearnerCharts.Age_18_24,
+                    @Model.Analytics.LearnerCharts.Age_25_34,
+                    @Model.Analytics.LearnerCharts.Age_35Above
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>

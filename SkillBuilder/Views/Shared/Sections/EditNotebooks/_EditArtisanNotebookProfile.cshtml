@@ -396,7 +396,7 @@
 
     avatarInput.addEventListener('change', e => {
         const file = e.target.files[0];
-        const maxSizeKB = 700;
+        const maxSizeMB = 20;
 
         if (!file) {
             avatarWarning.innerText = '';
@@ -405,8 +405,8 @@
             return;
         }
 
-        if (file.size / 1024 > maxSizeKB) {
-            avatarWarning.innerText = `File size exceeds ${maxSizeKB} KB. Please select a smaller image.`;
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            avatarWarning.innerText = `File size exceeds ${maxSizeMB} MB. Please select a smaller image.`;
             avatarPreview.src = "@Model.Artisan.UserAvatar"; // reset preview
             e.target.value = ''; // clear file input
             submitBtn.disabled = true;

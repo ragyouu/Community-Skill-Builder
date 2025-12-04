@@ -20,7 +20,7 @@
 <style>
     /* Section */
     .user-mgmt-user-section {
-        padding: 2rem;
+        padding: 20px;
     }
 
     .user-mgmt-user-header {
@@ -131,8 +131,6 @@
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: bold;
-            max-width: 110px;
-            min-width: 110px;
         }
 
     .user-mgmt-delete-btn {
@@ -318,7 +316,7 @@
         .user-mgmt-user-tab:hover {
             color: #344AEA;
         }
- </style>
+</style>
 
 <div class="user-mgmt-user-section">
     <div class="user-mgmt-user-header">All Users</div>
@@ -338,11 +336,11 @@
     </div>
 
     <table class="user-mgmt-user-table">
-            <colgroup>
-                <col style="width: 33%;">
-                <col style="width: 33%; text-align:center;">
-                <col style="width: 33%; text-align:right;">
-            </colgroup>
+        <colgroup>
+            <col style="width: 33%;">
+            <col style="width: 33%; text-align:center;">
+            <col style="width: 33%; text-align:right;">
+        </colgroup>
         <thead>
             <tr>
                 <th>Name</th>
@@ -350,13 +348,65 @@
                 <th style="text-align: right;">Actions</th>
             </tr>
         </thead>
-            <tbody>
-                @* Existing users *@
-                @foreach (var user in existingUsers)
+        <tbody>
+            @* Existing users *@
+            @foreach (var user in existingUsers)
+            {
+                <tr class="user-mgmt-user-row" data-tab="existing">
+                    <td class="user-mgmt-user-cell">
+                        <div class="user-mgmt-user-info">
+                            <img src="@user.UserAvatar" alt="Avatar" />
+                            <div class="user-mgmt-user-details">
+                                <div class="user-mgmt-user-name">
+                                    <a asp-controller="AdminProfile" asp-action="UserProfileByAdmin" asp-route-id="@user.Id" style="text-decoration: none;">
+                                        @user.FirstName @user.LastName
+                                    </a>
+                                </div>
+                                <div class="user-mgmt-user-email">@user.Email</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="user-mgmt-user-cell user-mgmt-user-role">
+                        @user.Role
+                    </td>
+
+                    <td class="user-mgmt-user-cell">
+                        <div class="user-mgmt-action-buttons">
+                            <!-- Delete button -->
+                            <form asp-action="DeleteUser" asp-route-id="@user.Id" asp-route-adminId="@Model.Admin.UserId" method="post"
+                                  onsubmit="return adminOpenDeleteModal(this);">
+                                <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-delete-btn">
+                                    Delete User
+                                </button>
+                            </form>
+
+                            <!-- Toggle Deactivation button -->
+                            <form asp-action="ToggleUserStatus" asp-route-id="@user.Id" asp-route-adminId="@Model.Admin.UserId" method="post"
+                                  onsubmit="return adminOpenToggleModal(this, '@(user.IsDeactivated ? "Reactivate" : "Deactivate")');">
+                                @if (user.IsDeactivated)
+                                {
+                                    <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-reactivate-btn">Reactivate</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-deactivate-btn">Deactivate</button>
+                                }
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+            @* Archived users *@
+            @if (archivedUsers.Any())
+            {
+                <!-- Archived users -->
+                @foreach (var user in archivedUsers)
                 {
-                    <tr class="user-mgmt-user-row" data-tab="existing">
+                    <tr class="user-mgmt-user-row" data-tab="archived" style="display:none;">
                         <td class="user-mgmt-user-cell">
-                            <div class="user-mgmt-user-info">
+                            <div class="user-mgmt-user-info archived-user-greyed">
                                 <img src="@user.UserAvatar" alt="Avatar" />
                                 <div class="user-mgmt-user-details">
                                     <div class="user-mgmt-user-name">
@@ -369,85 +419,33 @@
                             </div>
                         </td>
 
-                        <td class="user-mgmt-user-cell user-mgmt-user-role">
+                        <td class="user-mgmt-user-cell user-mgmt-user-role archived-user-greyed">
                             @user.Role
                         </td>
 
-                        <td class="user-mgmt-user-cell">
+                        <td class="user-mgmt-user-cell archived-user-greyedl">
                             <div class="user-mgmt-action-buttons">
-                                <!-- Delete button -->
-                                <form asp-action="DeleteUser" asp-route-id="@user.Id" asp-route-adminId="@Model.Admin.UserId" method="post"
-                                      onsubmit="return adminOpenDeleteModal(this);">
-                                    <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-delete-btn">
-                                        Delete User
-                                    </button>
-                                </form>
-
-                                <!-- Toggle Deactivation button -->
-                                <form asp-action="ToggleUserStatus" asp-route-id="@user.Id" asp-route-adminId="@Model.Admin.UserId" method="post"
-                                      onsubmit="return adminOpenToggleModal(this, '@(user.IsDeactivated ? "Reactivate" : "Deactivate")');">
-                                    @if (user.IsDeactivated)
-                                    {
-                                        <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-reactivate-btn">Reactivate</button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" class="user-mgmt-admin-action-btn user-mgmt-deactivate-btn">Deactivate</button>
-                                    }
-                                </form>
+                                Deleted
                             </div>
                         </td>
                     </tr>
                 }
-
-                @* Archived users *@
-                @if (archivedUsers.Any())
-                {
-                    <!-- Archived users -->
-                    @foreach (var user in archivedUsers)
-                    {
-                        <tr class="user-mgmt-user-row" data-tab="archived" style="display:none;">
-                            <td class="user-mgmt-user-cell">
-                                <div class="user-mgmt-user-info archived-user-greyed">
-                                    <img src="@user.UserAvatar" alt="Avatar" />
-                                    <div class="user-mgmt-user-details">
-                                        <div class="user-mgmt-user-name">
-                                            <a asp-controller="AdminProfile" asp-action="UserProfileByAdmin" asp-route-id="@user.Id" style="text-decoration: none;">
-                                                @user.FirstName @user.LastName
-                                            </a>
-                                        </div>
-                                        <div class="user-mgmt-user-email">@user.Email</div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td class="user-mgmt-user-cell user-mgmt-user-role archived-user-greyed">
-                                @user.Role
-                            </td>
-
-                            <td class="user-mgmt-user-cell archived-user-greyedl">
-                                <div class="user-mgmt-action-buttons">
-                                    Deleted
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr class="user-mgmt-user-row" data-tab="archived" style="display:none;">
-                        <td colspan="3" class="user-mgmt-user-cell" style="text-align:center; font-style:italic; color:#777;">
-                            No deleted users yet.
-                        </td>
-                    </tr>
-                }
-
-                <tr id="noUsersMessage" style="display:none;">
+            }
+            else
+            {
+                <tr class="user-mgmt-user-row" data-tab="archived" style="display:none;">
                     <td colspan="3" class="user-mgmt-user-cell" style="text-align:center; font-style:italic; color:#777;">
-                        No users found.
+                        No deleted users yet.
                     </td>
                 </tr>
-            </tbody>
+            }
+
+            <tr id="noUsersMessage" style="display:none;">
+                <td colspan="3" class="user-mgmt-user-cell" style="text-align:center; font-style:italic; color:#777;">
+                    No users found.
+                </td>
+            </tr>
+        </tbody>
     </table>
 
     <!-- Backdrop -->
@@ -537,7 +535,7 @@
 
     // Trigger search when search button is clicked
     searchButton.addEventListener("click", filterUsers);
-    
+
     // ==========================
     // Delete User Modal
     // ==========================

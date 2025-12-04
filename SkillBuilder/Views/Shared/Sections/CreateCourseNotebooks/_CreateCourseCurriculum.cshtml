@@ -132,18 +132,71 @@
         display: block;
     }
 
+    .interactive-content-block {
+        position: relative;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    /* Top-right delete button */
+    .curriculum-delete-btn.top-right {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        padding: 3px 6px;
+        cursor: pointer;
+    }
+
+    .module-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 0.5rem;
+    }
+
+    .module-tab {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        background: #f3f3f3;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+        .module-tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .module-tab:hover {
+            background: #e6e6e6;
+        }
+
+        .module-tab.no-delete {
+            cursor: default;
+        }
 </style>
 
-<div class="curriculum-container" id="curriculum-modules"></div>
-<div id="module-warning" style="color:red; margin-bottom:1rem; display:none;">
-    You must add at least 2 modules.
-</div>
-
-<div class="curriculum-add-module-wrapper">
+<!-- Top bar: warning + Add Module button -->
+<div class="curriculum-add-module-wrapper" style="margin-bottom: 1rem; display:flex; justify-content: space-between; align-items:center;">
+    <div id="module-warning" style="color:red; display:none;">
+        You must add at least 2 modules.
+    </div>
     <button type="button" class="curriculum-add-btn" onclick="addCurriculumModule()">+ Add Module</button>
 </div>
 
-<div class="curriculum-final-project curriculum-module" id="final-project-module">
+<!-- Module Tabs -->
+<div id="module-tabs" class="module-tabs" style="margin-bottom: 1rem;"></div>
+
+<!-- Modules Container -->
+<div class="curriculum-container" id="curriculum-modules"></div>
+
+<!-- Final Project Module -->
+<div class="curriculum-final-project curriculum-module" id="final-project-module" data-index="final-project" style="display:none;">
     <div class="curriculum-header">
         <strong>Final Project</strong>
     </div>
@@ -159,16 +212,120 @@
     </div>
 </div>
 
+<!-- Global Delete Confirmation Modal -->
+<div id="delete-confirmation-modal" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+">
+    <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    ">
+        <p style="font-size:1.1rem; margin-bottom: 1.5rem;">Are you sure you want to delete this item?</p>
+        <div style="display:flex; justify-content: center; gap:1rem;">
+            <button id="confirm-delete-btn" style="
+                padding:0.5rem 1rem;
+                background:#e74c3c;
+                color:white;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Yes, Delete
+            </button>
+            <button id="cancel-delete-btn" style="
+                padding:0.5rem 1rem;
+                background:#ccc;
+                color:black;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    // ------------------ TinyMCE Initialization ------------------
+    function initTinyMCE(target = null) {
+        const baseConfig = {
+            height: 250,
+            menubar: false,
+            plugins: 'lists link image code',
+            toolbar: 'undo redo | bold italic underline | bullist numlist',
+            branding: false,
+            license_key: 'gpl', // ensures GPL/open source license
+            setup: function(editor) {
+                editor.on('Change', () => editor.save());
+            }
+        };
+
+        if (target) {
+            if (!target.classList.contains('tinymce-initialized')) {
+                tinymce.init({
+                    ...baseConfig,
+                    target: target
+                });
+                target.classList.add('tinymce-initialized');
+            }
+        } else {
+            document.querySelectorAll('.main-lesson-content, .interactive-content-block textarea').forEach(el => {
+                if (!el.classList.contains('tinymce-initialized')) {
+                    tinymce.init({
+                        ...baseConfig,
+                        target: el
+                    });
+                    el.classList.add('tinymce-initialized');
+                }
+            });
+        }
+    }
+
+    let pendingDeleteCallback = null;
+
+    // Show confirmation modal
+    function showDeleteConfirmation(callback) {
+        pendingDeleteCallback = callback;
+
+        const modal = document.getElementById("delete-confirmation-modal");
+        modal.style.display = "flex";
+
+        const cancelBtn = document.getElementById("cancel-delete-btn");
+        cancelBtn.onclick = () => {
+            pendingDeleteCallback = null;
+            modal.style.display = "none";
+        };
+
+        const confirmBtn = document.getElementById("confirm-delete-btn");
+        confirmBtn.onclick = () => {
+            if (pendingDeleteCallback) pendingDeleteCallback();
+            pendingDeleteCallback = null;
+            modal.style.display = "none";
+        };
+    }
 
     const lessonFileRules = {
         image: {
-            maxSize: 700 * 1024, // 700 KB
+            maxSize: 20 * 1024 * 1024, // 20 MB
             allowed: [".jpg", ".jpeg", ".png", ".gif", ".webp"]
         },
         video: {
-            maxSize: 50 * 1024 * 1024, // 50 MB
-            allowed: [".mp4", ".mov", ".avi"]
+            maxSize: 200 * 1024 * 1024, // 200 MB
+            allowed: [".mp4", ".mov", ".avi", ".mkv"]
         }
     };
 
@@ -185,7 +342,6 @@
         const { maxSize, allowed } = lessonFileRules[type];
         const ext = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
 
-        // Validate extension
         if (!allowed.includes(ext)) {
             errorEl.textContent = `Invalid file type. Allowed: ${allowed.join(", ")}`;
             errorEl.style.display = "block";
@@ -193,27 +349,20 @@
             return false;
         }
 
-        // Validate file size with dynamic message
         if (file.size > maxSize) {
-            let sizeText;
-            if (type === "image") {
-                sizeText = "700 KB";
-            } else if (type === "video") {
-                sizeText = "50 MB";
-            }
+            let sizeText = type === "image" ? "20 MB" : "200 MB";
             errorEl.textContent = `File too large. Max ${sizeText} allowed.`;
             errorEl.style.display = "block";
             input.value = "";
             return false;
         }
-
         return true;
     }
 
     function attachPreviewAndValidation(inputEl, type) {
         if (!inputEl) return;
-
         const previewEl = inputEl.parentElement.querySelector(".curriculum-upload-preview");
+
         inputEl.addEventListener("change", function() {
             if (!validateLessonFile(inputEl, type)) return;
 
@@ -239,6 +388,99 @@
         });
     }
 
+    // ------------------ INTERACTIVE CONTENT HANDLERS ------------------
+    function attachInteractiveContentHandlers(lessonBlock, moduleIndex, lessonIndex) {
+        const addBtn = lessonBlock.querySelector(".add-content-btn");
+        const dropdown = lessonBlock.querySelector(".content-type-dropdown");
+        const container = lessonBlock.querySelector(".interactive-content-container");
+
+        if (!addBtn || !dropdown || !container) return;
+
+        addBtn.addEventListener("click", () => {
+            const type = dropdown.value;
+            if (!type) return;
+
+            const contentIndex = container.children.length;
+            const nameBase = `Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${contentIndex}]`;
+            let html = "";
+
+            switch (type) {
+                case "Text":
+                    html =
+                        `<div class="interactive-content-block">
+                            <input type="hidden" name="${nameBase}.ContentType" value="Text" />
+                            <label>Additional Text *</label>
+                            <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="3" required></textarea>
+                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                        </div>`;
+                    break;
+
+                case "Link":
+                    html =
+                        `<div class="interactive-content-block">
+                            <input type="hidden" name="${nameBase}.ContentType" value="Link" />
+                            <label>Link URL *</label>
+                            <input type="url" class="curriculum-form-control" name="${nameBase}.ContentText" placeholder="https://example.com" required />
+                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                        </div>`;
+                    break;
+
+                case "Reflection":
+                    html =
+                        `<div class="interactive-content-block">
+                            <input type="hidden" name="${nameBase}.ContentType" value="Reflection" />
+                            <div class="curriculum-form-group">
+                                <label>Set Minimum Characters for Reflection *</label>
+                                <p style="margin-top:0.5rem; font-style:italic; color:#555;">
+                                    This is a Reflection Text Area, adding this means adding a Text Area to Course Module for Reflection input for learners.
+                                </p>
+                                <input type="number" min="1" class="curriculum-form-control reflection-min-chars"
+                                    name="${nameBase}.ReflectionMinChars" placeholder="Enter minimum characters" required />
+                            </div>
+                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                        </div>`;
+                    break;
+
+                case "Question":
+                    html =
+                        `<div class="interactive-content-block">
+                            <input type="hidden" name="${nameBase}.ContentType" value="Question" />
+                            <label>Question *</label>
+                            <input type="text" class="curriculum-form-control" name="${nameBase}.ContentText" required />
+                            <div class="curriculum-form-row">
+                                ${["A","B","C","D"].map(l => `
+                                    <div style="flex:1; display:flex; flex-direction: column;">
+                                        <input type="text" class="curriculum-form-control" name="${nameBase}.Option${l}" placeholder="Option ${l}" required />
+                                        <label>
+                                            <input type="radio" name="${nameBase}.CorrectAnswer" value="Option${l}" required /> Correct
+                                        </label>
+                                    </div>
+                                `).join("")}
+                            </div>
+                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                        </div>`;
+                    break;
+            }
+
+            container.insertAdjacentHTML("beforeend", html);
+
+            const newBlock = container.lastElementChild;
+            const textarea = newBlock.querySelector('textarea');
+            if (textarea) initTinyMCE(textarea);
+
+            checkRequiredFields();
+        });
+    }
+
+    function removeInteractiveContent(btn) {
+        showDeleteConfirmation(() => {
+            const block = btn.closest(".interactive-content-block");
+            if (block) block.remove();
+            checkRequiredFields();
+        });
+    }
+
+
     let curriculumModuleIndex = 0;
     let sessionLessonExists = false;
 
@@ -254,23 +496,62 @@
         moduleDiv.innerHTML = `
             <div class="curriculum-header">
                 <strong class="module-label">Module ${moduleIndex + 1}</strong>
-                <button type="button" class="curriculum-delete-btn" onclick="removeCurriculumModule(${moduleIndex})">🗑️</button>
+                <button type="button" class="curriculum-delete-btn"
+                    onclick="removeCurriculumModule(${moduleIndex})">🗑️</button>
             </div>
-
             <div class="curriculum-form-row">
                 <div class="curriculum-form-col curriculum-form-group">
                     <label>Module Title *</label>
                     <input type="text" class="curriculum-form-control" name="Modules[${moduleIndex}].Title" placeholder="Module title" required />
                 </div>
             </div>
-
             <div class="curriculum-lessons" id="curriculum-lessons-${moduleIndex}"></div>
-            <button type="button" class="curriculum-add-btn" onclick="addCurriculumLesson(${moduleIndex})">+ Add Lesson</button>
+            <button type="button" class="curriculum-add-btn" style="margin-top: 3rem;" onclick="addCurriculumLesson(${moduleIndex})">+ Add Lesson</button>
         `;
 
         container.appendChild(moduleDiv);
-        renumberModules();
+
+        refreshModuleTabs(moduleIndex);   // refresh tabs
+        showModule(moduleIndex);          // show newly added module immediately
+
         checkRequiredFields();
+    }
+
+    function refreshModuleTabs(activeIndex) {
+        const tabsContainer = document.getElementById("module-tabs");
+        tabsContainer.innerHTML = "";
+
+        const modules = document.querySelectorAll(".curriculum-module:not(#final-project-module)");
+
+        modules.forEach((mod, i) => {
+            const tab = document.createElement("button");
+            tab.textContent = `Module ${i + 1}`;
+            tab.className = i === activeIndex ? "module-tab active" : "module-tab";
+            tab.onclick = () => showModule(i);
+            tabsContainer.appendChild(tab);
+        });
+
+        // Add Final Project tab
+        const finalTab = document.createElement("button");
+        finalTab.textContent = "Final Project";
+        finalTab.className = activeIndex === "final" ? "module-tab active no-delete" : "module-tab no-delete";
+        finalTab.onclick = () => showModule("final");
+        tabsContainer.appendChild(finalTab);
+    }
+
+    function showModule(index) {
+        const modules = document.querySelectorAll(".curriculum-module:not(#final-project-module)");
+        const finalProject = document.getElementById("final-project-module");
+
+        if (index !== "final") index = Number(index);
+
+        modules.forEach((mod, i) => {
+            mod.style.display = i === index ? "block" : "none";
+        });
+
+        finalProject.style.display = index === "final" ? "block" : "none";
+
+        refreshModuleTabs(index);
     }
 
     function addCurriculumLesson(moduleIndex) {
@@ -280,7 +561,8 @@
         const lessonDiv = document.createElement("div");
         lessonDiv.className = "curriculum-lesson-block";
 
-        lessonDiv.innerHTML = `
+        lessonDiv.innerHTML =
+            `
             <div class="curriculum-lesson-header">
                 <button type="button" class="curriculum-delete-btn lesson-delete-btn" onclick="removeCurriculumLesson(${moduleIndex}, this)">🗑️</button>
             </div>
@@ -288,12 +570,17 @@
             <div class="curriculum-form-row">
                 <div class="curriculum-form-col curriculum-form-group">
                     <label>Lesson Title *</label>
-                    <input type="text" class="curriculum-form-control" name="Modules[${moduleIndex}].Lessons[${lessonIndex}].Title" placeholder="Lesson title" required />
+                    <input type="text" class="curriculum-form-control"
+                        name="Modules[${moduleIndex}].Lessons[${lessonIndex}].Title"
+                        placeholder="Lesson title" required />
                 </div>
+
                 <div class="curriculum-form-col curriculum-form-group">
                     <label>Lesson Type *</label>
-                    <select class="curriculum-form-select" name="Modules[${moduleIndex}].Lessons[${lessonIndex}].LessonType"
-                        onchange="handleLessonTypeChange(this, ${moduleIndex}, ${lessonIndex})" required>
+                    <select class="curriculum-form-select"
+                        name="Modules[${moduleIndex}].Lessons[${lessonIndex}].LessonType"
+                        onchange="handleLessonTypeChange(this, ${moduleIndex}, ${lessonIndex})"
+                        required>
                         <option value="">-- Select Type --</option>
                         <option value="Text">Text</option>
                         <option value="Image + Text">Image + Text</option>
@@ -309,20 +596,22 @@
                     <label>Duration *</label>
                     <div class="lesson-duration-row">
                         <input type="number" min="1" class="curriculum-form-control lesson-duration-value"
-                               name="Modules[${moduleIndex}].Lessons[${lessonIndex}].DurationValue"
-                               placeholder="Enter duration" required />
+                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].DurationValue" placeholder="Enter duration" required />
+
                         <select class="curriculum-form-select lesson-duration-unit"
-                                name="Modules[${moduleIndex}].Lessons[${lessonIndex}].DurationUnit" required>
+                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].DurationUnit" required>
                             <option value="minutes">Minutes</option>
                             <option value="hours">Hours</option>
                         </select>
-                        <input type="hidden" class="lesson-duration-hidden" name="Modules[${moduleIndex}].Lessons[${lessonIndex}].Duration" />
+
+                        <input type="hidden" class="lesson-duration-hidden"
+                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].Duration" />
                     </div>
                 </div>
             </div>
 
             <div class="lesson-config-container"></div>
-        `;
+            `;
 
         const lessonTypeSelect = lessonDiv.querySelector(`select[name$='.LessonType']`);
         if (sessionLessonExists) {
@@ -330,43 +619,68 @@
             if (sessionOption) sessionOption.disabled = true;
         }
 
+        const configContainer = lessonDiv.querySelector(".lesson-config-container");
+
+        // Initialize TinyMCE on the new textarea immediately
+        const textarea = configContainer?.querySelector('textarea');
+        if (textarea) {
+            initTinyMCE(textarea);
+        }
+
         lessonsContainer.appendChild(lessonDiv);
+
         renumberModules();
         checkRequiredFields();
     }
 
     function removeCurriculumModule(index) {
-        const item = document.querySelector(`.curriculum-module[data-index='${index}']`);
-        if (item) item.remove();
-        renumberModules();
-        checkRequiredFields();
+        showDeleteConfirmation(() => {
+            const item = document.querySelector(`.curriculum-module[data-index='${index}']`);
+            if (item) item.remove();
+
+            renumberModules();
+            checkRequiredFields();
+
+            // Determine active tab
+            let activeTabIndex = 0;
+            const visibleModules = document.querySelectorAll('.curriculum-module:not(#final-project-module)');
+            if (visibleModules.length > 0) {
+                activeTabIndex = 0; // show first module after delete
+            } else {
+                activeTabIndex = "final"; // if no modules, show final project
+            }
+
+            showModule(activeTabIndex);
+            refreshModuleTabs(activeTabIndex); // <-- refresh tabs immediately
+        });
     }
 
     function removeCurriculumLesson(moduleIndex, btn) {
-        const lessonDiv = btn.closest(".curriculum-lesson-block");
-        if (!lessonDiv) return;
+        showDeleteConfirmation(() => {
+            const lessonDiv = btn.closest(".curriculum-lesson-block");
+            if (!lessonDiv) return;
 
-        const lessonTypeSelect = lessonDiv.querySelector("select[name$='.LessonType']");
-        if (lessonTypeSelect && lessonTypeSelect.value === "Session") {
-            sessionLessonExists = false;
+            const lessonTypeSelect = lessonDiv.querySelector("select[name$='.LessonType']");
+            if (lessonTypeSelect && lessonTypeSelect.value === "Session") {
+                sessionLessonExists = false;
+                const allLessonSelects = document.querySelectorAll(".curriculum-lesson-block select[name$='.LessonType']");
+                allLessonSelects.forEach(sel => {
+                    const sessionOption = Array.from(sel.options).find(o => o.value === "Session");
+                    if (sessionOption) sessionOption.disabled = false;
+                });
+            }
 
-            // Re-enable Session option in all other lesson selects
-            const allLessonSelects = document.querySelectorAll(".curriculum-lesson-block select[name$='.LessonType']");
-            allLessonSelects.forEach(sel => {
-                const sessionOption = Array.from(sel.options).find(o => o.value === "Session");
-                if (sessionOption) sessionOption.disabled = false;
-            });
-        }
-
-        lessonDiv.remove();
-        renumberModules();
-        checkRequiredFields();
+            lessonDiv.remove();
+            renumberModules();
+            checkRequiredFields();
+        });
     }
+
 
     // ------------------ RENUMBER MODULES / LESSONS ------------------
     function renumberModules() {
-        // only regular modules, exclude the final project container
         const modules = document.querySelectorAll('.curriculum-module:not(#final-project-module)');
+
         modules.forEach((module, newIndex) => {
             module.setAttribute("data-index", newIndex);
 
@@ -407,26 +721,37 @@
             });
         });
 
-        // curriculumModuleIndex should only count real modules (exclude final project)
         curriculumModuleIndex = document.querySelectorAll('.curriculum-module:not(#final-project-module)').length;
     }
 
-    // ------------------ LESSON CONFIG ------------------
+
+    // ------------------ LESSON CONFIG SETTINGS ------------------
     function handleLessonTypeChange(selectEl, moduleIndex, lessonIndex) {
         const lessonBlock = selectEl.closest(".curriculum-lesson-block");
         const configContainer = lessonBlock.querySelector(".lesson-config-container");
+
         configContainer.innerHTML = getLessonConfigBlock(moduleIndex, lessonIndex, selectEl.value);
 
-        // -------------------- FILE PREVIEW --------------------
+        // Initialize TinyMCE on the new textarea immediately
+        const textarea = configContainer.querySelector('textarea');
+        if (textarea) {
+            initTinyMCE(textarea);
+        }
+
+        if (selectEl.value === "Text" || selectEl.value === "Image + Text") {
+            attachInteractiveContentHandlers(lessonBlock, moduleIndex, lessonIndex);
+        }
+
         if (selectEl.value === "Image + Text") {
             const imgInput = configContainer.querySelector(`input[type='file'][name$='.ImageFile']`);
             attachPreviewAndValidation(imgInput, "image");
-        } else if (selectEl.value === "Video + Text") {
+        }
+
+        if (selectEl.value === "Video + Text") {
             const videoInput = configContainer.querySelector(`input[type='file'][name$='.VideoFile']`);
             attachPreviewAndValidation(videoInput, "video");
         }
 
-        // -------------------- SESSION LESSON LOGIC --------------------
         const allLessonSelects = document.querySelectorAll(".curriculum-lesson-block select[name$='.LessonType']");
 
         if (selectEl.value === "Session") {
@@ -436,8 +761,6 @@
             if (prevValue === "Session") {
                 sessionLessonExists = false;
 
-                // Re-enable Session in all other lesson selects
-                const allLessonSelects = document.querySelectorAll(".curriculum-lesson-block select[name$='.LessonType']");
                 allLessonSelects.forEach(sel => {
                     const sessionOption = Array.from(sel.options).find(o => o.value === "Session");
                     if (sessionOption) sessionOption.disabled = false;
@@ -445,88 +768,154 @@
             }
         }
 
-        // Update options visibility
         allLessonSelects.forEach(sel => {
-            if (sel === selectEl) return; // skip current select
-
+            if (sel === selectEl) return;
             const sessionOption = Array.from(sel.options).find(o => o.value === "Session");
             if (sessionOption) sessionOption.disabled = sessionLessonExists;
         });
 
-        // Store current value for next change
         selectEl.setAttribute("data-prev", selectEl.value);
     }
 
     function getLessonConfigBlock(moduleIndex, lessonIndex, type) {
         const nameBase = `Modules[${moduleIndex}].Lessons[${lessonIndex}]`;
+
         switch (type) {
             case "Text":
-                return `<div class="curriculum-form-group">
-                            <label>Lesson Content</label>
-                            <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="4" required></textarea>
-                        </div>`;
+                return `
+                    <div class="curriculum-form-group">
+                        <label>Lesson Content</label>
+                        <textarea class="curriculum-form-control main-lesson-content"
+                            name="${nameBase}.ContentText" rows="4" required></textarea>
+                    </div>
+
+                    <div class="curriculum-form-group">
+                        <label>Add Interactive Content</label>
+
+                        <!-- Interactive contents appear here -->
+                        <div class="interactive-content-container" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+
+                        <!-- Dropdown and Add button below the content -->
+                        <div style="display:flex; gap:0.5rem; margin-top: 0.5rem;">
+                            <select class="curriculum-form-select content-type-dropdown" style="width: 15%; padding: 0.5rem;">
+                                <option value="">-- Select Type --</option>
+                                <option value="Text">Add Text</option>
+                                <option value="Link">Add Link</option>
+                                <option value="Reflection">Add Reflection</option>
+                                <option value="Question">Add Question</option>
+                            </select>
+                            <button type="button" class="curriculum-add-btn add-content-btn" style="margin-bottom:0;">
+                                + Add Content
+                            </button>
+                        </div>
+                    </div>
+                `;
+
             case "Image + Text":
-                return `<div class="curriculum-form-group">
-                            <label>Lesson Content</label>
-                            <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="4" required></textarea>
+                return `
+                    <div class="curriculum-form-group">
+                        <label>Lesson Content</label>
+                        <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="4" required></textarea>
+                    </div>
+
+                    <div class="curriculum-form-group">
+                        <label>Upload Image</label>
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-form-control" required />
+                            <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">🖼️</div>
                         </div>
-                        <div class="curriculum-form-group">
-                            <label>Upload Image</label>
-                            <div style="display:flex; gap:1rem; align-items:center;">
-                                <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-form-control" required />
-                                <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">🖼️</div>
-                            </div>
-                            <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
-                        </div>`;
+                        <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
+                    </div>
+
+                    <div class="curriculum-form-group">
+                        <label>Add Interactive Content</label>
+
+                        <!-- Interactive contents container on top -->
+                        <div class="interactive-content-container" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"></div>
+
+                        <!-- Dropdown and add button below the content -->
+                        <div style="display:flex; gap:0.5rem;">
+                            <select class="curriculum-form-select content-type-dropdown" style="width: 15%; padding: 0.5rem;">
+                                <option value="">-- Select Type --</option>
+                                <option value="Text">Add Text</option>
+                                <option value="Link">Add Link</option>
+                                <option value="Reflection">Add Reflection</option>
+                                <option value="Question">Add Question</option>
+                            </select>
+                            <button type="button" class="curriculum-add-btn add-content-btn" style="margin-bottom:0;">
+                                + Add Content
+                            </button>
+                        </div>
+                    </div>
+                `;
+
             case "Video + Text":
-                return `<div class="curriculum-form-group">
-                            <label>Lesson Content / Description</label>
-                            <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="4" required></textarea>
+                return `
+                    <div class="curriculum-form-group">
+                        <label>Lesson Content / Description</label>
+                        <textarea class="curriculum-form-control"
+                            name="${nameBase}.ContentText" rows="4" required></textarea>
+                    </div>
+
+                    <div class="curriculum-form-group">
+                        <label>Upload Video</label>
+
+                        <div style="display:flex; gap:1rem; align-items:center;">
+                            <input type="file" name="${nameBase}.VideoFile" accept="video/*"
+                                class="curriculum-form-control" required />
+
+                            <video class="curriculum-upload-preview"
+                                width="100" height="80" controls style="display:none;"></video>
                         </div>
-                        <div class="curriculum-form-group">
-                            <label>Upload Video</label>
-                            <div style="display:flex; gap:1rem; align-items:center;">
-                                <input type="file" name="${nameBase}.VideoFile" accept="video/*" class="curriculum-form-control" required />
-                                <video class="curriculum-upload-preview" width="100" height="80" controls style="display:none;"></video>
-                            </div>
-                            <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
-                        </div>`;
+
+                        <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
+                    </div>
+                `;
+
             case "Quiz":
-                return `<div class="quiz-builder" data-namebase="${nameBase}">
-                            <div class="quiz-questions"></div>
-                            <button type="button" class="curriculum-add-btn" onclick="addQuizQuestion(this)">+ Add Question</button>
-                        </div>`;
+                return `
+                    <div class="quiz-builder" data-namebase="${nameBase}">
+                        <div class="quiz-questions"></div>
+                        <button type="button" class="curriculum-add-btn" onclick="addQuizQuestion(this)">+ Add Question</button>
+                    </div>
+                `;
+
             case "Session":
-                return `<div class="curriculum-form-group">
-                            <label>This will be a live session learners can request.</label>
-                        </div>`;
+                return `
+                    <div class="curriculum-form-group">
+                        <label>This will be a live session learners can request.</label>
+                    </div>
+                `;
+
             default:
                 return ``;
         }
     }
 
+
+    // ------------------ QUIZ LOGIC ------------------
     function removeQuizQuestion(btn) {
-        const questionBlock = btn.closest(".quiz-question");
-        const container = questionBlock.parentElement;
-        if (questionBlock) questionBlock.remove();
-        renumberQuizQuestions(container);
+        showDeleteConfirmation(() => {
+            const questionBlock = btn.closest(".quiz-question");
+            const container = questionBlock.parentElement;
+            if (questionBlock) questionBlock.remove();
+            renumberQuizQuestions(container);
+        });
     }
 
     function renumberQuizQuestions(container) {
         const questions = container.querySelectorAll(".quiz-question");
+
         questions.forEach((q, i) => {
-            // Update the label
             const label = q.querySelector("label");
             if (label) label.textContent = `Question ${i + 1} *`;
 
-            // Update input names for question text
             const questionInput = q.querySelector("input[name$='QuestionText']");
             if (questionInput) {
                 const nameBase = container.closest(".quiz-builder").getAttribute("data-namebase");
                 questionInput.name = `${nameBase}.QuizQuestions[${i}].QuestionText`;
             }
 
-            // Update option input names and radio buttons
             ["A","B","C","D"].forEach(letter => {
                 const optInput = q.querySelector(`input[name$='Option${letter}']`);
                 if (optInput) {
@@ -545,66 +934,75 @@
     function addQuizQuestion(button) {
         const container = button.closest(".quiz-builder").querySelector(".quiz-questions");
         const nameBase = button.closest(".quiz-builder").getAttribute("data-namebase");
-        const index = container.children.length;
 
+        const index = container.children.length;
         const questionBlock = document.createElement("div");
+
         questionBlock.className = "quiz-question";
         questionBlock.style.marginTop = "1rem";
 
-        questionBlock.innerHTML = `
+        questionBlock.innerHTML =
+            `
             <div class="quiz-question-header">
                 <button type="button" class="curriculum-delete-btn" onclick="removeQuizQuestion(this)">🗑️</button>
             </div>
 
             <div class="curriculum-form-group">
                 <label>Question ${index + 1} *</label>
-                <input type="text" name="${nameBase}.QuizQuestions[${index}].QuestionText" class="curriculum-form-control" required />
+                <input type="text" name="${nameBase}.QuizQuestions[${index}].QuestionText"
+                    class="curriculum-form-control" required />
             </div>
+
             <div class="curriculum-form-group">
                 <label>Options *</label>
                 <div class="curriculum-form-row">
                     ${["A","B","C","D"].map(letter => `
                         <div style="flex:1; display:flex; flex-direction: column;">
-                            <input type="text" name="${nameBase}.QuizQuestions[${index}].Option${letter}" class="curriculum-form-control quiz-option-input" placeholder="Option ${letter}" oninput="updateRadioValue(this)" required />
+                            <input type="text"
+                                name="${nameBase}.QuizQuestions[${index}].Option${letter}"
+                                class="curriculum-form-control quiz-option-input"
+                                placeholder="Option ${letter}"
+                                oninput="updateRadioValue(this)"
+                                required />
+
                             <label>
-                                <input type="radio" name="${nameBase}.QuizQuestions[${index}].CorrectAnswer" class="correct-answer-radio" value="Option${letter}" required /> Correct
+                                <input type="radio" class="correct-answer-radio"
+                                    name="${nameBase}.QuizQuestions[${index}].CorrectAnswer"
+                                    value="Option${letter}" required />
+                                Correct
                             </label>
                         </div>
                     `).join("")}
                 </div>
                 <span class="quiz-option-error" style="display:none;">Duplicate options are not allowed!</span>
             </div>
-        `;
+            `;
 
         container.appendChild(questionBlock);
         renumberQuizQuestions(container);
     }
 
     function updateRadioValue(textInput) {
-        // Update the correct answer radio value
         const container = textInput.closest("div");
         const radio = container.querySelector("input.correct-answer-radio");
+
         if (radio) radio.value = textInput.value;
 
-        // Check duplicates immediately
         const quizQuestion = textInput.closest(".quiz-question");
         if (quizQuestion) checkDuplicateOptions(quizQuestion);
     }
 
     function checkDuplicateOptions(quizQuestion) {
         const optionInputs = quizQuestion.querySelectorAll(".quiz-option-input");
-        const values = Array.from(optionInputs)
-                            .map(input => input.value.trim())
-                            .filter(v => v !== ""); // ignore blanks
 
-        // Check for duplicates
+        const values = Array.from(optionInputs)
+            .map(i => i.value.trim())
+            .filter(v => v !== "");
+
         const duplicatesExist = values.some((item, index) => values.indexOf(item) !== index);
 
-        // Find the single error span for this question
         const errorSpan = quizQuestion.querySelector(".quiz-option-error");
-        if (errorSpan) {
-            errorSpan.style.display = duplicatesExist ? "block" : "none";
-        }
+        if (errorSpan) errorSpan.style.display = duplicatesExist ? "block" : "none";
 
         return duplicatesExist;
     }
@@ -615,21 +1013,30 @@
         }
     });
 
+
     // ------------------ PRELOAD FINAL PROJECT AND MODULES ------------------
     document.addEventListener("DOMContentLoaded", () => {
         const form = document.getElementById("create-course-form");
 
         // --- Preload Final Project ---
-        const finalProjectData = @Html.Raw(JsonSerializer.Serialize(Model.FinalProject ?? emptyFinalProject));
+        const finalProjectData =
+            @Html.Raw(JsonSerializer.Serialize(Model.FinalProject ?? emptyFinalProject));
+
         const fpTitleInput = document.querySelector("input[name='FinalProject.Title']");
         const fpDescTextarea = document.querySelector("textarea[name='FinalProject.Description']");
+
         if (fpTitleInput) fpTitleInput.value = finalProjectData?.Title ?? "";
         if (fpDescTextarea) fpDescTextarea.value = finalProjectData?.Description ?? "";
 
+        showModule("final");
+
         // --- Preload Modules ---
-        const preloadModules = @Html.Raw(JsonSerializer.Serialize(Model.Modules ?? new List<SkillBuilder.Models.ViewModels.CourseModuleViewModel>()));
+        const preloadModules =
+            @Html.Raw(JsonSerializer.Serialize(Model.Modules ?? new List<SkillBuilder.Models.ViewModels.CourseModuleViewModel>()));
+
         preloadModules.forEach((module, i) => {
             addCurriculumModule();
+
             const moduleDiv = document.querySelector(`.curriculum-module[data-index='${i}']`);
             if (!moduleDiv) return;
 
@@ -638,6 +1045,7 @@
             if (Array.isArray(module.lessons)) {
                 module.lessons.forEach((lesson, j) => {
                     addCurriculumLesson(i);
+
                     const lessonBlock = moduleDiv.querySelectorAll(".curriculum-lesson-block")[j];
                     if (!lessonBlock) return;
 
@@ -648,6 +1056,7 @@
                     handleLessonTypeChange(lessonBlock.querySelector("select"), i, j);
 
                     const type = lesson.type ?? "";
+
                     if (type === "Text" || type === "Image + Text") {
                         const contentEl = lessonBlock.querySelector(`[name='Modules[${i}].Lessons[${j}].ContentText']`);
                         if (contentEl) contentEl.value = lesson.contentText ?? "";
@@ -655,12 +1064,15 @@
 
                     if (type === "Quiz" && Array.isArray(lesson.quizQuestions)) {
                         const builder = lessonBlock.querySelector(".quiz-builder");
+
                         lesson.quizQuestions.forEach((q, qIndex) => {
                             addQuizQuestion(builder.querySelector("button"));
+
                             const questionBlock = builder.querySelectorAll(".quiz-question")[qIndex];
                             if (!questionBlock) return;
 
                             questionBlock.querySelector(`input[name$='QuizQuestions[${qIndex}].QuestionText']`).value = q.questionText ?? "";
+
                             ["A","B","C","D"].forEach(letter => {
                                 const optInput = questionBlock.querySelector(`input[name$='Option${letter}']`);
                                 if (optInput) optInput.value = q[`option${letter}`] ?? "";
@@ -670,19 +1082,123 @@
                             });
                         });
                     }
+
+                    // ------------------ Preload Interactive Contents ------------------
+                    if (Array.isArray(lesson.interactiveContents)) {
+                        const container = lessonBlock.querySelector(".interactive-content-container");
+
+                        lesson.interactiveContents.forEach((content, cIndex) => {
+                            const nameBase = `Modules[${i}].Lessons[${j}].InteractiveContents[${cIndex}]`;
+                            let html = "";
+
+                            switch (content.type) {
+                                case "Text":
+                                    html =
+                                        `<div class="interactive-content-block">
+                                            <label>Additional Text *</label>
+                                            <textarea class="curriculum-form-control"
+                                                name="${nameBase}.ContentText" rows="3" required>${content.contentText ?? ""}</textarea>
+                                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                                        </div>`;
+                                    break;
+
+                                case "Link":
+                                    html =
+                                        `<div class="interactive-content-block">
+                                            <label>Link URL *</label>
+                                            <input type="url" class="curriculum-form-control"
+                                                name="${nameBase}.ContentText"
+                                                placeholder="https://example.com"
+                                                value="${content.contentText ?? ""}" required />
+                                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                                        </div>`;
+                                    break;
+
+                                case "Reflection":
+                                    html =
+                                        `<div class="interactive-content-block">
+                                            <input type="hidden" name="${nameBase}.ContentType" value="Reflection" />
+                                            <div class="curriculum-form-group">
+                                                <label>Set Minimum Characters for Reflection *</label>
+                                                <p style="margin-top:0.5rem; font-style:italic; color:#555;">
+                                                    This is a Reflection Text Area, adding this means adding a Text Area to Course Module for Reflection input for learners.
+                                                </p>
+
+                                                <input type="number" min="1"
+                                                    class="curriculum-form-control reflection-min-chars"
+                                                    name="${nameBase}.ReflectionMinChars"
+                                                    placeholder="Enter minimum characters"
+                                                    value="${content.reflectionMinChars ?? ""}"
+                                                    required />
+                                            </div>
+
+                                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                                        </div>`;
+                                    break;
+
+                                case "Question":
+                                    html =
+                                        `<div class="interactive-content-block">
+                                            <label>Question *</label>
+                                            <input type="text" class="curriculum-form-control"
+                                                name="${nameBase}.ContentText"
+                                                value="${content.contentText ?? ""}" required />
+
+                                            <div class="curriculum-form-row">
+                                                ${["A","B","C","D"].map(l => `
+                                                    <div style="flex:1; display:flex; flex-direction: column;">
+                                                        <input type="text" class="curriculum-form-control"
+                                                            name="${nameBase}.Option${l}"
+                                                            placeholder="Option ${l}"
+                                                            value="${content[`option${l}`] ?? ""}" required />
+
+                                                        <label>
+                                                            <input type="radio"
+                                                                name="${nameBase}.CorrectAnswer"
+                                                                value="Option${l}"
+                                                                ${content.correctAnswer === `Option${l}` ? "checked" : ""}
+                                                                required />
+                                                            Correct
+                                                        </label>
+                                                    </div>
+                                                `).join("")}
+                                            </div>
+
+                                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
+                                        </div>`;
+                                    break;
+                            }
+
+                            container.insertAdjacentHTML("beforeend", html);
+
+                            // Initialize TinyMCE on the newly added textarea (inside this block only)
+                            const newBlock = container.lastElementChild;
+                            const textarea = newBlock.querySelector('textarea');
+                            if (textarea) {
+                                initTinyMCE(textarea);
+                            }
+
+                            attachInteractiveContentHandlers(lessonBlock, i, j);
+                        });
+                    }
                 });
             }
         });
 
+        initTinyMCE();
+
+        showModule(0);
+        refreshModuleTabs(0);
+
         checkRequiredFields();
 
-        // --- Update hidden durations on submit ---
         if (form) {
             form.addEventListener("submit", () => {
                 document.querySelectorAll(".curriculum-lesson-block").forEach(lesson => {
                     const val = lesson.querySelector(".lesson-duration-value");
                     const unit = lesson.querySelector(".lesson-duration-unit");
                     const hidden = lesson.querySelector(".lesson-duration-hidden");
+
                     if (val && unit && hidden) hidden.value = `${val.value} ${unit.value}`;
                 });
             });

@@ -14,5 +14,6 @@ namespace SkillBuilder.Models
         public string? Duration { get; set; }
         public int Order { get; set; }
         public ICollection<QuizQuestion> QuizQuestions { get; set; } = new List<QuizQuestion>();
+        public ICollection<InteractiveContent> InteractiveContents { get; set; } = new List<InteractiveContent>();
     }
 }

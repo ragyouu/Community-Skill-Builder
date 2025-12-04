@@ -265,20 +265,47 @@ namespace SkillBuilder.Controllers
 
             achievements.Add(new AchievementViewModel
             {
-                Title = "Welcome to Tahi!",
-                Condition = "Enroll at least 1 course",
+                AchievementKey = "FirstCourseEnrolled",
+                Title = "First Course Enrolled",
+                Condition = "Enroll in your first course",
                 IsAchieved = user.Enrollments != null && user.Enrollments.Any()
             });
 
             achievements.Add(new AchievementViewModel
             {
+                AchievementKey = "ThreeCoursesEnrolled",
                 Title = "Lifelong Learner",
-                Condition = "Enroll in at least 3 courses",
+                Condition = "Enroll in 3 courses",
                 IsAchieved = user.Enrollments != null && user.Enrollments.Count() >= 3
+            });
+
+            achievements.Add(new AchievementViewModel
+            {
+                AchievementKey = "CourseCompleted",
+                Title = "Course Completed",
+                Condition = "Complete your first course",
+                IsAchieved = user.Enrollments != null && user.Enrollments.Any(e => e.IsCompleted)
+            });
+
+            achievements.Add(new AchievementViewModel
+            {
+                AchievementKey = "ProjectSubmitted",
+                Title = "Project Submitted",
+                Condition = "Submit your first project",
+                IsAchieved = user.ProjectSubmissions != null && user.ProjectSubmissions.Any()
+            });
+
+            achievements.Add(new AchievementViewModel
+            {
+                AchievementKey = "FirstReviewSubmitted",
+                Title = "First Review Submitted",
+                Condition = "Submit your first review",
+                IsAchieved = user.Reviews != null && user.Reviews.Any()
             });
 
             return achievements;
         }
+
 
         [HttpGet("ResetAchievements/{userId}")]
         public IActionResult ResetAchievements(string userId)
@@ -343,6 +370,7 @@ namespace SkillBuilder.Controllers
             string FirstName,
             string LastName,
             string Email,
+            DateTime? BirthDate,
             IFormFile UserAvatar,
             string CurrentPassword,
             string NewPassword,
@@ -356,6 +384,11 @@ namespace SkillBuilder.Controllers
 
             user.FirstName = FirstName;
             user.LastName = LastName;
+
+            if (BirthDate.HasValue)
+            {
+                user.BirthDate = DateOnly.FromDateTime(BirthDate.Value);
+            }
 
             if (!string.Equals(user.Email, Email, StringComparison.OrdinalIgnoreCase))
             {

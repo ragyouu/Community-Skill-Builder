@@ -39,11 +39,19 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("CreateCourse")]
-        [RequestSizeLimit(200 * 1024 * 1024)] // Allow up to 200 MB for this action
+        [RequestSizeLimit(50 * 1024 * 1024)] // Allow up to 50 MB for this action
         public async Task<IActionResult> CreateCourse(CourseBuilderViewModel model)
         {
             if (!ModelState.IsValid)
-                return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", model);
+            {
+                foreach (var state in ModelState)
+                {
+                    if (state.Value.Errors.Any())
+                    {
+                        Console.WriteLine($"{state.Key} : {string.Join(", ", state.Value.Errors.Select(e => e.ErrorMessage))}");
+                    }
+                }
+            }
 
             var userId = User.FindFirst("UserId")?.Value;
             var artisan = await _context.Artisans.FirstOrDefaultAsync(a => a.UserId == userId);
@@ -59,6 +67,12 @@ namespace SkillBuilder.Controllers
                 course.Category = model.CustomCategory.Trim();
             }
 
+            // ------------------ FREE COURSE LOGIC ------------------
+            course.IsFree = model.Course.IsFree;
+
+            // Only set DesiredThreads if course is not free
+            course.DesiredThreads = !model.Course.IsFree ? model.Course.DesiredThreads : 0M;
+
             // ✅ File Uploads with Validation
             if (model.ImageFile != null)
             {
@@ -72,9 +86,9 @@ namespace SkillBuilder.Controllers
 
             if (model.VideoFile != null)
             {
-                if (model.VideoFile.Length > 200 * 1024 * 1024) // 200 MB
+                if (model.VideoFile.Length > 50 * 1024 * 1024) // 50 MB
                 {
-                    ModelState.AddModelError("VideoFile", "Video file must be under 200 MB.");
+                    ModelState.AddModelError("VideoFile", "Video file must be under 50 MB.");
                     return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", model);
                 }
                 course.Video = await SaveFileAsync(model.VideoFile, "course-videos");
@@ -121,7 +135,8 @@ namespace SkillBuilder.Controllers
                     {
                         CourseId = course.Id,
                         Title = moduleVm.Title,
-                        Order = i
+                        Order = i,
+                        Contents = new List<ModuleContent>()
                     };
 
                     _context.CourseModules.Add(courseModule);
@@ -148,6 +163,39 @@ namespace SkillBuilder.Controllers
                         _context.ModuleContents.Add(moduleContent);
                         await _context.SaveChangesAsync();
 
+                        // -------------------- SAVE INTERACTIVE CONTENTS --------------------
+                        if (lesson.InteractiveContents != null && lesson.InteractiveContents.Any())
+                        {
+                            foreach (var ic in lesson.InteractiveContents)
+                            {
+                                // Map CorrectAnswer key to actual option text
+                                var correctAnswerValue = ic.CorrectAnswer switch
+                                {
+                                    "OptionA" => ic.OptionA,
+                                    "OptionB" => ic.OptionB,
+                                    "OptionC" => ic.OptionC,
+                                    "OptionD" => ic.OptionD,
+                                    _ => ic.CorrectAnswer // fallback in case it's already the text
+                                };
+
+                                var interactiveContent = new InteractiveContent
+                                {
+                                    ModuleContentId = moduleContent.Id,
+                                    ContentType = string.IsNullOrWhiteSpace(ic.ContentType) ? "Text" : ic.ContentType,
+                                    ContentText = ic.ContentText ?? "",
+                                    OptionA = ic.OptionA,
+                                    OptionB = ic.OptionB,
+                                    OptionC = ic.OptionC,
+                                    OptionD = ic.OptionD,
+                                    CorrectAnswer = correctAnswerValue,
+                                    ReflectionMinChars = ic.ReflectionMinChars
+                                };
+                                _context.InteractiveContents.Add(interactiveContent);
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+
+                        // -------------------- EXISTING QUIZ LOGIC --------------------
                         if (lesson.LessonType == "Quiz" && lesson.QuizQuestions.Any())
                         {
                             foreach (var q in lesson.QuizQuestions)
@@ -164,7 +212,6 @@ namespace SkillBuilder.Controllers
                                 };
                                 _context.QuizQuestions.Add(quiz);
                             }
-
                             await _context.SaveChangesAsync();
                         }
                     }
@@ -224,20 +271,20 @@ namespace SkillBuilder.Controllers
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            // ✅ File type and size validation (added .webp)
+            // ✅ Updated file type and size validation
             if (extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".webp")
             {
-                if (file.Length > 5 * 1024 * 1024)
-                    throw new InvalidOperationException("Image files must be under 5 MB.");
+                if (file.Length > 20 * 1024 * 1024) // 20 MB
+                    throw new InvalidOperationException("Image files must be under 20 MB.");
             }
             else if (extension is ".pdf" or ".docx" or ".txt")
             {
-                if (file.Length > 10 * 1024 * 1024)
-                    throw new InvalidOperationException("Document files must be under 10 MB.");
+                if (file.Length > 100 * 1024 * 1024) // 100 MB
+                    throw new InvalidOperationException("Document files must be under 100 MB.");
             }
             else if (extension is ".mp4" or ".mov" or ".avi")
             {
-                if (file.Length > 200 * 1024 * 1024)
+                if (file.Length > 200 * 1024 * 1024) // 200 MB
                     throw new InvalidOperationException("Video files must be under 200 MB.");
             }
             else
@@ -269,8 +316,11 @@ namespace SkillBuilder.Controllers
             var course = await _context.Courses
                 .Include(c => c.Materials)
                 .Include(c => c.CourseModules)
-                .ThenInclude(m => m.Contents)
-                .ThenInclude(mc => mc.QuizQuestions)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(mc => mc.QuizQuestions)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(mc => mc.InteractiveContents)
                 .FirstOrDefaultAsync(c => c.Id == courseId && c.CreatedBy == artisan.ArtisanId);
 
             if (course == null) return NotFound();
@@ -293,7 +343,6 @@ namespace SkillBuilder.Controllers
                             {
                                 int durationValue = 0;
                                 string durationUnit = "minutes";
-
                                 if (!string.IsNullOrWhiteSpace(l.Duration))
                                 {
                                     var parts = l.Duration.Split(' ');
@@ -303,6 +352,7 @@ namespace SkillBuilder.Controllers
 
                                 return new LessonViewModel
                                 {
+                                    Id = l.Id,
                                     Title = l.Title ?? "",
                                     LessonType = l.ContentType ?? "",
                                     DurationValue = durationValue,
@@ -310,19 +360,30 @@ namespace SkillBuilder.Controllers
                                     ContentText = l.ContentText ?? "",
                                     ImageFile = null,
                                     VideoFile = null,
-                                    ImageUrl = l.ContentType == "Image + Text" ? l.MediaUrl : null,
-                                    VideoUrl = l.ContentType == "Video + Text" ? l.MediaUrl : null,
-                                    QuizQuestions = l.QuizQuestions
-                                        .Select(q => new QuizQuestionViewModel
-                                        {
-                                            Id = q.Id,
-                                            QuestionText = q.Question,
-                                            OptionA = q.OptionA,
-                                            OptionB = q.OptionB,
-                                            OptionC = q.OptionC,
-                                            OptionD = q.OptionD,
-                                            CorrectAnswer = q.CorrectAnswer
-                                        }).ToList()
+                                    ExistingImageUrl = l.ContentType == "Image + Text" ? l.MediaUrl : null,
+                                    ExistingVideoUrl = l.ContentType == "Video + Text" ? l.MediaUrl : null,
+                                    QuizQuestions = l.QuizQuestions.Select(q => new QuizQuestionViewModel
+                                    {
+                                        Id = q.Id,
+                                        QuestionText = q.Question,
+                                        OptionA = q.OptionA,
+                                        OptionB = q.OptionB,
+                                        OptionC = q.OptionC,
+                                        OptionD = q.OptionD,
+                                        CorrectAnswer = q.CorrectAnswer
+                                    }).ToList(),
+                                    InteractiveContents = l.InteractiveContents.Select(ic => new InteractiveContentViewModel
+                                    {
+                                        Id = ic.Id,
+                                        ContentType = ic.ContentType,
+                                        ContentText = ic.ContentText,
+                                        OptionA = ic.OptionA,
+                                        OptionB = ic.OptionB,
+                                        OptionC = ic.OptionC,
+                                        OptionD = ic.OptionD,
+                                        CorrectAnswer = ic.CorrectAnswer,
+                                        ReflectionMinChars = ic.ReflectionMinChars
+                                    }).ToList()
                                 };
                             }).ToList()
                     }).ToList(),
@@ -359,8 +420,11 @@ namespace SkillBuilder.Controllers
             var course = await _context.Courses
                 .Include(c => c.Materials)
                 .Include(c => c.CourseModules)
-                .ThenInclude(m => m.Contents)
-                .ThenInclude(l => l.QuizQuestions)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(mc => mc.QuizQuestions)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(mc => mc.InteractiveContents)
                 .FirstOrDefaultAsync(c => c.Id == courseId && c.CreatedBy == artisan.ArtisanId);
 
             if (course == null) return NotFound();
@@ -377,6 +441,8 @@ namespace SkillBuilder.Controllers
             course.Overview = model.Course.Overview;
             course.Difficulty = model.Course.Difficulty;
             course.Duration = $"{model.DurationValue} {model.DurationUnit}";
+            course.IsFree = model.Course.IsFree;
+            course.DesiredThreads = !model.Course.IsFree ? model.Course.DesiredThreads : 0M;
             course.Requirements = model.Course.Requirements;
             course.WhatToLearn = model.LearningObjectives != null
                 ? string.Join("||", model.LearningObjectives.Where(o => !string.IsNullOrWhiteSpace(o)))
@@ -449,66 +515,83 @@ namespace SkillBuilder.Controllers
                         for (int j = 0; j < moduleVm.Lessons.Count; j++)
                         {
                             var lessonVm = moduleVm.Lessons[j];
-                            ModuleContent lesson;
+                            ModuleContent? lesson = null;
 
-                            // Existing lesson
+                            // Determine if it's an existing lesson
                             if (lessonVm.Id > 0)
                             {
-                                lesson = courseModule.Contents.First(l => l.Id == lessonVm.Id);
+                                lesson = courseModule.Contents.FirstOrDefault(l => l.Id == lessonVm.Id);
+                            }
+
+                            if (lesson != null)
+                            {
+                                // Update existing lesson
                                 lesson.Title = lessonVm.Title;
                                 lesson.ContentType = lessonVm.LessonType ?? "Text";
                                 lesson.Duration = $"{lessonVm.DurationValue} {lessonVm.DurationUnit}";
                                 lesson.ContentText = lessonVm.ContentText;
-
-                                // --------- Media handling ---------
-                                if (lessonVm.LessonType == "Image + Text")
-                                {
-                                    if (lessonVm.ImageFile != null)
-                                    {
-                                        lesson.MediaUrl = await SaveFileAsync(lessonVm.ImageFile, "lesson-media");
-                                    }
-                                    else if (!string.IsNullOrEmpty(lessonVm.ExistingImageUrl))
-                                    {
-                                        lesson.MediaUrl = lessonVm.ExistingImageUrl; // preserve old
-                                    }
-                                }
-
-                                if (lessonVm.LessonType == "Video + Text")
-                                {
-                                    if (lessonVm.VideoFile != null)
-                                    {
-                                        lesson.MediaUrl = await SaveFileAsync(lessonVm.VideoFile, "lesson-media");
-                                    }
-                                    else if (!string.IsNullOrEmpty(lessonVm.ExistingVideoUrl))
-                                    {
-                                        lesson.MediaUrl = lessonVm.ExistingVideoUrl; // preserve old
-                                    }
-                                }
-                                // Text/Quiz/Session: no MediaUrl needed
-
-                                _context.ModuleContents.Update(lesson);
                             }
                             else
                             {
                                 // New lesson
-                                string mediaUrl = null;
-                                if (lessonVm.LessonType == "Image + Text" && lessonVm.ImageFile != null)
-                                    mediaUrl = await SaveFileAsync(lessonVm.ImageFile, "lesson-media");
-                                else if (lessonVm.LessonType == "Video + Text" && lessonVm.VideoFile != null)
-                                    mediaUrl = await SaveFileAsync(lessonVm.VideoFile, "lesson-media");
-
                                 lesson = new ModuleContent
                                 {
                                     CourseModuleId = courseModule.Id,
                                     Title = lessonVm.Title,
                                     ContentType = lessonVm.LessonType ?? "Text",
                                     Duration = $"{lessonVm.DurationValue} {lessonVm.DurationUnit}",
-                                    ContentText = lessonVm.ContentText,
-                                    MediaUrl = mediaUrl
+                                    ContentText = lessonVm.ContentText
                                 };
                                 _context.ModuleContents.Add(lesson);
-                                await _context.SaveChangesAsync();
+                                await _context.SaveChangesAsync(); // Save to get ID for quizzes/interactive
                             }
+
+                            // ------------------ Handle media ------------------
+                            if (lessonVm.LessonType == "Image + Text")
+                            {
+                                if (lessonVm.ImageFile != null)
+                                {
+                                    lesson.MediaUrl = await SaveFileAsync(lessonVm.ImageFile, "lesson-media");
+                                }
+                                else if (!string.IsNullOrWhiteSpace(lessonVm.ExistingImageUrl))
+                                {
+                                    lesson.MediaUrl = lessonVm.ExistingImageUrl;
+                                }
+                                else
+                                {
+                                    lesson.MediaUrl = null;
+                                }
+                            }
+                            else if (lessonVm.LessonType == "Video + Text")
+                            {
+                                if (lessonVm.VideoFile != null)
+                                {
+                                    lesson.MediaUrl = await SaveFileAsync(lessonVm.VideoFile, "lesson-media");
+                                }
+                                else if (!string.IsNullOrWhiteSpace(lessonVm.ExistingVideoUrl))
+                                {
+                                    lesson.MediaUrl = lessonVm.ExistingVideoUrl;
+                                }
+                                else
+                                {
+                                    lesson.MediaUrl = null;
+                                }
+                            }
+                            else
+                            {
+                                // For Text, Quiz, Session → clear media
+                                lesson.MediaUrl = null;
+                            }
+
+                            // Update DB if it was an existing lesson
+                            if (lessonVm.Id > 0 && lesson != null)
+                            {
+                                _context.ModuleContents.Update(lesson);
+                            }
+
+                            // Now it’s safe to initialize collections
+                            lesson.QuizQuestions ??= new List<QuizQuestion>();
+                            lesson.InteractiveContents ??= new List<InteractiveContent>();
 
                             // ------------------ Quiz Questions ------------------
                             if (lessonVm.LessonType == "Quiz")
@@ -550,6 +633,51 @@ namespace SkillBuilder.Controllers
                                             CorrectAnswer = qVm.CorrectAnswer
                                         };
                                         _context.QuizQuestions.Add(quiz);
+                                    }
+                                }
+                            }
+
+                            var interactiveIds = lessonVm.InteractiveContents?.Select(ic => ic.Id).ToList() ?? new List<int>();
+                            var interactivesToDelete = lesson.InteractiveContents
+                                .Where(ic => !interactiveIds.Contains(ic.Id))
+                                .ToList();
+                            if (interactivesToDelete.Any()) _context.InteractiveContents.RemoveRange(interactivesToDelete);
+
+                            if (lessonVm.InteractiveContents != null)
+                            {
+                                foreach (var icVm in lessonVm.InteractiveContents)
+                                {
+                                    InteractiveContent ic;
+                                    if (icVm.Id > 0)
+                                    {
+                                        // Existing interactive
+                                        ic = lesson.InteractiveContents.First(c => c.Id == icVm.Id);
+                                        ic.ContentType = icVm.ContentType;
+                                        ic.ContentText = icVm.ContentText;
+                                        ic.OptionA = icVm.OptionA;
+                                        ic.OptionB = icVm.OptionB;
+                                        ic.OptionC = icVm.OptionC;
+                                        ic.OptionD = icVm.OptionD;
+                                        ic.CorrectAnswer = icVm.CorrectAnswer;
+                                        ic.ReflectionMinChars = icVm.ReflectionMinChars;
+                                        _context.InteractiveContents.Update(ic);
+                                    }
+                                    else
+                                    {
+                                        // New interactive
+                                        ic = new InteractiveContent
+                                        {
+                                            ModuleContentId = lesson.Id,
+                                            ContentType = icVm.ContentType,
+                                            ContentText = icVm.ContentText,
+                                            OptionA = icVm.OptionA,
+                                            OptionB = icVm.OptionB,
+                                            OptionC = icVm.OptionC,
+                                            OptionD = icVm.OptionD,
+                                            CorrectAnswer = icVm.CorrectAnswer,
+                                            ReflectionMinChars = icVm.ReflectionMinChars
+                                        };
+                                        _context.InteractiveContents.Add(ic);
                                     }
                                 }
                             }

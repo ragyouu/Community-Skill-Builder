@@ -104,7 +104,6 @@
 </style>
 
 <div class="material-section">
-    <h3>Course Materials</h3>
     <div id="material-list"></div>
     <div class="material-add-btn-wrapper">
         <button type="button" class="material-add-btn" onclick="addMaterial()">+ Add Material</button>
@@ -113,6 +112,28 @@
 
 <script>
     let materialIndex = 0;
+
+    const maxFileSize = 100 * 1024 * 1024; // 100 MB
+
+    function validateMaterialFile(input) {
+        const file = input.files[0];
+        const errorEl = input.parentElement.querySelector(".file-error");
+
+        if (!file) {
+            errorEl.style.display = "none";
+            return true;
+        }
+
+        if (file.size > maxFileSize) {
+            errorEl.textContent = `File too large. Max ${(maxFileSize / (1024*1024)).toFixed(0)} MB allowed.`;
+            errorEl.style.display = "block";
+            input.value = "";
+            return false;
+        }
+
+        errorEl.style.display = "none";
+        return true;
+    }
 
     function addMaterial(preloadData) {
         const list = document.getElementById("material-list");
@@ -152,8 +173,10 @@
                 <div class="material-form-group">
                     <label>Upload File</label>
                     <div class="material-upload-wrapper">
-                        <input type="file" name="Materials[${index}].UploadFile" />
-                        <span class="existing-file-name">${fileName}</span>
+                        <input type="file" name="Materials[${index}].UploadFile"
+                               accept=".doc,.docx,.pdf"
+                               onchange="validateMaterialFile(this)" />
+                        <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
                     </div>
                 </div>
             </div>

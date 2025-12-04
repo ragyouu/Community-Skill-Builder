@@ -24,6 +24,14 @@
                             options = new string[] { q.OptionA ?? "", q.OptionB ?? "", q.OptionC ?? "", q.OptionD ?? "" },
                             correct = q.CorrectAnswer ?? "",
                             index = qIndex + 1
+                        }).ToList(),
+                    interactiveContents = (l.InteractiveContents ?? Enumerable.Empty<SkillBuilder.Models.ViewModels.InteractiveContentViewModel>())
+                        .Select(ic => new
+                        {
+                            contentType = ic.ContentType ?? "Text", // <-- fixed here
+                            contentText = ic.ContentText ?? "",
+                            options = new string[] { ic.OptionA ?? "", ic.OptionB ?? "", ic.OptionC ?? "", ic.OptionD ?? "" },
+                            correct = ic.CorrectAnswer ?? ""
                         }).ToList()
                 }).ToList(),
             index = moduleIndex + 1
@@ -103,16 +111,19 @@
                 case "Text":
                     html += `<p class="lesson-text">${lesson.contentText}</p>`;
                     break;
+
                 case "Image + Text":
                     html += `<img src="${lesson.mediaUrl}" class="lesson-image"/>
                              <p class="lesson-text">${lesson.contentText}</p>`;
                     break;
+
                 case "Video + Text":
                     html += `<video controls class="lesson-image">
                                 <source src="${lesson.mediaUrl}" type="video/mp4">
                              </video>
                              <p class="lesson-text">${lesson.contentText}</p>`;
                     break;
+
                 case "Quiz":
                     html += `<div class="quiz-section">`;
                     lesson.quizQuestions.forEach(q => {
@@ -128,13 +139,55 @@
                     });
                     html += `</div>`;
                     break;
+
                 case "Session":
                     html += `<div class="session-section">
                                 <p>This part is where learners can schedule a Request Live Session.</p>
                              </div>`;
                     break;
+
                 default:
                     html += `<p class="lesson-text">Unsupported content type</p>`;
+            }
+
+            // ===== Add Interactive Content =====
+            if (lesson.interactiveContents && lesson.interactiveContents.length > 0) {
+                html += `<div class="interactive-content-section"><h3>Interactive Content</h3>`;
+                lesson.interactiveContents.forEach((ic, icIndex) => {
+                    switch(ic.contentType) {
+                        case "Text":
+                            html += `<div class="interactive-content-block">
+                                        <p>${ic.contentText}</p>
+                                     </div>`;
+                            break;
+                        case "Link":
+                            html += `<div class="interactive-content-block">
+                                        <p>Please visit this link to proceed:</p>
+                                        <a href="${ic.contentText}" target="_blank">${ic.contentText}</a>
+                                     </div>`;
+                            break;
+                        case "Reflection":
+                            html += `<div class="interactive-content-block">
+                                        <p><strong>Reflection:</strong> ${ic.contentText}</p>
+                                        <textarea class="reflection-input" rows="3" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:6px;"></textarea>
+                                     </div>`;
+                            break;
+                        case "Question":
+                            html += `<div class="interactive-content-block">
+                                        <p><strong>Question:</strong> ${ic.contentText}</p>
+                                        <ul>
+                                            ${ic.options.map(opt => opt ? `<li>${opt}</li>` : "").join("")}
+                                        </ul>
+                                        <p>Correct Answer: ${ic.correct || ""}</p>
+                                     </div>`;
+                            break;
+                        default:
+                            html += `<div class="interactive-content-block">
+                                        <p>Unsupported interactive content</p>
+                                     </div>`;
+                    }
+                });
+                html += `</div>`; // end interactive-content-section
             }
 
             moduleContent.innerHTML = html;
@@ -279,7 +332,6 @@
 
     .lesson-text {
         text-align: left;
-        max-width: 700px;
         margin-bottom: 1.5rem;
         line-height: 1.6;
         white-space: pre-wrap;
@@ -355,4 +407,22 @@
         font-weight: 600;
         margin-bottom: 1rem;
     }
+
+    .interactive-content-section {
+        border-top: 1px dashed #ccc;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .interactive-content-block {
+        margin-bottom: 1rem;
+        background: #f9f9f9;
+        padding: 0.8rem;
+        border-radius: 6px;
+    }
+
+        .interactive-content-block p,
+        .interactive-content-block a {
+            margin: 0.2rem 0;
+        }
 </style>

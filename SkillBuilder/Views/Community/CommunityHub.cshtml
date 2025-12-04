@@ -1,10 +1,28 @@
-﻿@model SkillBuilder.Models.ViewModels.CommunityHubViewModel
+﻿@using SkillBuilder.Data
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext _context
+@model SkillBuilder.Models.ViewModels.CommunityHubViewModel
 
 @{
     ViewData["Title"] = "Community Hub";
-    var isDeactivated = User.FindFirst("IsDeactivated")?.Value == "True";
-    var isVerified = User.FindFirst("IsVerified")?.Value == "True";
-    var isAdmin = User.IsInRole("Admin");
+
+    // Default values
+    bool isDeactivated = false;
+    bool isVerified = false;
+    bool isAdmin = User.IsInRole("Admin");
+    var currentUserRole = User.IsInRole("Artisan") ? "artisan" : "learner";
+
+    // Get current user from DB
+    var userId = User.FindFirst("UserId")?.Value;
+    if (!string.IsNullOrEmpty(userId))
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user is not null)
+        {
+            isDeactivated = user.IsDeactivated;
+            isVerified = user.IsVerified;
+        }
+    }
 }
 
 <style>
@@ -76,17 +94,26 @@
     }
 
     .left-section {
-        width: 70%;
+        width: 80%;
         display: flex;
         flex-direction: column;
         gap: 2rem;
     }
 
     .right-section {
-        width: 30%;
+        width: 20%;
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
+    }
+
+    .community-page-wrapper.no-right-section .left-section {
+        width: 100%;
+    }
+
+    /* Make search bar fill space when no right section */
+    .community-page-wrapper.no-right-section .community-search {
+        width: 100%;
     }
 
     /* Tabs */
@@ -152,6 +179,13 @@
         gap: 0.75rem;
     }
 
+        .user-communities li span {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .popular-communities li,
         .user-communities li {
             display: flex;
@@ -183,12 +217,37 @@
     /* Create community card */
     .create-community-card {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        border: 1px dashed #aaa;
-        border-radius: 6px;
+        justify-content: center;
+        padding: 1.5rem;
+        border: 2px dashed #ccc;
+        border-radius: 12px;
         cursor: pointer;
+        transition: border-color 0.2s, background-color 0.2s;
+        text-align: center;
+    }
+
+        .create-community-card:hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+
+    .plus-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .create-community-text small.threads-required {
+        display: block;
+        font-size: 0.8rem;
+        color: #555;
+        margin-top: 0.25rem;
+        transition: color 0.2s;
+    }
+
+    .create-community-card:hover .threads-required {
+        color: white;
     }
 
     /* Modal styles */
@@ -504,9 +563,79 @@
         box-sizing: border-box;
     }
 
+    /* Overlay */
+    .community-modal-confirm-threads-overlay {
+        position: fixed;
+        inset: 0;
+        display: none; /* hidden by default */
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 9999;
+    }
+
+        /* Show modal */
+        .community-modal-confirm-threads-overlay.show {
+            display: flex;
+        }
+
+    /* Modal content */
+    .community-modal-confirm-threads-content {
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    /* Modal text */
+    .community-modal-confirm-threads-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .community-modal-confirm-threads-text {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Buttons */
+    .community-modal-confirm-threads-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .community-modal-confirm-threads-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+        .community-modal-confirm-threads-btn.cancel {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .community-modal-confirm-threads-btn.confirm {
+            background-color: #3b82f6;
+            color: #fff;
+        }
+
+        .community-modal-confirm-threads-btn:hover {
+            opacity: 0.9;
+        }
+
 </style>
 
-<div class="community-page-wrapper">
+<div class="community-page-wrapper @(isAdmin ? "no-right-section" : "")">
 
     @if (Model.SelectedCommunity != null)
     {
@@ -592,7 +721,10 @@
                     {
                         <div class="create-community-card" id="openCreateCommunityModal">
                             <span class="plus-icon">＋</span>
-                            Create a community
+                            <div class="create-community-text">
+                                <span>Create a community</span>
+                                <small class="threads-required">Requires 100 threads</small>
+                            </div>
                         </div>
                     }
 
@@ -798,6 +930,8 @@
                             <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
                                 <button type="button" class="cancel-btn">Cancel</button>
                                 <button type="submit" class="next-btn" id="createCommunityBtn" disabled>Create Community</button>
+                                <input type="hidden" id="currentUserThreads" value="120">
+                                <input type="hidden" id="userRole" value="@currentUserRole">
                             </div>
                         </div>
                     </form>
@@ -805,6 +939,37 @@
             </div>
         </div>
     }
+</div>
+
+<!-- Confirmation Modal for Community Creation -->
+<div id="community-modal-confirm-threads-overlay" class="community-modal-confirm-threads-overlay">
+    <div class="community-modal-confirm-threads-content">
+        <h2 class="community-modal-confirm-threads-title">Confirm Community Creation</h2>
+        <p class="community-modal-confirm-threads-text">
+            Creating this community will cost <span class="community-modal-confirm-threads-amount">100 threads</span>. Are you sure you want to continue?
+        </p>
+        <div class="community-modal-confirm-threads-buttons">
+            <button id="community-modal-confirm-threads-cancel" class="community-modal-confirm-threads-btn cancel">Cancel</button>
+            <button id="community-modal-confirm-threads-confirm" class="community-modal-confirm-threads-btn confirm">Yes, Create</button>
+        </div>
+    </div>
+</div>
+
+<!-- Insufficient Threads Modal -->
+<div id="community-modal-insufficient-threads-overlay" class="community-modal-confirm-threads-overlay">
+    <div class="community-modal-confirm-threads-content">
+        <h2 class="community-modal-confirm-threads-title">Insufficient Threads</h2>
+        <p class="community-modal-confirm-threads-text">
+            You do not have enough threads to create a community. You need
+            <span class="community-modal-confirm-threads-amount">100 threads</span>.
+        </p>
+        <div class="community-modal-confirm-threads-buttons">
+            <button id="community-modal-insufficient-threads-cancel"
+                    class="community-modal-confirm-threads-btn cancel">
+                OK
+            </button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -830,6 +995,117 @@
 
 
     document.addEventListener("DOMContentLoaded", () => {
+
+        const currentUserThreads = document.getElementById("currentUserThreads");
+        const isLearner = document.getElementById("userRole");
+        const confirmThreadsOverlay = document.getElementById("community-modal-confirm-threads-overlay");
+        const confirmThreadsBtn = document.getElementById("community-modal-confirm-threads-confirm");
+        const cancelThreadsBtn = document.getElementById("community-modal-confirm-threads-cancel");
+        const createCommunityBtn = document.getElementById("createCommunityBtn");
+        if (!createCommunityBtn) return; // bail if button doesn't exist
+
+        const form = createCommunityBtn.closest("form");
+        if (!form) return;
+
+        const insufficientThreadsOverlay = document.getElementById("community-modal-insufficient-threads-overlay");
+        const insufficientThreadsCancelBtn = document.getElementById("community-modal-insufficient-threads-cancel");
+
+        function openConfirmThreadsModal() {
+            confirmThreadsOverlay.classList.add("show");
+        }
+
+        function closeConfirmThreadsModal() {
+            confirmThreadsOverlay.classList.remove("show");
+        }
+
+        function openInsufficientThreadsModal() {
+            insufficientThreadsOverlay.classList.add("show");
+        }
+
+        function closeInsufficientThreadsModal() {
+            insufficientThreadsOverlay.classList.remove("show");
+        }
+
+        function canCreateCommunity() {
+            const threads = parseInt(document.getElementById("currentUserThreads").value || "0");
+            const userRole = document.getElementById("userRole")?.value; // "learner" or "artisan"
+
+            // Artisans can create without thread limit
+            if (userRole === "artisan") return true;
+
+            // Learners need >= 100 threads
+            return threads >= 100;
+        }
+
+        // Close buttons
+        cancelThreadsBtn.addEventListener("click", closeConfirmThreadsModal);
+        insufficientThreadsCancelBtn.addEventListener("click", closeInsufficientThreadsModal);
+
+        // Handle confirmation modal "Yes, Create"
+        confirmThreadsBtn.addEventListener("click", async () => {
+            closeConfirmThreadsModal();
+
+            // Submit the form via fetch
+            const form = createCommunityBtn.closest("form");
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.reload();
+                } else if (result.insufficientThreads) {
+                    openInsufficientThreadsModal();
+                } else {
+                    alert(result.message || "Something went wrong.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to create community. Please try again.");
+            }
+        });
+
+        // Intercept form submission to show modal first
+        createCommunityBtn.closest("form").addEventListener("submit", async function(e) {
+            e.preventDefault(); // prevent default submit
+
+            const userRole = document.getElementById("userRole")?.value;
+
+            if (userRole === "artisan") {
+                // Artisan → skip confirmation, submit immediately
+                const form = this;
+                const formData = new FormData(form);
+                try {
+                    const response = await fetch(form.action, {
+                        method: "POST",
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        window.location.reload();
+                    } else {
+                        alert(result.message || "Something went wrong.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to create community. Please try again.");
+                }
+                return;
+            }
+
+            // Learners → check threads
+            if (!canCreateCommunity()) {
+                openInsufficientThreadsModal();
+                return;
+            }
+
+            // Learners → show confirmation modal
+            openConfirmThreadsModal();
+        });
 
         const otherCategoryInput = document.getElementById("OtherCategory");
         const createBtn = document.getElementById("createCommunityBtn");
@@ -934,7 +1210,7 @@
             }
 
             // ---- STEP 2: Handle image upload with validation (max 700 KB) ----
-            const handleImageUpload = (input, previewImg, deleteBtn, maxSizeKB = 700) => {
+            const handleImageUpload = (input, previewImg, deleteBtn, maxSizeMB = 20) => {
                 if (!input || !previewImg || !deleteBtn) return;
 
                 // Create error message element
@@ -946,7 +1222,7 @@
 
                 input.addEventListener("change", e => {
                     const file = e.target.files[0];
-                    const maxSizeBytes = maxSizeKB * 1024;
+                    const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
                     // Reset previous error
                     errorMsg.style.display = "none";
@@ -962,7 +1238,7 @@
                     }
 
                     if (file.size > maxSizeBytes) {
-                        errorMsg.textContent = `File is too large. Maximum allowed size is ${maxSizeKB} KB.`;
+                        errorMsg.textContent = `File is too large. Maximum allowed size is ${maxSizeMB} MB.`;
                         errorMsg.style.display = "block";
                         input.value = "";
                         return;
@@ -991,8 +1267,8 @@
             };
 
             // Apply to banner and profile inputs
-            handleImageUpload(bannerInput, bannerPreview, document.getElementById("bannerDeleteBtn"), 700);
-            handleImageUpload(profileInput, profilePreview, document.getElementById("profileDeleteBtn"), 700);
+            handleImageUpload(bannerInput, bannerPreview, document.getElementById("bannerDeleteBtn"), 20);
+            handleImageUpload(profileInput, profilePreview, document.getElementById("profileDeleteBtn"), 20);
 
             // ---- STEP 2: Enable Finish only if both images selected ----
             const checkStep2Ready = () => {
@@ -1014,7 +1290,6 @@
 
             // ---- STEP 3: Category selection ----
             const categoryCards = document.querySelectorAll(".category-card");
-            const createCommunityBtn = document.getElementById("createCommunityBtn");
             const hiddenCategoryInput = document.getElementById("selectedCategory");
 
             if (categoryCards.length && createCommunityBtn && hiddenCategoryInput) {
@@ -1046,7 +1321,7 @@
         const otherpostCategoryInput = document.getElementById("communityPostsOtherCategory");
         const hiddenCategoryInput = document.getElementById("communityPostsCategory");
 
-        const MAX_IMAGE_KB = 700;
+        const MAX_IMAGE_MB = 20;
         let selectedCategoryPost = null;
 
         // Open modal
@@ -1122,8 +1397,8 @@
                     return;
                 }
 
-                if (file.size > MAX_IMAGE_KB * 1024) {
-                    errorMsg.textContent = `File is too large. Maximum allowed size is ${MAX_IMAGE_KB} KB.`;
+                if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+                    errorMsg.textContent = `File is too large. Maximum allowed size is ${MAX_IMAGE_MB} MB.`;
                     errorMsg.style.display = "block";
                     imageInput.value = "";
                     imagePreview.src = "";

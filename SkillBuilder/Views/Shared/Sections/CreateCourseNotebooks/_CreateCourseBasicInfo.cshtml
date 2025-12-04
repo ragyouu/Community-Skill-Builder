@@ -208,6 +208,29 @@
 
 <div class="basicinfo-form-wrapper">
 
+    <!-- Free Course Toggle -->
+    <div class="basicinfo-form-group">
+        <label>Free Course? *</label>
+        <div class="basicinfo-form-row">
+            <div class="basicinfo-form-col">
+                <label>
+                    <input type="radio" name="Course.IsFree" value="true" checked /> Yes
+                </label>
+            </div>
+            <div class="basicinfo-form-col">
+                <label>
+                    <input type="radio" name="Course.IsFree" value="false" /> No
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desired Threads (hidden by default) -->
+    <div class="basicinfo-form-group" id="desired-threads-group" style="display:none;">
+        <label for="Course_DesiredThreads">Desired Threads *</label>
+        <input type="number" step="0.01" name="Course.DesiredThreads" class="basicinfo-form-control" placeholder="Enter desired threads" />
+    </div>
+
     <!-- Course Title & Category -->
     <div class="basicinfo-form-row">
         <div class="basicinfo-form-col basicinfo-form-group">
@@ -236,7 +259,7 @@
     <!-- Overview -->
     <div class="basicinfo-form-group">
         <label for="Course_Overview">Course Overview *</label>
-        <textarea asp-for="Course.Overview" class="basicinfo-form-control" rows="4" placeholder="Write a brief overview..." required></textarea>
+        <textarea asp-for="Course.Overview" class="basicinfo-form-control tinymce-editor" rows="4" placeholder="Write a brief overview..." required></textarea>
     </div>
 
     <!-- Difficulty & Duration -->
@@ -265,7 +288,7 @@
     <!-- Requirements -->
     <div class="basicinfo-form-group">
         <label for="Course_Requirements">Requirements *</label>
-        <textarea asp-for="Course.Requirements" class="basicinfo-form-control" rows="3" placeholder="List required tools or skills" required></textarea>
+        <textarea asp-for="Course.Requirements" class="basicinfo-form-control tinymce-editor" rows="3" placeholder="List required tools or skills" required></textarea>
     </div>
 
     <!-- Learning Objectives -->
@@ -286,7 +309,7 @@
     <!-- Full Description -->
     <div class="basicinfo-form-group">
         <label for="Course_FullDescription">Full Course Description *</label>
-        <textarea asp-for="Course.FullDescription" class="basicinfo-form-control" rows="5" placeholder="Detailed explanation..." required></textarea>
+        <textarea asp-for="Course.FullDescription" class="basicinfo-form-control tinymce-editor" rows="5" placeholder="Detailed explanation..." required></textarea>
     </div>
 
     <!-- Image Upload -->
@@ -337,6 +360,16 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
+        tinymce.init({
+            selector: 'textarea.tinymce-editor', // target textareas
+            menubar: false,
+            plugins: 'lists link image table code',
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
+            height: 250,
+            license_key: 'gpl', // ensures GPL/open source license
+            branding: false
+        });
+
         // Show text input when "Other" is selected
         const categorySelect = document.getElementById("CategorySelect");
         const customCategoryInput = document.getElementById("CustomCategoryInput");
@@ -355,11 +388,11 @@
         // -------------------- FILE VALIDATION SETTINGS --------------------
         const fileRules = {
             image: {
-                maxSize: 700 * 1024, // 700 KB
+                maxSize: 20 * 1024 * 1024, // 20 MB
                 allowed: [".jpg", ".jpeg", ".png", ".gif", ".webp"]
             },
             video: {
-                maxSize: 50 * 1024 * 1024, // 50 MB
+                maxSize: 200 * 1024 * 1024, // 200 MB
                 allowed: [".mp4", ".mov", ".avi"]
             }
         };
@@ -409,9 +442,9 @@
             if (file.size > maxSize) {
                 let sizeText;
                 if (type === "image") {
-                    sizeText = "700 KB";
+                    sizeText = "20 MB";
                 } else if (type === "video") {
-                    sizeText = "50 MB";
+                    sizeText = "200 MB";
                 }
                 errorEl.textContent = `File too large. Max ${sizeText} allowed.`;
                 errorEl.style.display = "block";
@@ -543,6 +576,23 @@
                 durationInput.value = durationInput.value.replace(/\D/g, '');
             });
         }
+
+        // -------------------- FREE COURSE LOGIC --------------------
+        const freeRadios = document.querySelectorAll('input[name="Course.IsFree"]');
+        const desiredThreadsGroup = document.getElementById("desired-threads-group");
+
+        freeRadios.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (this.value === "false") {
+                    desiredThreadsGroup.style.display = "block";
+                    desiredThreadsGroup.querySelector('input').required = true;
+                } else {
+                    desiredThreadsGroup.style.display = "none";
+                    desiredThreadsGroup.querySelector('input').required = false;
+                    desiredThreadsGroup.querySelector('input').value = "";
+                }
+            });
+        });
 
     });
 </script>

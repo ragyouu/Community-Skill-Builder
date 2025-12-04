@@ -94,23 +94,47 @@
         }
 </style>
 
-<!-- Modal -->
+<!-- Celebration Modal -->
 <div id="celebration-modal">
     <div class="celebration-content">
+        <button class="close-button" onclick="hideCelebrationModal()">&times;</button>
         <h2 class="celebration-title">🎉 Achievement Unlocked!</h2>
-        <p class="celebration-text">You’ve successfully enrolled in your first course.</p>
+        <p class="celebration-text">You’ve successfully unlocked an achievement.</p>
+        <p class="celebration-threads" style="font-weight:bold; color:#344AEA; margin-bottom:1rem;"></p>
         <button onclick="hideCelebrationModal()" class="celebration-button">Great</button>
     </div>
 </div>
 
 <script>
-    function showAchievementCelebration() {
+    function showAchievementCelebration(title = "Achievement Unlocked!", description = "", threads = 0) {
+        const modal = document.getElementById("celebration-modal");
+        modal.querySelector(".celebration-title").textContent = `🎉 ${title}`;
+        modal.querySelector(".celebration-text").textContent = description;
+        modal.querySelector(".celebration-threads").textContent = threads > 0 ? `+${threads} Threads!` : "";
+
+        // Show confetti
         confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
-        document.getElementById("celebration-modal").classList.add("show");
+
+        // Show modal
+        modal.classList.add("show");
+
+        // Disable navbar interactions
+        document.querySelector("nav").classList.add("celebration-navbar-disabled");
+
+        // Optional: prevent background clicks
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) e.stopPropagation();
+        });
     }
 
     function hideCelebrationModal() {
-        document.getElementById("celebration-modal").classList.remove("show");
+        const modal = document.getElementById("celebration-modal");
+        modal.classList.remove("show");
+
+        // Re-enable navbar
+        document.querySelector("nav").classList.remove("celebration-navbar-disabled");
+
+        // Reload page **only when user clicks the button**
         location.reload();
     }
 </script>

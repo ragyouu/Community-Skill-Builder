@@ -23,23 +23,12 @@
         align-items: center;
     }
 
-    .forgot-password {
-        font-size: 0.7rem;
-        margin-bottom: 1.5rem;
-        text-align: right;
-    }
-
     .login-btn:enabled {
         background-color: #0056b3;
         color: white;
         cursor: pointer;
     }
 
-    .signup-redirect {
-        font-size: 0.8rem;
-        text-align: center;
-        margin-top: 1rem;
-    }
 </style>
 
 <!-- Login Modal -->
@@ -68,7 +57,7 @@
 
     .forgot-password {
         font-size: 0.7rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
         text-align: right;
     }
 
@@ -81,7 +70,6 @@
     .signup-redirect {
         font-size: 0.8rem;
         text-align: center;
-        margin-top: 1rem;
     }
 
     .reset-error {
@@ -93,7 +81,7 @@
         font-weight: 500;
     }
 
-    #forgot-email-stage h2{
+    #forgot-email-stage h2 {
         font-weight: 600;
         font-size: 1.5rem;
         margin-bottom: 1rem;
@@ -126,25 +114,25 @@
             transition: all 0.2s ease;
         }
 
-        #send-otp-btn:enabled:hover {
-            background: #2a34c6;
-        }
+            #send-otp-btn:enabled:hover {
+                background: #2a34c6;
+            }
 
     #otp-stage {
-        display:none;
+        display: none;
     }
 
-    #otp-stage h2{
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
+        #otp-stage h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
-    #otp-stage p {
-        font-weight: 500;
-        font-size: 0.80rem;
-        margin-bottom: 1rem;
-    }
+        #otp-stage p {
+            font-weight: 500;
+            font-size: 0.80rem;
+            margin-bottom: 1rem;
+        }
 
     #otp-submit-btn {
         background-color: #aaa;
@@ -163,19 +151,19 @@
             transition: all 0.2s ease;
         }
 
-        #otp-submit-btn:enabled:hover {
-            background: #2a34c6;
-        }
+            #otp-submit-btn:enabled:hover {
+                background: #2a34c6;
+            }
 
     #reset-password-stage {
-        display:none;
+        display: none;
     }
 
-    #reset-password-stage h2 {
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
+        #reset-password-stage h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
     #reset-password-enter {
         font-weight: 500;
@@ -191,7 +179,7 @@
         padding: 0.5rem 1rem;
         border: none;
     }
-    
+
         #reset-password-btn:enabled {
             color: white;
             background: #364BE9;
@@ -200,22 +188,22 @@
             transition: all 0.2s ease;
         }
 
-        #reset-password-btn:enabled:hover {
-            background: #2a34c6;
-        }
+            #reset-password-btn:enabled:hover {
+                background: #2a34c6;
+            }
 
     #back-to-login-btn {
-        margin-top:1rem; 
-        padding:0.5rem 1rem; 
-        background:#364BE9; 
-        color:white; 
-        border:none; 
-        cursor:pointer;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background: #364BE9;
+        color: white;
+        border: none;
+        cursor: pointer;
     }
 
     #reset-success-stage {
-        display:none; 
-        text-align:center; 
+        display: none;
+        text-align: center;
         padding: -2rem;
     }
 
@@ -246,10 +234,10 @@
 
         <!-- Right Side -->
         <div class="auth-modal-right">
-            <span id ="login-close-btn" class="auth-close-btn" onclick="closeModal('login-modal', true)">&times;</span>
+            <span id="login-close-btn" class="auth-close-btn" onclick="closeModal('login-modal', true)">&times;</span>
 
             <div id="login-main-content">
-                <h2 style="margin-bottom: 1rem;">Log in to <span style="color: #364BE9">Tahi</span></h2>
+                <h2 style="margin-bottom: 1rem; font-size: 27px;">Log in to <span style="color: #364BE9; font-size: 27px;">Tahi</span></h2>
 
                 <!-- Social Logins -->
                 @* <div class="social-login">
@@ -290,7 +278,7 @@
             <div id="forgot-password-form" style="display:none; position:relative;">
                 <!-- Back Button -->
                 <button type="button" class="back-social-btn" onclick="showLoginForm(event)">←</button>
-                
+
                 <!-- Email Stage -->
                 <div id="forgot-email-stage">
                     <h2>Forgot Password</h2>
@@ -563,7 +551,7 @@
             } catch (err) {
                 console.error(err);
                 otpErrorMsg.textContent = 'Something went wrong. Try again.';
-                otpSubmitBtn.disabled = false; 
+                otpSubmitBtn.disabled = false;
                 otpSubmitBtn.innerText = "Submit";
             }
         });

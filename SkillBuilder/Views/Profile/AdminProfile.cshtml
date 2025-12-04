@@ -16,6 +16,7 @@
 
     .admin-sidebar {
         width: 22%;
+        flex-shrink: 0; /* prevent it from shrinking */
         background-color: #E0F2FF;
         padding: 2rem 1.5rem;
         border-radius: 12px;
@@ -75,7 +76,8 @@
         }
 
     .admin-main {
-        flex: 1;
+        flex: 1 1 auto; /* allow grow and shrink for main panel */
+        min-width: 0; /* prevent overflow issues inside flex */
         background-color: #fff;
         padding: 2rem;
         border-radius: 12px;
@@ -100,7 +102,12 @@
         <div class="admin-role">Administrator</div>
 
         <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="users">User Management</button>
+            <button class="admin-tab active" data-tab="analytics">Analytics Overview</button>
+            <button class="admin-tab" data-tab="learnerAnalytics">Learner Analytics</button>
+            <button class="admin-tab" data-tab="artisanAnalytics">Artisan Analytics</button>
+            <button class="admin-tab" data-tab="courseAnalytics">Course Analytics</button>
+            <button class="admin-tab" data-tab="communityAnalytics">Community Analytics</button>
+            <button class="admin-tab" data-tab="users">User Management</button>
             <button class="admin-tab" data-tab="artisans">Artisan Management</button>
             <button class="admin-tab" data-tab="applications">Artisan Applications</button>
             <button class="admin-tab" data-tab="courses">Course Management</button>
@@ -111,7 +118,22 @@
 
     <!-- Main Panel -->
     <div class="admin-main">
-        <div class="admin-panel active" data-tab="users">
+        <div class="admin-panel active" data-tab="analytics">
+            @Html.Partial("Sections/AdminNotebooks/_AdminNotebookAnalytics", Model)
+        </div>
+        <div class="admin-panel" data-tab="learnerAnalytics">
+            @Html.Partial("Sections/AdminNotebooks/_AdminNotebookLearnerAnalytics", Model)
+        </div>
+        <div class="admin-panel" data-tab="artisanAnalytics">
+            @Html.Partial("Sections/AdminNotebooks/_AdminNotebookArtisanAnalytics", Model)
+        </div>
+        <div class="admin-panel" data-tab="courseAnalytics">
+            @Html.Partial("Sections/AdminNotebooks/_AdminNotebookCourseAnalytics", Model)
+        </div>
+        <div class="admin-panel" data-tab="communityAnalytics">
+            @Html.Partial("Sections/AdminNotebooks/_AdminNotebookCommunityAnalytics", Model)
+        </div>
+        <div class="admin-panel" data-tab="users">
             @Html.Partial("Sections/AdminNotebooks/_AdminNotebookUserManagement", Model)
         </div>
         <div class="admin-panel" data-tab="artisans">
@@ -146,5 +168,50 @@
                 panel.classList.toggle("active", panel.getAttribute("data-tab") === selected);
             });
         });
+    });
+
+    // Auto-open tab from query string
+    const urlParams = new URLSearchParams(window.location.search);
+    const openTab = urlParams.get("tab");
+
+    if (openTab) {
+        const targetTab = document.querySelector(`.admin-tab[data-tab="${openTab}"]`);
+        const targetPanel = document.querySelector(`.admin-panel[data-tab="${openTab}"]`);
+
+        if (targetTab && targetPanel) {
+            // Remove active from all
+            document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+            document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+
+            // Activate correct tab + panel
+            targetTab.classList.add("active");
+            targetPanel.classList.add("active");
+        }
+    }
+
+    function switchToReportsTab(setPostFilter = false) {
+        const reportTab = document.querySelector('.admin-tab[data-tab="reports"]');
+        if (reportTab) {
+            reportTab.click(); // Simulate click on the tab
+        }
+
+        const mainPanel = document.querySelector('.admin-main');
+        if (mainPanel) mainPanel.scrollTop = 0; // Scroll to top
+
+        if (setPostFilter) {
+            const filterDropdown = document.getElementById("reportFilter");
+            if (filterDropdown) {
+                filterDropdown.value = "Post"; // set to community post
+                filterReports(); // re-render filtered reports
+            }
+        }
+    }
+
+    // Use event delegation to handle dynamically loaded partial
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'reviewPostsLink') {
+            e.preventDefault(); // Prevent default anchor behavior
+            switchToReportsTab(true); // pass true to automatically set dropdown to "Post"
+        }
     });
 </script>

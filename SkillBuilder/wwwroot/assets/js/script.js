@@ -306,6 +306,8 @@ document.addEventListener("DOMContentLoaded", function () {
         matchMessage.style.display =
             confirmPassword.length > 0 && !passwordsMatch ? "block" : "none";
 
+        const isBirthdateValid = validateBirthdate();
+
         // Final enable/disable logic
         const valid =
             validFirstName &&
@@ -316,7 +318,8 @@ document.addEventListener("DOMContentLoaded", function () {
             /[!@#\^*_\-]/.test(password) &&
             password.length >= 8 &&
             passwordsMatch &&
-            agree;
+            agree &&
+            isBirthdateValid;
 
         signupSubmitBtn.disabled = !valid;
 
@@ -382,8 +385,53 @@ document.addEventListener("DOMContentLoaded", function () {
         if (redirectLogin) redirectLogin.style.display = "none";
     }
 
-    ["signup-firstname", "signup-lastname", "signup-email", "signup-password", "signup-confirm"].forEach(id => {
+    ["signup-firstname", "signup-lastname", "signup-email", "signup-password", "signup-confirm", "signup-birthdate"].forEach(id => {
         document.getElementById(id).addEventListener("input", checkSignupInputs);
+    });
+
+    /* --------------------------------------
+       BIRTHDATE VALIDATION (ADD HERE)
+    --------------------------------------- */
+    const birthdateInput = document.getElementById("signup-birthdate");
+    const birthdateError = document.getElementById("birthdate-error");
+
+    function validateBirthdate() {
+        const value = birthdateInput.value;
+
+        if (!value) {
+            birthdateError.textContent = "Please enter your birthdate.";
+            return false;
+        }
+
+        const birth = new Date(value);
+        const today = new Date();
+
+        if (birth > today) {
+            birthdateError.textContent = "Birthdate cannot be in the future.";
+            return false;
+        }
+
+        // Accurate age calculation
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        const dayDiff = today.getDate() - birth.getDate();
+
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+            age--; // Birthday hasn’t occurred yet this year
+        }
+
+        if (age < 18) {
+            birthdateError.textContent = "You must be at least 18 years old.";
+            return false;
+        }
+
+        birthdateError.textContent = "";
+        return true;
+    }
+
+    birthdateInput?.addEventListener("input", () => {
+        validateBirthdate();
+        checkSignupInputs();
     });
 
     window.selectedInterests = [];
@@ -572,6 +620,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById("signup-email").value.trim();
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
+        const birthdate = document.getElementById("signup-birthdate").value;
 
         if (password !== confirmPassword) {
             signupError.textContent = "Passwords do not match.";
@@ -590,7 +639,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     FirstName: firstName,
                     LastName: lastName,
                     Email: email,
-                    Password: password
+                    Password: password,
+                    BirthDate: birthdate
                 }),
             });
 

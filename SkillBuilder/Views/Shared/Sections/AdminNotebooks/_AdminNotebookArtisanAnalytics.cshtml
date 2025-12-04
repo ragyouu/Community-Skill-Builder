@@ -1,0 +1,198 @@
+﻿@model SkillBuilder.Models.ViewModels.AdminProfileViewModel
+
+<!-- Header -->
+<div class="analytics-container" style="padding:20px; font-family:Inter, sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div>
+            <h1 style="font-size: 1.75rem; font-weight:700; margin:0; color: #344AEA;">Artisan Analytics</h1>
+            <p style="color:#555; margin:4px 0 0;">Monitor performance and impact of the artisans.</p>
+        </div>
+
+        <!-- Artisan Analytics Date Filter -->
+        <div style="display:flex; align-items:center; gap:12px;">
+            <label for="artisanDateRange" style="color:#666; font-size:0.95rem;">Date:</label>
+            <select id="artisanDateRange" style="padding:8px 12px; border-radius:8px; border:1px solid #d1d5db; background:#fff;">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="lastweek">Last Week</option>
+                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastyear">Last Year</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Applications Alert -->
+@if (Model.Analytics.PendingArtisanApplications > 0)
+{
+    <div style="border:1px solid #FCA5A5; background-color:#FEE2E2; padding:12px 16px; border-radius:8px; color:#B91C1C; margin-bottom:24px;">
+        You have @Model.Analytics.PendingArtisanApplications pending artisan applications waiting for review.
+        <a href="javascript:void(0);" id="reviewArtisanApplicationsLink"
+           style="text-decoration:underline; color:#B91C1C;">
+            Review Artisan Application Now
+        </a>
+    </div>
+}
+
+<!-- Summary Cards -->
+<div style="display:flex; gap:16px; margin-bottom:24px;">
+    <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.TotalArtisans</h2>
+        <p>Total Artisans Onboarded</p>
+    </div>
+    <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.TotalCourses</h2>
+        <p>Total Courses Created</p>
+    </div>
+    <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.AverageArtisanRating ⭐</h2>
+        <p>Average Artisan Rating</p>
+    </div>
+    <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.PendingArtisanApplications</h2>
+        <p>Pending Artisan Applications</p>
+    </div>
+</div>
+
+<!-- Charts Grid -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+    <!-- Top 5 Artisans -->
+    <div style="background-color:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <h3 style="font-weight:600; margin-bottom:12px;">Top 5 Artisans by Course Enrollments</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Onboarding Trend -->
+    <div style="background-color:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <h3 style="font-weight:600; margin-bottom:12px;">Artisan Onboarding Trend</h3>
+        <canvas id="lineChart"></canvas>
+    </div>
+</div>
+
+<!-- Bottom Charts + Table -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+    <!-- Courses by Category -->
+    <div style="background-color:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <h3 style="font-weight:600; margin-bottom:12px;">Artisan Courses by Category</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <!-- Artisan Performance Overview Table -->
+    <div style="background-color:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <h3 style="font-weight:600; margin-bottom:12px;">Artisan Performance Overview</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+            <thead style="background-color:#f5f5f5;">
+                <tr>
+                    <th style="padding:8px; text-align:left;">Artisan</th>
+                    <th style="padding:8px; text-align:center;">Courses</th>
+                    <th style="padding:8px; text-align:center;">Rating</th>
+                    <th style="padding:8px; text-align:center;">Enrollments</th>
+                    <th style="padding:8px; text-align:center;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var artisan in Model.Analytics.TopArtisansByEnrollments)
+                {
+                    <tr style="border-bottom:1px solid #e5e5e5;">
+                        <td style="padding:8px;">@artisan.Name</td>
+                        <td style="padding:8px; text-align:center;">@artisan.CoursesCount</td>
+                        <td style="padding:8px; text-align:center;">⭐ @artisan.AverageRating</td>
+                        <td style="padding:8px; text-align:center;">@artisan.TotalStudents</td>
+                        <td style="padding:8px; text-align:center;">
+                            <span style="display:inline-block; padding:4px 8px; border-radius:8px; background-color:#e6ffed; color:#2f855a; font-size:12px; font-weight:600;">ACTIVE</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Bar chart - Top artisans (horizontal)
+    const barLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.TopArtisansByEnrollments.Select(a => a.Name)));
+    const barData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.TopArtisansByEnrollments.Select(a => a.TotalStudents)));
+
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: barLabels,
+            datasets: [{ data: barData, backgroundColor: 'rgba(54, 162, 235, 0.7)' }]
+        },
+        options: {
+            indexAxis: 'y', // Horizontal bars: names on the left
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Line chart - Artisan onboarding trend (artisan applications)
+    const lineLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.ArtisanApplicationsMonthly.Select(m => m.MonthLabel)));
+    const lineData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.ArtisanApplicationsMonthly.Select(m => m.Count)));
+
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: lineLabels,
+            datasets: [{
+                data: lineData,
+                borderColor: 'rgba(75,192,192,1)',
+                backgroundColor: 'rgba(75,192,192,0.18)',
+                tension: 0.36,
+                fill: true,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Pie chart - Courses by category (smaller height)
+    const pieLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.CategoryEnrollments.Select(c => c.Category)));
+    const pieData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Analytics.CategoryEnrollments.Select(c => c.TotalStudents)));
+
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: pieLabels,
+            datasets: [{ data: pieData, backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40'] }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            return label + ': ' + value + ' course' + (value !== 1 ? 's' : '');
+                        }
+                    }
+                },
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+            // Click handler for "Review Artisan Application Now"
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.id === 'reviewArtisanApplicationsLink') {
+                    e.preventDefault(); // prevent default link behavior
+
+                    // Switch to the "applications" tab
+                    const artisanAppTab = document.querySelector('.admin-tab[data-tab="applications"]');
+                    if (artisanAppTab) artisanAppTab.click();
+
+                    // Scroll to top
+                    const mainPanel = document.querySelector('.admin-main');
+                    if (mainPanel) mainPanel.scrollTop = 0;
+                }
+            });
+        });
+</script>

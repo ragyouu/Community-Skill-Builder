@@ -92,6 +92,10 @@
             "QuestPDF": {
               "target": "Package",
               "version": "[2025.7.2, )"
+            },
+            "TinyMCE": {
+              "target": "Package",
+              "version": "[8.2.2, )"
             }
           },
           "imports": [

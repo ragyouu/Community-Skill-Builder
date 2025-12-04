@@ -1,0 +1,188 @@
+﻿@{
+    ViewData["Title"] = "Course Forum";
+
+    // Dummy posts
+    var forumPosts = new[]
+    {
+        new { Id = 1, Name="Sample Name", Role="Learner", Date="Nov 30, 2025", Content="Ayay! bagong thread na naman.. hehehe.. BTW kahit saang way naman eh okei lang sa atin, Cruising speed lang naman tayo at hindi magmamadali.. basta ako na lang ang sweeper as always.", Likes=10 },
+        new { Id = 2, Name="Sample Name", Role="Learner", Date="Nov 28, 2025", Content="May nakita ako for beginners like me yung Street Smarts do's and don'ts sa motorcycle...", Likes=8 },
+        new { Id = 3, Name="Sample Name", Role="Learner", Date="Nov 26, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.", Likes=7 },
+        new { Id = 4, Name="Sample Name", Role="Learner", Date="Nov 24, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.", Likes=6 },
+        new { Id = 5, Name="Sample Name", Role="Learner", Date="Nov 24, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. In id cursus mi pretium tellus duis convallis...", Likes=5 }
+    };
+}
+
+<style>
+    .forum-container {
+        width: 100%;
+        max-width: 1500px;
+        margin: 6rem auto;
+    }
+
+    .forum-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+        .forum-header button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #344AEA;
+        }
+
+        .forum-header h1 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+    .forum-post {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #fff;
+    }
+
+        .forum-post .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .forum-post .post-content {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .forum-post .post-actions {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+            .forum-post .post-actions button {
+                background-color: #344AEA;
+                color: white;
+                border: none;
+                padding: 0.25rem 0.5rem;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.8rem;
+            }
+
+                .forum-post .post-actions button:hover {
+                    opacity: 0.9;
+                }
+
+    .forum-reply {
+        border: 1px solid #4A90E2;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        background-color: #f0f6ff;
+    }
+
+        .forum-reply textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            resize: vertical;
+            margin-bottom: 0.5rem;
+        }
+
+        .forum-reply button {
+            background-color: #344AEA;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            float: right;
+        }
+
+            .forum-reply button:hover {
+                opacity: 0.9;
+            }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+        .pagination button {
+            border: 1px solid #ccc;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            background: white;
+        }
+
+            .pagination button.active {
+                background-color: #344AEA;
+                color: white;
+            }
+
+</style>
+
+<div class="forum-container">
+    <div class="forum-header">
+        <button onclick="history.back()">&lt; Back</button>
+        <h1>@ViewBag.CourseTitle Course Forum</h1>
+    </div>
+
+    <!-- Featured/Pinned Post -->
+    <div class="forum-post" style="border:2px solid #344AEA;">
+        <div class="post-meta">
+            <strong>Sample Name</strong> • Artisan • x days ago
+        </div>
+        <div class="post-content">
+            Lorem ipsum odor amet, consectetur adipiscing elit. Conubia aliquam facilisi hendrerit sit, facilisis cubilia.
+        </div>
+        <button style="background:#344AEA; color:white;">Reply to this topic</button>
+    </div>
+
+    <!-- Reply box -->
+    <div class="forum-reply">
+        <textarea placeholder="Tell us what's on your mind"></textarea>
+        <button>Add Reply</button>
+        <button style="background:#ccc; color:#333; margin-right:1rem;">Cancel</button>
+    </div>
+
+    <!-- Forum posts -->
+    @foreach (var post in forumPosts)
+    {
+        <div class="forum-post">
+            <div class="post-meta">
+                <strong>@post.Name</strong> • @post.Role • @post.Date
+            </div>
+            <div class="post-content">@post.Content</div>
+            <div class="post-actions">
+                <span>@post.Likes 👍</span>
+                <button>Quote</button>
+            </div>
+        </div>
+    }
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <span>...</span>
+        <button>Next &gt;</button>
+    </div>
+</div>

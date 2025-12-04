@@ -60,6 +60,10 @@
         margin-top: -1.5rem;
     }
 
+        .password-requirements p {
+            font-size: 0.7rem;
+        }
+
     .requirement-text {
         display: flex;
         align-items: center;
@@ -72,7 +76,7 @@
         gap: 0.75rem;
         font-size: 0.9rem;
         color: #1a1a1a;
-        margin: 1.5rem 0;
+        margin: 0.2rem 0;
         line-height: 1.3rem;
     }
 
@@ -92,6 +96,7 @@
         .checkbox-signup a {
             color: #1a1a1a;
             font-weight: 600;
+            font-size: 8px;
             text-decoration: none;
         }
 
@@ -270,7 +275,7 @@
 
         <!-- Right panel for form and buttons -->
         <div class="auth-modal-right">
-            <h2 style="margin-bottom: 1rem;" class="signup-header">Sign up to <span style="color: #364BE9">Tahi</span></h2>
+            <h2 style="margin-bottom: 1rem;" class="signup-header">Sign up to <span style="color: #364BE9; font-size: 27px;">Tahi</span></h2>
 
             @* <!-- Social login buttons -->
             <div class="social-login">
@@ -297,6 +302,10 @@
                     <label for="signup-lastname">Last Name</label>
                     <input type="text" id="signup-lastname" name="LastName" required />
                     <span id="lastname-error" class="text-error"></span>
+
+                    <label for="signup-birthdate">Birthdate</label>
+                    <input type="date" id="signup-birthdate" name="BirthDate" required />
+                    <span id="birthdate-error" class="text-error" style="margin-top: 0.3rem;"></span>
 
                     <label for="signup-email">Email Address</label>
                     <input type="email" id="signup-email" name="Email" required />

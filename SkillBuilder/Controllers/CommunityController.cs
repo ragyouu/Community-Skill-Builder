@@ -55,6 +55,7 @@ namespace SkillBuilder.Controllers
             {
                 selectedCommunity = await _context.Communities
                     .Include(c => c.Memberships)
+                    .Include(c => c.Creator)
                     .FirstOrDefaultAsync(c => c.Id == selectedCommunityId.Value && c.IsPublished); // Only published
 
                 if (selectedCommunity != null)
@@ -63,7 +64,6 @@ namespace SkillBuilder.Controllers
                         .Include(p => p.Author)
                         .Where(p => p.CommunityId == selectedCommunity.Id && p.IsPublished)
                         .OrderByDescending(p => p.SubmittedAt)
-                        .Take(10)
                         .Select(p => new CommunityPostViewModel
                         {
                             Id = p.Id,
@@ -92,7 +92,6 @@ namespace SkillBuilder.Controllers
                     .Include(p => p.Author)
                     .Where(p => p.IsPublished && p.CommunityId == null)
                     .OrderByDescending(p => p.SubmittedAt)
-                    .Take(10)
                     .Select(p => new CommunityPostViewModel
                     {
                         Id = p.Id,
@@ -125,6 +124,7 @@ namespace SkillBuilder.Controllers
         {
             var community = await _context.Communities
                 .Include(c => c.Memberships)
+                .Include(c => c.Creator)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (community == null)
@@ -384,6 +384,7 @@ namespace SkillBuilder.Controllers
             var post = await _context.CommunityPosts
                 .Include(p => p.Author)
                 .Include(p => p.Community)
+                    .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(p => p.Id == model.PostId);
 
             if (post == null)
@@ -451,6 +452,7 @@ namespace SkillBuilder.Controllers
             var post = await _context.CommunityPosts
                 .Include(p => p.Author)
                 .Include(p => p.Community)
+                    .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(p => p.Id == model.PostId);
 
             if (post == null)
@@ -501,6 +503,7 @@ namespace SkillBuilder.Controllers
             var post = await _context.CommunityPosts
                 .Include(p => p.Author)
                 .Include(p => p.Community)
+                    .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(p => p.Id == postId);
 
             if (post == null)
@@ -553,6 +556,16 @@ namespace SkillBuilder.Controllers
             if (user.IsDeactivated)
                 return Forbid();
 
+            if (user.Role != "Artisan" && user.Threads < 100)
+            {
+                return Json(new
+                {
+                    success = false,
+                    insufficientThreads = true,
+                    message = "You do not have enough threads to create a community."
+                });
+            }
+
             string avatarPath = null;
             string bannerPath = null;
 
@@ -585,6 +598,9 @@ namespace SkillBuilder.Controllers
                 Role = "Owner"
             });
 
+            user.Threads -= 100;
+            _context.Users.Update(user);
+
             await _context.SaveChangesAsync();
 
             await _notificationService.AddNotificationAsync(
@@ -606,7 +622,12 @@ namespace SkillBuilder.Controllers
                 );
             }
 
-            return RedirectToAction("CommunityHub", new { selectedCommunityId = community.Id });
+            return Json(new
+            {
+                success = true,
+                communityId = community.Id,
+                message = $"Community '{community.Name}' created successfully."
+            });
         }
 
         [HttpPost("Join")]
@@ -703,6 +724,7 @@ namespace SkillBuilder.Controllers
             var joinRequest = await _context.CommunityJoinRequests
                 .Include(r => r.User)
                 .Include(r => r.Community)
+                    .ThenInclude(c => c.Creator)
                 .FirstOrDefaultAsync(r => r.Id == model.RequestId);
 
             if (joinRequest == null)

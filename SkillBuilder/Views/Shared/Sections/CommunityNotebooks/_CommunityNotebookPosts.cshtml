@@ -582,90 +582,37 @@
         .btn-cancel:hover {
             background: #ddd;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .pagination button:hover {
+            background: #f0f0f0;
+        }
+
+        .pagination button.active-page {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
 </style>
 
 <div class="posts-only-list">
-    @if (Model == null || !Model.Any())
-    {
-        <div class="post-card">
-            <p style="text-align:center; color:#777;">
-                @if (currentUserIsAdmin)
-                {
-                    @:No posts yet.
-                }
-                else
-                {
-                    @:No posts yet. Be the first to share something!
-                }
-            </p>
-        </div>
-    }
-    else
-    {
-        @foreach (var post in Model)
-        {
-            <div class="post-card"
-                 data-post-id="@post.Id"
-                 data-title="@post.Title"
-                 data-image="@post.ImageUrl">
-                <div class="post-card-header">
-                    <div class="avatar" style="background-image:url('@post.AuthorAvatarUrl')"></div>
-                    <div class="community-info">
-                        <h5>@post.AuthorName</h5>
-                        <h6>
-                            @post.CommunityName • @post.SubmittedAt.ToString("MMM dd, yyyy")
-                            @if (!string.IsNullOrEmpty(post.Category))
-                            {
-                                <br />
-                                <span class="post-category">Category: @post.Category</span>
-                            }
-                        </h6>
-                    </div>
-                    <div class="post-options">
-                        <button class="post-options-btn" onclick="togglePostMenu(@post.Id)">⋮</button>
-                        <div class="post-options-menu" id="post-menu-@post.Id">
-                            @if (currentUserIsAdmin)
-                            {
-                                <button onclick="openAdminDeleteModal(@post.Id)">Delete Post (Admin)</button>
-                            }
-                            else if (post.AuthorId == currentUserId)
-                            {
-                                <button onclick="openEditPostModal(@post.Id)">Edit Post</button>
-                                <button onclick="openDeletePostModal(@post.Id)">Delete Post</button>
-                            }
-                            else
-                            {
-                                <button class="report" onclick="reportPost(@post.Id)">Report Post</button>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <div class="post-card-content">
-                    @if (!string.IsNullOrEmpty(post.Title))
-                    {
-                        <h4 style="margin:0 0 0.5rem 0; font-weight:600;">@post.Title</h4>
-                    }
-                    <p>@post.Content</p>
-                    @if (!string.IsNullOrEmpty(post.ImageUrl))
-                    {
-                        <img src="@post.ImageUrl" alt="Post image" />
-                    }
-                    <div class="community-meta">
-                        <button class="comment-btn" style="background: none; border: none;" onclick="toggleComments(@post.Id)">💬 <span id="comment-count-@post.Id">@post.CommentsCount</span></button>
-                    </div>
-                </div>
-
-                <div class="comments-section" id="comments-section-@post.Id" style="display:none;">
-                    <div class="comments-list" id="comments-list-@post.Id"></div>
-                    <textarea id="comment-input-@post.Id" style="resize: none;" placeholder="Write a comment..." rows="2"></textarea>
-                    <button onclick="addComment(@post.Id)">Post Comment</button>
-                </div>
-            </div>
-        }
-    }
-
-    <!-- No posts found message (hidden by default) -->
+    <div id="postsContainer"></div>
+    <div id="pagination" class="pagination"></div>
     <div id="noPostsFound" class="post-card" style="display:none; text-align:center; color:#777;">
         No posts found.
     </div>
@@ -802,6 +749,22 @@
     let selectedAdminPostId = null;
     let reportPostId = null;
 
+    const postsPerPage = 10;
+    let currentPage = 1;
+    const allPosts = @Html.Raw(Json.Serialize(Model.Select(p => new {
+        id = p.Id,
+        title = p.Title,
+        content = p.Content,
+        imageUrl = p.ImageUrl,
+        authorName = p.AuthorName,
+        authorAvatarUrl = p.AuthorAvatarUrl,
+        communityName = p.CommunityName,
+        submittedAt = p.SubmittedAt,
+        category = p.Category,
+        commentsCount = p.CommentsCount,
+        authorId = p.AuthorId
+    })));
+
     // ---------------- Post Options Menu ----------------
     function togglePostMenu(postId) {
         const menu = document.getElementById(`post-menu-${postId}`);
@@ -924,13 +887,125 @@
         return `${Math.floor(diff/604800)} weeks ago`;
     }
 
+    function renderPosts(posts) {
+        const container = document.getElementById("postsContainer");
+        container.innerHTML = "";
+
+        if (!posts || posts.length === 0) {
+            document.getElementById("noPostsFound").style.display = "block";
+            return;
+        } else {
+            document.getElementById("noPostsFound").style.display = "none";
+        }
+
+        const start = (currentPage - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const pagePosts = posts.slice(start, end);
+
+        const currentUserIsAdmin = "@currentUserIsAdmin".toLowerCase() === "true";
+        const currentUserId = "@currentUserId";
+
+        pagePosts.forEach(post => {
+            const postDiv = document.createElement("div");
+            postDiv.className = "post-card";
+            postDiv.dataset.postId = post.id;
+            postDiv.dataset.title = post.title;
+            postDiv.dataset.image = post.imageUrl || "";
+
+            postDiv.innerHTML = `
+                <div class="post-card-header">
+                    <div class="avatar" style="background-image:url('${post.authorAvatarUrl || '/images/default-avatar.png'}')"></div>
+                    <div class="community-info">
+                        <h5>${post.authorName}</h5>
+                        <h6>
+                            ${post.communityName} • ${new Date(post.submittedAt).toLocaleDateString()}
+                            ${post.category ? `<br><span class="post-category">Category: ${post.category}</span>` : ""}
+                        </h6>
+                    </div>
+
+                    <!-- 3-dot menu -->
+                    <div class="post-options">
+                        <button class="post-options-btn" onclick="togglePostMenu(${post.id})">⋮</button>
+                        <div class="post-options-menu" id="post-menu-${post.id}">
+                            ${
+                                currentUserIsAdmin
+                                    ? `<button onclick="openAdminDeleteModal(${post.id})">Delete Post (Admin)</button>`
+                                    : (post.authorId === currentUserId
+                                        ? `<button onclick="openEditPostModal(${post.id})">Edit Post</button>
+                                           <button onclick="openDeletePostModal(${post.id})">Delete Post</button>`
+                                        : `<button class="report" onclick="reportPost(${post.id})">Report Post</button>`
+                                      )
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-card-content">
+                    ${post.title ? `<h4 style="margin:0 0 0.5rem 0; font-weight:600;">${post.title}</h4>` : ""}
+                    <p>${post.content}</p>
+                    ${post.imageUrl ? `<img src="${post.imageUrl}" alt="Post image" />` : ""}
+                    <div class="community-meta">
+                        <button class="comment-btn" style="background: none; border: none;" onclick="toggleComments(${post.id})">💬 <span id="comment-count-${post.id}">${post.commentsCount || 0}</span></button>
+                    </div>
+                </div>
+
+                <div class="comments-section" id="comments-section-${post.id}" style="display:none; flex-direction:column; gap:0.5rem;">
+                    <div class="comments-list" id="comments-list-${post.id}"></div>
+                    <textarea id="comment-input-${post.id}" style="resize:none;" placeholder="Write a comment..." rows="2"></textarea>
+                    <button onclick="addComment(${post.id})">Post Comment</button>
+                </div>
+            `;
+
+            container.appendChild(postDiv);
+        });
+
+        renderPagination(posts.length);
+
+        // Restore previously saved comments
+        const saved = getPostComments();
+        pagePosts.forEach(post => {
+            if (saved[post.id]) {
+                saved[post.id].forEach(c => renderComment(post.id, c));
+                const countEl = document.getElementById(`comment-count-${post.id}`);
+                if (countEl) countEl.innerText = saved[post.id].length;
+            }
+        });
+    }
+
+    function renderPagination(totalPosts) {
+        const totalPages = Math.ceil(totalPosts / postsPerPage);
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+            btn.className = i === currentPage ? "active-page" : "";
+            btn.addEventListener("click", () => {
+                currentPage = i;
+                renderPosts(allPosts);
+            });
+            pagination.appendChild(btn);
+        }
+    }
+
+    // Initial render
+    document.addEventListener("DOMContentLoaded", () => {
+        renderPosts(allPosts);
+    });
+
     // Restore comments on load
     document.addEventListener('DOMContentLoaded', () => {
+
+        const storedPosts = JSON.parse(localStorage.getItem('allPosts')) || [];
+        renderPosts(storedPosts.length ? storedPosts : allPosts);
+
         const saved = getPostComments();
         for (let pid in saved) {
             const list = document.getElementById(`comments-list-${pid}`);
             if (!list) continue;
-            saved[pid].forEach(c => renderComment(pid, c)); // ✅ correct
             const countEl = document.getElementById(`comment-count-${pid}`);
             if (countEl) countEl.innerText = saved[pid].length;
         }

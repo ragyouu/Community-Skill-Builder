@@ -16,14 +16,19 @@ namespace SkillBuilder.Controllers
     {
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
-        public AdminProfileController(AppDbContext context, INotificationService notificationService)
+        private readonly IAnalyticsService _analytics;
+        private readonly ICommunityAnalyticsService _communityAnalytics;
+
+        public AdminProfileController(AppDbContext context, INotificationService notificationService, IAnalyticsService analytics, ICommunityAnalyticsService communityAnalytics)
         {
             _context = context;
             _notificationService = notificationService;
+            _analytics = analytics;
+            _communityAnalytics = communityAnalytics;
         }
 
         [HttpGet("{id}")]
-        public IActionResult AdminProfile(string id)
+        public async Task<IActionResult> AdminProfile(string id)
         {
             var currentAdminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -87,8 +92,11 @@ namespace SkillBuilder.Controllers
                 AllSubmittedCourses = allCourses,
                 SubmittedCourses = submittedCourses,
                 AllCommunities = allCommunities,
-                Communities = allCommunities
+                Communities = allCommunities,
+                CommunityAnalytics = await _communityAnalytics.GetAnalyticsAsync("lastmonth")
             };
+
+            model.Analytics = await _analytics.GetOverviewAsync(6);
 
             return View("~/Views/Profile/AdminProfile.cshtml", model);
         }
@@ -618,6 +626,39 @@ namespace SkillBuilder.Controllers
             );
 
             return Json(reports.OrderByDescending(r => r.DateReported).ToList());
+        }
+
+        [HttpGet("GetCourseAnalytics")]
+        [Authorize(AuthenticationSchemes = "TahiAuth", Roles = "Admin")]
+        public async Task<IActionResult> GetCourseAnalytics(string range = "lastmonth", string group = "monthly")
+        {
+            var analytics = await _analytics.GetOverviewAsync(6); // your service call
+            return Json(analytics);
+        }
+
+        [HttpGet("CommunityAnalyticsView")]
+        public async Task<IActionResult> CommunityAnalyticsView(string range = "lastmonth")
+        {
+            var model = await _communityAnalytics.GetAnalyticsAsync(range);
+            return View("~/Views/Profile/_AdminNotebookCommunityAnalytics.cshtml", model);
+        }
+
+        [HttpGet("Notebook/ReportLogs")]
+        public IActionResult NotebookReportLogs()
+        {
+            var vm = new AdminProfileViewModel
+            {
+                ReportLogs = new List<ReportLogViewModel>()
+            };
+
+            return View("~/Views/Shared/Sections/AdminNotebooks/_AdminNotebookReportLogs.cshtml", vm);
+        }
+
+        [HttpGet("GetCommunityJoinAnalytics")]
+        public async Task<IActionResult> GetCommunityJoinAnalytics(string range = "lastmonth")
+        {
+            var data = await _communityAnalytics.GetAnalyticsAsync(range);
+            return Json(data.CommunityJoinHistory);
         }
     }
 }

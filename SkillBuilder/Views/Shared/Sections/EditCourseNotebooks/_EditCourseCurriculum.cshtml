@@ -142,43 +142,282 @@
         border-radius: 8px;
         font-size: 1rem;
     }
+
+    /* Module Tabs – Edit View */
+    .edit-module-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 0.5rem;
+    }
+
+    .edit-module-tab {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        background: #f3f3f3;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+        .edit-module-tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .edit-module-tab:hover {
+            background: #e6e6e6;
+        }
+
+        .edit-module-tab.no-delete {
+            cursor: default;
+        }
+
+    .lesson-interactive-block {
+        position: relative; /* required for absolute positioning of delete button */
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: #fafafa;
+    }
+
+        .lesson-interactive-block .curriculum-edit-delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+            cursor: pointer;
+        }
 </style>
 
 <div class="curriculum-edit-container">
-    <h3>Curriculum</h3>
 
-    <!-- Modules Container -->
-    <div id="curriculum-edit-modules"></div>
-
-    <div id="curriculum-edit-module-warning" style="color:red; margin-bottom:1rem; display:none;">
-        You must add at least 2 modules.
-    </div>
-
-    <div class="curriculum-edit-add-module-wrapper">
+    <!-- Top bar: warning + Add Module button -->
+    <div class="curriculum-edit-add-module-wrapper" style="margin-bottom: 1rem; display:flex; justify-content: space-between; align-items:center;">
+        <div id="curriculum-edit-module-warning" style="color:red; display:none;">
+            You must add at least 2 modules.
+        </div>
         <button type="button" class="curriculum-edit-add-btn" onclick="curriculumEditAddModule()">+ Add Module</button>
     </div>
 
-    <!-- Final Project -->
-    <div class="curriculum-edit-final-project curriculum-edit-module" id="curriculum-edit-final-project-module">
+    <!-- Module Tabs -->
+    <div id="curriculum-edit-module-tabs" class="edit-module-tabs" style="margin-bottom: 1rem;"></div>
+
+    <!-- Modules Container -->
+    <div class="curriculum-edit-modules" id="curriculum-edit-modules-container"></div>
+
+    <!-- Final Project Module -->
+    <div class="curriculum-edit-final-project curriculum-edit-module" id="curriculum-edit-final-project-module" data-index="final-project" style="display:none;">
         <div class="curriculum-edit-header"><strong>Final Project</strong></div>
+
         <div class="curriculum-edit-form-group">
             <label>Title *</label>
             <input type="text" class="curriculum-edit-form-control" name="FinalProject.Title" placeholder="Final project title" required />
         </div>
+
         <div class="curriculum-edit-form-group">
             <label>Details / Context *</label>
             <textarea class="curriculum-edit-form-control" name="FinalProject.Description" rows="4" placeholder="Describe the final project..." required></textarea>
         </div>
     </div>
 </div>
+<!-- Global Delete Confirmation Modal -->
+<div id="global-delete-modal"
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:9999;">
+    <div style="background:white; padding:2rem; border-radius:8px; max-width:400px; width:90%; text-align:center;">
+        <p id="global-delete-message" style="margin-bottom:1.5rem; font-size:1.1rem;">Are you sure?</p>
+        <div style="display:flex; justify-content:center; gap:1rem;">
+            <button type="button" id="global-delete-confirm"
+                    style="padding:0.5rem 1rem; background:#e53935; color:white; border:none; border-radius:6px; cursor:pointer;">
+                Delete
+            </button>
+            <button type="button" id="global-delete-cancel"
+                    style="padding:0.5rem 1rem; background:#ccc; color:black; border:none; border-radius:6px; cursor:pointer;">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
 
 <script>
+
+    function initTinyMCE(target = '.tinymce-editor') {
+        if(typeof tinymce === 'undefined') return;
+
+        // Remove only specific editor if element is passed
+        if(target instanceof HTMLElement){
+            const id = target.id || (`tinymce-${Date.now()}`);
+            if(!target.id) target.id = id;
+            if(tinymce.get(id)) tinymce.get(id).remove();
+            tinymce.init({
+                target: target,
+                menubar: false,
+                plugins: 'lists link image table code',
+                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
+                height: 250,
+                branding: false,
+                license_key: 'gpl',
+                setup: (editor) => {
+                    editor.on('change', () => editor.save());
+                }
+            });
+        } else {
+            // default selector string
+            tinymce.remove(target);
+            tinymce.init({
+                selector: target,
+                menubar: false,
+                plugins: 'lists link image table code',
+                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
+                height: 250,
+                branding: false,
+                license_key: 'gpl',
+                setup: (editor) => {
+                    editor.on('change', () => editor.save());
+                }
+            });
+        }
+    }
+
+    let allModulesData = []; // store all modules
+    let activeModuleIndex = 0; // currently active module/tab
+
+    function renderModuleTabs() {
+        const tabsContainer = document.getElementById("curriculum-edit-module-tabs");
+        tabsContainer.innerHTML = '';
+
+        allModulesData.forEach((mod, index) => {
+            const tab = document.createElement("button");
+            tab.type = "button";
+            tab.className = 'curriculum-edit-add-btn';
+            tab.textContent = `Module ${index + 1}`;
+
+            if(index === activeModuleIndex){
+                tab.style.backgroundColor = '#344AEA';
+                tab.style.color = 'white';
+            }
+
+            tab.addEventListener('click', () => {
+                activeModuleIndex = index;
+                renderModuleTabs();      // update tab styling
+                renderModuleLessons(index); // show correct module
+            });
+
+            tabsContainer.appendChild(tab);
+        });
+
+        // Final Project Tab
+        const fpTab = document.createElement("button");
+        fpTab.type = "button";
+        fpTab.className = 'curriculum-edit-add-btn';
+        fpTab.textContent = 'Final Project';
+        if(activeModuleIndex === 'fp'){
+            fpTab.style.backgroundColor = '#344AEA';
+            fpTab.style.color = 'white';
+        }
+        fpTab.addEventListener('click', () => {
+            activeModuleIndex = 'fp';
+            renderModuleTabs();
+            renderFinalProject();
+        });
+        tabsContainer.appendChild(fpTab);
+    }
+
+    function renderModuleLessons(moduleIndex) {
+        const fpDiv = document.getElementById("curriculum-edit-final-project-module");
+        if(fpDiv) fpDiv.style.display = 'none'; // hide final project
+
+        const container = document.getElementById("curriculum-edit-modules-container");
+
+        // Show/hide modules based on activeModuleIndex
+        container.querySelectorAll(".curriculum-edit-module").forEach((mod, idx) => {
+            mod.style.display = (idx === moduleIndex) ? "block" : "none";
+        });
+
+        // If module doesn't exist yet, create it
+        if(!container.querySelector(`.curriculum-edit-module[data-index='${moduleIndex}']`)) {
+            const moduleData = allModulesData[moduleIndex];
+            const moduleDiv = document.createElement("div");
+            moduleDiv.className = "curriculum-edit-module";
+            moduleDiv.setAttribute("data-index", moduleIndex);
+
+            moduleDiv.innerHTML = `
+                <div class="curriculum-edit-header">
+                    <strong class="curriculum-edit-module-label">Module ${moduleIndex+1}</strong>
+                    <button type="button" class="curriculum-edit-delete-btn"
+                        onclick="showDeleteModal('module', () => curriculumEditRemoveModule(${moduleIndex}))">🗑️</button>
+                </div>
+                <div class="curriculum-edit-form-group">
+                    <label>Module Title *</label>
+                    <input type="text" class="curriculum-edit-form-control"
+                           name="Modules[${moduleIndex}].Title"
+                           value="${moduleData?.Title || ''}" required />
+                </div>
+                <div class="curriculum-edit-lessons" id="curriculum-edit-lessons-${moduleIndex}"></div>
+                <button type="button" class="curriculum-edit-add-btn" onclick="curriculumEditAddLesson(${moduleIndex})">+ Add Lesson</button>
+            `;
+
+            container.appendChild(moduleDiv);
+
+            if(moduleData?.Lessons?.length){
+                moduleData.Lessons.forEach(lesson => curriculumEditAddLesson(moduleIndex, lesson));
+            }
+        }
+    }
+
+    function renderFinalProject() {
+        const fpDiv = document.getElementById("curriculum-edit-final-project-module");
+        if (!fpDiv) return;
+
+        const container = document.getElementById("curriculum-edit-modules-container");
+
+        // Hide all modules
+        container.querySelectorAll(".curriculum-edit-module").forEach(mod => mod.style.display = "none");
+
+        // Show final project
+        fpDiv.style.display = 'block';
+    }
+
+    let deleteCallback = null;
+
+    function showDeleteModal(type, callback) {
+        deleteCallback = callback; // store callback to run on confirm
+        const modal = document.getElementById('global-delete-modal');
+        const message = document.getElementById('global-delete-message');
+        message.textContent = `Are you sure you want to delete this ${type}? This action cannot be undone.`;
+        modal.style.display = 'flex';
+    }
+
+    document.getElementById('global-delete-confirm').addEventListener('click', () => {
+        if (deleteCallback) deleteCallback();
+        closeDeleteModal();
+    });
+
+    document.getElementById('global-delete-cancel').addEventListener('click', closeDeleteModal);
+
+    function closeDeleteModal() {
+        document.getElementById('global-delete-modal').style.display = 'none';
+        deleteCallback = null;
+    }
+
     let curriculumEditModuleIndex = 0;
 
     // ------------------ MODULE FUNCTIONS ------------------
     function curriculumEditAddModule(moduleData = null) {
-        const container = document.getElementById("curriculum-edit-modules");
+        const container = document.getElementById("curriculum-edit-modules-container"); // ✅ correct ID
+        if (!container) return; // safety check
+
         const moduleIndex = curriculumEditModuleIndex++;
+
+        allModulesData.push(moduleData || { Title: '', Lessons: [] });
 
         const moduleDiv = document.createElement("div");
         moduleDiv.className = "curriculum-edit-module";
@@ -187,7 +426,7 @@
         moduleDiv.innerHTML = `
             <div class="curriculum-edit-header">
                 <strong class="curriculum-edit-module-label">Module ${moduleIndex + 1}</strong>
-                <button type="button" class="curriculum-edit-delete-btn" onclick="curriculumEditRemoveModule(${moduleIndex})">🗑️</button>
+                <button type="button" class="curriculum-edit-delete-btn" onclick="showDeleteModal('module', () => curriculumEditRemoveModule(${moduleIndex}))">🗑️</button>
             </div>
             <div class="curriculum-edit-form-group">
                 <label>Module Title *</label>
@@ -200,28 +439,73 @@
 
         if(moduleData?.Lessons?.length){
             moduleData.Lessons.forEach(lesson => curriculumEditAddLesson(moduleIndex, lesson));
+        } else {
+            // Only add 1 default lesson for new module
+            curriculumEditAddLesson(moduleIndex);
         }
+
         curriculumEditRenumberModules();
+        activeModuleIndex = moduleIndex;
+        renderModuleTabs();
+        renderModuleLessons(moduleIndex);
+
+        // Update delete buttons visibility
+        updateLessonDeleteButtons(moduleIndex);
     }
 
     function curriculumEditRemoveModule(index) {
-        // Get all modules excluding final project
         const modules = document.querySelectorAll(".curriculum-edit-module:not(#curriculum-edit-final-project-module)");
-
         if(modules.length <= 2){
-            alert("You must have at least 2 modules.");
-            return; // prevent deletion
+            const warning = document.getElementById("curriculum-edit-module-warning");
+            if(warning) warning.style.display = 'block';
+            return;
         }
 
         const module = document.querySelector(`.curriculum-edit-module[data-index='${index}']`);
         if(module) module.remove();
+
+        // Remove corresponding data from allModulesData
+        allModulesData.splice(index, 1);
+
+        // --- FIX: Adjust activeModuleIndex ---
+        if(activeModuleIndex === index) {
+            // Deleted module was active, show previous module if exists, else first module
+            activeModuleIndex = index > 0 ? index - 1 : 0;
+        } else if (activeModuleIndex > index) {
+            // Shift active index if it was after the deleted module
+            activeModuleIndex--;
+        }
+
         curriculumEditRenumberModules();
+
+        const warning = document.getElementById("curriculum-edit-module-warning");
+        if(warning) warning.style.display = allModulesData.length < 2 ? "block" : "none";
+
+        // Re-render tabs and the currently active module
+        renderModuleTabs();
+        renderModuleLessons(activeModuleIndex);
     }
 
-        // ------------------ LESSON FUNCTIONS ------------------
+    function updateLessonDeleteButtons(moduleIndex) {
+        const lessonsContainer = document.getElementById(`curriculum-edit-lessons-${moduleIndex}`);
+        if(!lessonsContainer) return;
+
+        const lessons = lessonsContainer.children;
+        const showDelete = lessons.length > 1; // Show delete buttons only if more than 1 lesson
+
+        Array.from(lessons).forEach((lesson) => {
+            const deleteBtn = lesson.querySelector(".curriculum-edit-lesson-delete-btn");
+            if(deleteBtn){
+                deleteBtn.style.display = showDelete ? 'block' : 'none';
+            }
+        });
+    }
+
+
+    // ------------------ LESSON FUNCTIONS ------------------
     function curriculumEditAddLesson(moduleIndex, lessonData = null) {
         const lessonsContainer = document.getElementById(`curriculum-edit-lessons-${moduleIndex}`);
-        if(!lessonsContainer) return; // guard against null
+        if(!lessonsContainer) return;
         const lessonIndex = lessonsContainer.children.length;
 
         const lessonDiv = document.createElement("div");
@@ -229,8 +513,10 @@
 
         lessonDiv.innerHTML = `
             <div class="curriculum-edit-lesson-header">
-                <button type="button" class="curriculum-edit-lesson-delete-btn" onclick="curriculumEditRemoveLesson(${moduleIndex}, this)">🗑️</button>
+                <button type="button" class="curriculum-edit-lesson-delete-btn">🗑️</button>
             </div>
+
+            <input type="hidden" name="Modules[${moduleIndex}].Lessons[${lessonIndex}].Id" value="${lessonData?.Id || 0}" />
 
             <div class="curriculum-edit-form-row">
                 <div class="curriculum-edit-form-col curriculum-edit-form-group">
@@ -273,13 +559,22 @@
 
         lessonsContainer.appendChild(lessonDiv);
 
-        // If lessonData exists, initialize the lesson type content
+        const textarea = lessonDiv.querySelector("textarea.tinymce-editor");
+        if(textarea){
+            initTinyMCE(textarea);
+        }
+
+        const deleteBtn = lessonDiv.querySelector(".curriculum-edit-lesson-delete-btn");
+        deleteBtn.addEventListener("click", () => {
+            showDeleteModal("lesson", () => curriculumEditRemoveLesson(moduleIndex, deleteBtn));
+        });
+
         if(lessonData){
             curriculumEditHandleLessonTypeChange(lessonDiv.querySelector("select"), moduleIndex, lessonIndex, lessonData);
         }
 
-        // Re-number lessons after adding
         curriculumEditRenumberLessons(moduleIndex);
+        updateLessonDeleteButtons(moduleIndex);
     }
 
     function sessionAlreadyExists(currentModuleIndex, currentLessonIndex){
@@ -296,10 +591,12 @@
     }
 
     function curriculumEditRemoveLesson(moduleIndex, btn) {
+        if (!btn) return; // Safety check
         const lessonsContainer = document.getElementById(`curriculum-edit-lessons-${moduleIndex}`);
         const lessonDiv = btn.closest(".curriculum-edit-lesson-block");
-        if(lessonDiv) lessonDiv.remove();
+        if (lessonDiv) lessonDiv.remove();
         curriculumEditRenumberLessons(moduleIndex);
+        updateLessonDeleteButtons(moduleIndex);
     }
 
     // ------------------ RENUMBERING ------------------
@@ -323,7 +620,7 @@
 
     function curriculumEditRenumberLessons(moduleIndex) {
         const lessonsContainer = document.getElementById(`curriculum-edit-lessons-${moduleIndex}`);
-        if (!lessonsContainer) return; // <-- guard against null
+        if (!lessonsContainer) return;
 
         const lessons = lessonsContainer.children;
         Array.from(lessons).forEach((lesson, i) => {
@@ -339,12 +636,138 @@
             const durationUnit = lesson.querySelector("select[name$='.DurationUnit']");
             if(durationUnit) durationUnit.name = `Modules[${moduleIndex}].Lessons[${i}].DurationUnit`;
 
-            const deleteBtn = lesson.querySelector(".curriculum-edit-lesson-delete-btn");
-            if(deleteBtn) deleteBtn.setAttribute("onclick", `curriculumEditRemoveLesson(${moduleIndex}, this)`);
-
             const quizBuilder = lesson.querySelector(".curriculum-edit-quiz-builder");
             if(quizBuilder) curriculumEditRenumberQuizQuestions(quizBuilder);
         });
+    }
+
+    // ------------------ LESSON INTERACTIVE CONTENTS ------------------
+    function addLessonInteractiveContent(moduleIndex, lessonIndex, data = null){
+        const lessonBlock = document.querySelector(`.curriculum-edit-module[data-index='${moduleIndex}']`)
+                            .querySelector(`.curriculum-edit-lesson-block:nth-child(${lessonIndex+1})`);
+
+        let container = lessonBlock.querySelector(".interactive-contents-container");
+
+        // create container if missing
+        if(!container){
+            const wrapper = document.createElement("div");
+            wrapper.className = "lesson-interactive-contents";
+            wrapper.innerHTML = `
+                <h4>Interactive Contents</h4>
+                <div class="interactive-contents-container"></div>
+                <button type="button" class="curriculum-edit-add-btn" onclick="addLessonInteractiveContent(${moduleIndex}, ${lessonIndex})">+ Add Interactive Content</button>
+            `;
+            lessonBlock.querySelector(".curriculum-edit-lesson-config-container").appendChild(wrapper);
+            container = wrapper.querySelector(".interactive-contents-container");
+        }
+
+        const index = container.children.length;
+        const div = document.createElement("div");
+        div.className = "lesson-interactive-block";
+
+        div.innerHTML = `
+            <div class="curriculum-edit-form-group">
+                <label>Type *</label>
+                <select class="curriculum-edit-form-select"
+                        name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentType"
+                        onchange="handleLessonInteractiveTypeChange(this, ${moduleIndex}, ${lessonIndex}, ${index})" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="Text" ${data?.ContentType==='Text'?'selected':''}>Text</option>
+                    <option value="Link" ${data?.ContentType==='Link'?'selected':''}>Link</option>
+                    <option value="Reflection" ${data?.ContentType==='Reflection'?'selected':''}>Reflection</option>
+                    <option value="Question" ${data?.ContentType==='Question'?'selected':''}>Question</option>
+                </select>
+            </div>
+            <div class="interactive-extra-fields"></div>
+            <div class="interactive-delete-wrapper">
+                <button type="button" class="curriculum-edit-delete-btn" onclick="showDeleteModal('interactive content', () => this.closest('.lesson-interactive-block').remove())">🗑️</button>
+            </div>
+        `;
+
+        container.appendChild(div);
+
+        if(data){
+            const selectEl = div.querySelector("select");
+            handleLessonInteractiveTypeChange(selectEl, moduleIndex, lessonIndex, index, data);
+        }
+
+        // ------------------ INIT TINYMCE IF TYPE IS TEXT ------------------
+        const textarea = div.querySelector("textarea.tinymce-editor");
+        if(textarea){
+            initTinyMCE(textarea);
+        }
+    }
+
+    function handleLessonInteractiveTypeChange(selectEl, moduleIndex, lessonIndex, index, data = null){
+        const container = selectEl.closest(".lesson-interactive-block").querySelector(".interactive-extra-fields");
+        container.innerHTML = '';
+
+        switch(selectEl.value){
+            case 'Text':
+                container.innerHTML = `<div class="curriculum-edit-form-group">
+                    <label>Content *</label>
+                    <textarea class="curriculum-edit-form-control tinymce-editor"
+                              name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
+                              rows="4" required>${data?.ContentText || ''}</textarea>
+                </div>`;
+
+                const textarea = container.querySelector("textarea.tinymce-editor");
+                if(textarea) initTinyMCE(textarea);
+                break;
+            case 'Link':
+                container.innerHTML = `<div class="curriculum-edit-form-group">
+                    <label>Link *</label>
+                    <input type="url" class="curriculum-edit-form-control"
+                           name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
+                           value="${data?.ContentText || ''}" required />
+                </div>`;
+                break;
+            case 'Reflection':
+                container.innerHTML = `<div class="curriculum-edit-form-group">
+                    <label>Minimum Characters *</label>
+                    <input type="number" class="curriculum-edit-form-control"
+                           name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ReflectionMinChars"
+                           value="${data?.ReflectionMinChars || 0}" min="0" required />
+                </div>`;
+                break;
+            case 'Question':
+                const existing = data || {};
+                container.innerHTML = `<div class="curriculum-edit-form-group">
+                    <label>Question *</label>
+                    <input type="text" class="curriculum-edit-form-control"
+                           name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
+                           value="${existing.ContentText || ''}" required />
+                </div>
+                <div class="curriculum-edit-form-group">
+                    <label>Options *</label>
+                    <div class="curriculum-edit-form-row">
+                        ${['A','B','C','D'].map(letter => {
+                            const val = existing[`Option${letter}`] || '';
+                            return `<div style="flex:1;">
+                                <input type="text" class="curriculum-edit-form-control"
+                                       name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].Option${letter}"
+                                       placeholder="Option ${letter}" value="${val}" required />
+                                <input type="radio"
+                                       name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].CorrectAnswer"
+                                       value="${val}" ${existing.CorrectAnswer === val ? 'checked' : ''} /> Correct
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+
+                // Sync radio buttons if option text changes
+                ['A','B','C','D'].forEach(letter => {
+                    const optInput = container.querySelector(`input[name$='Option${letter}']`);
+                    const radio = container.querySelector(`input[type='radio'][name$='CorrectAnswer'][value='${optInput?.value}']`);
+                    if(optInput && radio){
+                        optInput.addEventListener('input', e => {
+                            radio.value = e.target.value;
+                            if(existing.CorrectAnswer === e.target.value) radio.checked = true;
+                        });
+                    }
+                });
+                break;
+        }
     }
 
     // ------------------ LESSON TYPE HANDLER ------------------
@@ -356,47 +779,59 @@
 
         switch(selectEl.value){
             case 'Text':
-                html = `<div class="curriculum-edit-form-group">
-                            <label>Content</label>
-                            <textarea class="curriculum-edit-form-control" name="${nameBase}.ContentText" rows="4" required>${lessonData?.ContentText || ''}</textarea>
-                        </div>`;
-                configContainer.innerHTML = html;
-                break;
-
             case 'Image + Text':
                 html = `<div class="curriculum-edit-form-group">
                             <label>Content</label>
-                            <textarea class="curriculum-edit-form-control" name="${nameBase}.ContentText" rows="4" required>${lessonData?.ContentText || ''}</textarea>
-                        </div>
-                        <div class="curriculum-edit-form-group">
-                            <label>Upload Image</label>
-                            <div style="display:flex; gap:1rem; align-items:center;">
-                                <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-edit-form-control" onchange="previewUploadImage(this)" required/>
-                                <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">
-                                    ${lessonData?.ImageUrl ? `<img src="${lessonData.ImageUrl}" style="max-width:100%; max-height:100%;" />` : '🖼️'}
-                                </div>
-                            </div>
-                            <input type="hidden" name="${nameBase}.ExistingImageUrl" value="${lessonData?.ImageUrl || ''}" />
-                            <span class="file-error" style="color:red; font-size:0.85rem; display:none;">Invalid file</span>
+                            <textarea class="curriculum-edit-form-control tinymce-editor"
+                                      name="${nameBase}.ContentText"
+                                      rows="4" required>${lessonData?.ContentText || ''}</textarea>
                         </div>`;
+                if(selectEl.value === 'Image + Text'){
+                    html += `<div class="curriculum-edit-form-group">
+                                <label>Upload Image</label>
+                                <div style="display:flex; gap:1rem; align-items:center;">
+                                    <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-edit-form-control" onchange="previewUploadImage(this)" />
+                                    <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">
+                                        ${lessonData?.ExistingImageUrl  ? `<img src="${lessonData.ExistingImageUrl}" style="max-width:100%; max-height:100%;" />` : '🖼️'}
+                                    </div>
+                                </div>
+                                <input type="hidden" name="${nameBase}.ExistingImageUrl" value="${lessonData?.ExistingImageUrl ?? lessonData?.MediaUrl ?? ''}" />
+                            </div>`;
+                }
+
+                // interactive container
+                html += `<div class="lesson-interactive-contents">
+                            <h4>Interactive Contents</h4>
+                            <div class="interactive-contents-container"></div>
+                            <button type="button" class="curriculum-edit-add-btn" onclick="addLessonInteractiveContent(${moduleIndex}, ${lessonIndex})">+ Add Interactive Content</button>
+                        </div>`;
+
                 configContainer.innerHTML = html;
+
+                // preload existing lesson interactives
+                if(lessonData?.InteractiveContents?.length){
+                    lessonData.InteractiveContents.forEach(ic => {
+                        addLessonInteractiveContent(moduleIndex, lessonIndex, ic);
+                    });
+                }
                 break;
 
             case 'Video + Text':
                 html = `<div class="curriculum-edit-form-group">
                             <label>Content</label>
-                            <textarea class="curriculum-edit-form-control" name="${nameBase}.ContentText" rows="4" required>${lessonData?.ContentText || ''}</textarea>
+                            <textarea class="curriculum-edit-form-control tinymce-editor"
+                                      name="${nameBase}.ContentText"
+                                      rows="4" required>${lessonData?.ContentText || ''}</textarea>
                         </div>
                         <div class="curriculum-edit-form-group">
                             <label>Upload Video</label>
                             <div style="display:flex; gap:1rem; align-items:center;">
-                                <input type="file" name="${nameBase}.VideoFile" accept="video/*" class="curriculum-edit-form-control" onchange="previewUploadVideo(this)" required/>
+                                <input type="file" name="${nameBase}.VideoFile" accept="video/*" class="curriculum-edit-form-control" onchange="previewUploadVideo(this)" />
                                 <div class="curriculum-upload-preview" style="width:120px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#aaa;">
-                                    ${lessonData?.VideoUrl ? `<video src="${lessonData.VideoUrl}" style="max-width:100%; max-height:100%;" controls></video>` : '🎬'}
+                                    ${lessonData?.ExistingVideoUrl  ? `<video src="${lessonData.ExistingVideoUrl}" style="max-width:100%; max-height:100%;" controls></video>` : '🎬'}
                                 </div>
                             </div>
-                            <input type="hidden" name="${nameBase}.ExistingVideoUrl" value="${lessonData?.VideoUrl || ''}" />
-                            <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
+                            <input type="hidden" name="${nameBase}.ExistingVideoUrl" value="${lessonData?.ExistingVideoUrl ?? lessonData?.MediaUrl ?? ''}" />
                         </div>`;
                 configContainer.innerHTML = html;
                 break;
@@ -407,9 +842,8 @@
                             <button type="button" class="curriculum-edit-add-btn" onclick="curriculumEditAddQuizQuestion(this)">+ Add Question</button>
                         </div>`;
                 configContainer.innerHTML = html;
-
                 const quizBuilder = configContainer.querySelector(".curriculum-edit-quiz-builder");
-                if (lessonData?.QuizQuestions?.length) {
+                if(lessonData?.QuizQuestions?.length){
                     setTimeout(() => {
                         lessonData.QuizQuestions.forEach((q, i) => {
                             curriculumEditAddQuizQuestionToBuilder(quizBuilder.getAttribute("data-namebase"), q, i);
@@ -425,14 +859,20 @@
                 configContainer.innerHTML = html;
                 break;
         }
+
+        // ---------- SAFELY initialize TinyMCE only if there is a textarea ----------
+        const textarea = lessonBlock.querySelector(".tinymce-editor");
+        if(textarea){
+            initTinyMCE(textarea);
+        }
     }
 
-    // ------------------ PREVIEW & FILE VALIDATION HANDLERS ------------------
+        // ------------------ PREVIEW & FILE VALIDATION HANDLERS ------------------
     function previewUploadImage(input) {
         const previewDiv = input.parentNode.querySelector(".curriculum-upload-preview");
         const errorSpan = input.closest(".curriculum-edit-form-group").querySelector(".file-error");
         const file = input.files[0];
-        const maxSizeKB = 700; // 700 KB
+        const maxSizeMB = 20; // 20 MB
         const allowedTypes = ['image/jpeg','image/png','image/gif','image/webp'];
 
         if(!file) return;
@@ -447,9 +887,9 @@
             return;
         }
 
-        if(file.size > maxSizeKB * 1024){
+        if(file.size > maxSizeMB * 1024 * 1024){
             if(errorSpan) {
-                errorSpan.textContent = `File too large. Max ${maxSizeKB} KB.`;
+                errorSpan.textContent = `File too large. Max ${maxSizeMB} MB.`;
                 errorSpan.style.display='block';
             }
             input.value = '';
@@ -471,7 +911,7 @@
         const previewDiv = input.parentNode.querySelector(".curriculum-upload-preview");
         const errorSpan = input.closest(".curriculum-edit-form-group").querySelector(".file-error");
         const file = input.files[0];
-        const maxSizeMB = 50;
+        const maxSizeMB = 200;
         const allowedTypes = ['video/mp4','video/webm','video/ogg'];
 
         if(!file) return;
@@ -522,7 +962,7 @@
         qBlock.className = "curriculum-edit-quiz-question";
 
         qBlock.innerHTML = `
-            <button type="button" class="curriculum-edit-quiz-delete-btn" onclick="this.closest('.curriculum-edit-quiz-question').remove(); curriculumEditRenumberQuizQuestions(this.closest('.curriculum-edit-quiz-builder'));">🗑️</button>
+            <button type="button" class="curriculum-edit-quiz-delete-btn" onclick="showDeleteModal('quiz question', () => { this.closest('.curriculum-edit-quiz-question').remove(); curriculumEditRenumberQuizQuestions(this.closest('.curriculum-edit-quiz-builder')); })">🗑️</button>
             <div class="curriculum-edit-form-group">
                 <label>Question ${index+1} *</label>
                 <input type="text" name="${nameBase}.QuizQuestions[${index}].QuestionText" class="curriculum-edit-form-control" value="${questionData?.QuestionText || ''}" required />
@@ -535,15 +975,13 @@
                         return `<div style="flex:1;">
                             <input type="text" name="${nameBase}.QuizQuestions[${index}].Option${letter}" class="curriculum-edit-form-control" placeholder="Option ${letter}" value="${val}" required />
                             <input type="radio"
-                               name="${nameBase}.QuizQuestions[${index}].CorrectAnswer"
-                               data-letter="${letter}"
-                               value="${val}"
-                               ${questionData?.CorrectAnswer === val ? 'checked' : ''} />
+                                   name="${nameBase}.QuizQuestions[${index}].CorrectAnswer"
+                                   value="${val}" ${questionData?.CorrectAnswer === val ? 'checked' : ''} /> Correct
                         </div>`;
                     }).join('')}
                 </div>
             </div>
-        `;
+                    `;
         container.appendChild(qBlock);
 
         // Add listener so radio value updates if option text changes
@@ -591,14 +1029,20 @@
 
     // ------------------ PRELOAD MODULES & FINAL PROJECT ------------------
     document.addEventListener("DOMContentLoaded", () => {
+
+        const modules = @Html.Raw(JsonSerializer.Serialize(Model.Modules ?? []));
+        modules.forEach(m => curriculumEditAddModule(m));
+
+        // Set first module active by default
+        activeModuleIndex = 0;
+        renderModuleTabs();
+        renderModuleLessons(activeModuleIndex);
+
         const fpData = @Html.Raw(JsonSerializer.Serialize(Model.FinalProject ?? new SkillBuilder.Models.ViewModels.FinalProjectViewModel()));
         const fpTitle = document.querySelector("input[name='FinalProject.Title']");
         const fpDesc = document.querySelector("textarea[name='FinalProject.Description']");
         if(fpTitle) fpTitle.value = fpData.Title || '';
         if(fpDesc) fpDesc.value = fpData.Description || '';
-
-        const modules = @Html.Raw(JsonSerializer.Serialize(Model.Modules ?? []));
-        modules.forEach(m => curriculumEditAddModule(m));
 
         const form = document.getElementById("edit-course-form");
         const submitBtn = document.getElementById("editBtn");
@@ -606,17 +1050,16 @@
         function validateCurriculumEditForm() {
             let allValid = true;
 
-            // Check all required fields
+            // Validate all required inputs (visible fields only)
             const requiredFields = form.querySelectorAll("input[required], select[required], textarea[required]");
             requiredFields.forEach(f => {
-                if (f.offsetParent !== null && (!f.value || f.value.trim() === "")) allValid = false;
+                if(f.offsetParent !== null && (!f.value || f.value.trim() === "")) allValid = false;
             });
 
-            // Only count modules excluding final project
+            // Validate modules (exclude final project)
             const modulesEls = form.querySelectorAll(".curriculum-edit-module:not(#curriculum-edit-final-project-module)");
-            if (modulesEls.length < 2) allValid = false;
+            if(modulesEls.length < 2) allValid = false;
 
-            // Validate lessons and quizzes
             modulesEls.forEach(mod => {
                 const lessons = mod.querySelectorAll(".curriculum-edit-lesson-block");
                 lessons.forEach(lesson => {
@@ -636,18 +1079,17 @@
                 });
             });
 
-            // Check session uniqueness
+            // Validate session lessons (max 1 session)
             const sessionLessons = document.querySelectorAll(".curriculum-edit-module .curriculum-edit-lesson-block select");
             let sessionCount = 0;
-            sessionLessons.forEach(s => {
-                if(s.value === "Session") sessionCount++;
-            });
+            sessionLessons.forEach(s => { if(s.value === "Session") sessionCount++; });
             if(sessionCount > 1) allValid = false;
 
-            // Final project fields
+            // Validate Final Project (even if tab not active)
             if(!fpTitle || !fpTitle.value.trim()) allValid=false;
             if(!fpDesc || !fpDesc.value.trim()) allValid=false;
 
+            // Enable/disable submit button
             submitBtn.disabled = !allValid;
 
             // Show warning if less than 2 modules
@@ -656,9 +1098,16 @@
         }
 
         validateCurriculumEditForm();
+
+        // Re-validate on input/change
         form.addEventListener("input", validateCurriculumEditForm);
         form.addEventListener("change", validateCurriculumEditForm);
+
+        // Observe dynamic changes (e.g., adding/removing lessons/modules)
         const observer = new MutationObserver(validateCurriculumEditForm);
         observer.observe(form, {childList:true, subtree:true});
+
+        initTinyMCE('.tinymce-editor');
     });
+
 </script>

@@ -223,6 +223,13 @@
                 <p class="epf-warning" id="epf-lastname-warning">⚠️ Last Name must contain letters only.</p>
             </div>
 
+            <!-- Birth Date -->
+            <div class="epf-field">
+                <label for="BirthDate">Birth Date</label>
+                <input type="date" id="BirthDate" name="BirthDate" max="" class="epf-input"
+                       value="@(Model.User.BirthDate.HasValue? Model.User.BirthDate.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
             <!-- Password Section -->
             <div class="epf-password-section" id="epf-password-section">
                 <div class="epf-password-field">
@@ -300,6 +307,9 @@
     const emailInput = document.getElementById('Email');
     const firstNameInput = document.getElementById('FirstName');
     const lastNameInput = document.getElementById('LastName');
+    const birthDateInput = document.getElementById('BirthDate');
+    const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+    birthDateInput.setAttribute('max', today);
     const currentPassword = document.getElementById('CurrentPassword'); // Added
     const currentWarning = document.getElementById('epf-current-warning'); // Add <p id="epf-current-warning">⚠️ Wrong password</p> in your HTML
     const newPassword = document.getElementById('NewPassword');
@@ -352,7 +362,7 @@
 
     avatarInput.addEventListener('change', e => {
         const file = e.target.files[0];
-        const maxSizeKB = 700;
+        const maxSizeMB = 20;
 
         if (!file) {
             avatarWarning.innerText = '';
@@ -361,12 +371,12 @@
             return;
         }
 
-        if (file.size / 1024 > maxSizeKB) {
-            avatarWarning.innerText = `File size exceeds ${maxSizeKB} KB. Please select a smaller image.`;
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            avatarWarning.innerText = `File size exceeds ${maxSizeMB} MB. Please select a smaller image.`;
             avatarPreview.src = "@Model.User.UserAvatar"; // reset preview
             e.target.value = ''; // clear file input
             submitBtn.disabled = true;
-        } else {
+        }  else {
             avatarWarning.innerText = '';
             const reader = new FileReader();
             reader.onload = ev => avatarPreview.src = ev.target.result;
@@ -414,6 +424,8 @@
     lastNameInput.addEventListener('input', () => {
         validateText(lastNameInput, document.getElementById('epf-lastname-warning'), /^[A-Za-z\s-]+$/);
     });
+
+    birthDateInput.addEventListener('input', markFormChanged);
 
     // Password checklist
     function validatePassword() {
@@ -515,16 +527,27 @@
         });
     });
 
-    // ------------------ BEFOREUNLOAD WARNING ------------------
-    window.addEventListener('beforeunload', function (e) {
+    // --- BEFOREUNLOAD WARNING ---
+    let beforeUnloadListener = function (e) {
         if (formChanged) {
             e.preventDefault();
             e.returnValue = ""; // Standard for most browsers
         }
-    });
+    };
 
-    // Disable beforeunload on successful form submission
-    form.addEventListener('submit', () => {
-        window.removeEventListener('beforeunload', () => {});
+    window.addEventListener('beforeunload', beforeUnloadListener);
+
+    // Remove listener before actual form submission
+    modalConfirm.addEventListener('click', () => {
+        modalOverlay.style.display = 'none';
+
+        // Disable the submit button to prevent multiple clicks
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...'; // optional: indicate loading
+
+        // Remove beforeunload listener so it doesn't pop up
+        window.removeEventListener('beforeunload', beforeUnloadListener);
+
+        form.submit();
     });
 </script>
