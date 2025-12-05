@@ -42,26 +42,37 @@
         </div>
     }
 
-    <!-- Summary cards -->
-    <div style="display:flex; background:#F9FAFB; border-radius:12px; padding:24px; justify-content:space-between; box-shadow:0 2px 12px rgba(0,0,0,0.1); margin-bottom:32px;">
-        <div style="text-align:center; flex:1;">
-            <div id="totalCommunities" style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalCommunities</div>
-            <div style="color:#555; margin-top:4px;">Total Communities</div>
-        </div>
-        <div style="text-align:center; flex:1;">
-            <div id="totalPosts" style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalPosts</div>
-            <div style="color:#555; margin-top:4px;">
-                Total General Posts
+    <!-- Community Summary Cards -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:20px;">
+
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="totalCommunities" style="font-size:1.75rem; font-weight:700; color:#111;">
+                @Model.CommunityAnalytics?.TotalCommunities
             </div>
+            <div style="color:#666;">Total Communities</div>
         </div>
-        <div style="text-align:center; flex:1;">
-            <div id="flaggedPosts" style="font-weight:700; font-size:2rem; color:#111;">@flaggedCount</div>
-            <div style="color:#555; margin-top:4px;">Flagged Posts</div>
+
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="totalPosts" style="font-size:1.75rem; font-weight:700; color:#111;">
+                @Model.CommunityAnalytics?.TotalPosts
+            </div>
+            <div style="color:#666;">Total General Posts</div>
         </div>
+
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="flaggedPosts" style="font-size:1.75rem; font-weight:700; color:#111;">
+                @flaggedCount
+            </div>
+            <div style="color:#666;">Flagged Posts</div>
+        </div>
+
     </div>
 
     <!-- Communities with Highest Engagement and Members Distribution -->
-    <div style="display:flex; gap:24px; margin-bottom:32px;">
+    <div style="display:flex; gap:24px; margin-bottom:32px; margin-top: 25px;">
         <!-- Communities Table -->
         <div style="flex:3; border-radius:8px; padding:20px; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,0.1); max-width: 600px;">
             <h3 style="font-weight:600; font-size:1.25rem; margin-bottom:16px;">Communities with Highest Engagement</h3>

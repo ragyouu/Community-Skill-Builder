@@ -25,32 +25,36 @@
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:20px;">
 
         <!-- Total Learners -->
-        <div class="card" style="...">
-            <div id="totalLearners" style="font-size:2rem; font-weight:700;">
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="totalLearners" style="font-size:1.75rem; font-weight:700;">
                 @Model.Analytics.TotalLearners
             </div>
             <div style="color:#666;">Total Number of Learners</div>
         </div>
 
         <!-- Total Enrolled Students -->
-        <div class="card" style="...">
-            <div id="totalEnrollments" style="font-size:2rem; font-weight:700;">
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="totalEnrollments" style="font-size:1.75rem; font-weight:700;">
                 @Model.Analytics.TotalEnrollments
             </div>
             <div style="color:#666;">Enrolled Students</div>
         </div>
 
         <!-- Unenrolled Students -->
-        <div class="card" style="...">
-            <div id="unenrolledStudents" style="font-size:2rem; font-weight:700;">
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="unenrolledStudents" style="font-size:1.75rem; font-weight:700;">
                 @Model.Analytics.LearnerCharts.UnenrolledStudents
             </div>
             <div style="color:#666;">Unenrolled Students</div>
         </div>
 
-        <!-- Student Enrollment Rate -->
-        <div class="card" style="...">
-            <div id="enrollmentRate" style="font-size:2rem; font-weight:700;">
+        <!-- Enrollment Rate -->
+        <div class="card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div id="enrollmentRate" style="font-size:1.75rem; font-weight:700;">
                 @Model.Analytics.LearnerCharts.EnrollmentRate%
             </div>
             <div style="color:#666;">Enrollment Rate</div>
@@ -63,7 +67,7 @@
             margin-top:25px; box-shadow:0 2px 12px rgba(0,0,0,0.1);
             height:380px; width:100%;">
         <h3 style="font-weight:600; margin-bottom: 1rem;">Average Enrollment Based on Top Courses</h3>
-        <canvas id="courseLineChart" style="width:100%; height:100%; padding:0; margin:0;" "></canvas>
+        <canvas id="courseLineChart" style="width:100%; height:100%; padding-bottom: 20px; margin:0;" "></canvas>
     </div>
 
     <div style="display:grid; grid-template-columns:1fr 2fr; gap:20px; margin-top:25px;">

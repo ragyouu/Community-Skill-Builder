@@ -420,11 +420,6 @@ document.addEventListener("DOMContentLoaded", function () {
             age--; // Birthday hasn’t occurred yet this year
         }
 
-        if (age < 18) {
-            birthdateError.textContent = "You must be at least 18 years old.";
-            return false;
-        }
-
         birthdateError.textContent = "";
         return true;
     }

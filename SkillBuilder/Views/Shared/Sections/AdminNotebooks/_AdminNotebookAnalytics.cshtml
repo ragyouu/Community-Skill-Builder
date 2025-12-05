@@ -99,8 +99,6 @@
 
     .stat-label {
         color: var(--muted);
-        font-size: .85rem;
-        margin-bottom: .45rem;
     }
 
     .stat-value {
@@ -305,26 +303,32 @@
     </div>
 
     <!-- TOP STATS -->
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-label">Total Learners</div>
-            <div class="stat-value">@totalLearners</div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:20px;">
+
+        <div class="stat-card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div class="stat-value" style="font-size:1.75rem; font-weight:700;">@totalLearners</div>
+            <div class="stat-label" style="color:#666;">Total Learners</div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-label">Total Artisans</div>
-            <div class="stat-value">@totalArtisans</div>
+        <div class="stat-card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div class="stat-value" style="font-size:1.75rem; font-weight:700;">@totalArtisans</div>
+            <div class="stat-label" style="color:#666;">Total Artisans</div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-label">Total Courses</div>
-            <div class="stat-value">@totalCourses</div>
+        <div class="stat-card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div class="stat-value" style="font-size:1.75rem; font-weight:700;">@totalCourses</div>
+            <div class="stat-label" style="color:#666;">Total Courses</div>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-label">Total Communities</div>
-            <div class="stat-value">@communityCount</div>
+        <div class="stat-card" style="background:#fff; padding:20px; border-radius:12px;
+         box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
+            <div class="stat-value" style="font-size:1.75rem; font-weight:700;">@communityCount</div>
+            <div class="stat-label" style="color:#666;">Total Communities</div>
         </div>
+
     </div>
 
     <!-- middle -->

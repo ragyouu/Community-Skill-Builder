@@ -304,7 +304,7 @@
                     <span id="lastname-error" class="text-error"></span>
 
                     <label for="signup-birthdate">Birthdate</label>
-                    <input type="date" id="signup-birthdate" name="BirthDate" required />
+                    <input type="date" id="signup-birthdate" name="BirthDate" required max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     <span id="birthdate-error" class="text-error" style="margin-top: 0.3rem;"></span>
 
                     <label for="signup-email">Email Address</label>
@@ -434,6 +434,11 @@
         const socialSection = document.querySelector(".social-login");
         const separator = document.querySelector(".separator");
         const continueEmailBtn = document.querySelector(".continue-email-btn");
+        const birthdateInput = document.getElementById("signup-birthdate");
+        if (birthdateInput) {
+            const today = new Date().toISOString().split("T")[0];
+            birthdateInput.setAttribute("max", today);
+        }
 
         if (signupInputs) signupInputs.style.display = "block"; // show signup form
         // if (backSocialBtn) backSocialBtn.style.display = "none"; hide back button
