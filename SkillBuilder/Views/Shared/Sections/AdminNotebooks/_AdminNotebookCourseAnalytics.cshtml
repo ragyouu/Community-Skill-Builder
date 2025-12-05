@@ -14,8 +14,9 @@
                 <option value="today">Today</option>
                 <option value="yesterday">Yesterday</option>
                 <option value="lastweek">Last Week</option>
-                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastmonth">Last Month</option>
                 <option value="lastyear">Last Year</option>
+                <option value="lastyear" selected>Overall</option>
             </select>
         </div>
     </div>
@@ -32,9 +33,9 @@
             <div style="color:#666;">Completion Rate</div>
         </div>
 
-        <div class="card" id="growthCard" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
-            <div id="growthValue" style="font-size:1.75rem; font-weight:700;">0%</div>
-            <div style="color:#666;">Enrollment Growth</div>
+        <div class="card" id="enrollmentCard" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+            <div id="enrollmentValue" style="font-size:1.75rem; font-weight:700;">0</div>
+            <div style="color:#666;">Total Enrollments</div>
         </div>
     </div>
 
@@ -226,15 +227,14 @@
 
     // ✅ Updated to calculate based on actual IsCompleted enrollments
     function setTopCards(analytics) {
-        const enrollments = analytics?.TopCourses?.reduce((acc, c) => acc + (c.TotalEnroll || 0), 0) || 0;
+        const enrollments = analytics?.TotalEnrollments || 0;
         const completed = analytics?.TopCourses?.reduce((acc, c) => acc + (c.CompletedEnrollments || 0), 0) || 0;
         const completionRate = enrollments ? Math.round((completed / enrollments) * 100) : 0;
-        const growth = calculateEnrollmentGrowth(analytics);
 
         const cv = document.getElementById('completionValue');
-        const gv = document.getElementById('growthValue');
+        const ev = document.getElementById('enrollmentValue');
         if (cv) cv.textContent = completionRate + '%';
-        if (gv) gv.textContent = growth + '%';
+        if (ev) ev.textContent = enrollments;
     }
 
     // ✅ Updated ranking table to use CompletedEnrollments instead of AverageRating
@@ -290,11 +290,19 @@
 
         document.getElementById('dateRange').addEventListener('change', async e => {
             const range = e.target.value;
-            const analytics = await fetchAnalytics(range);
-            if (analytics) {
-                setTopCards(analytics);
-                renderCategoryChart(analytics);
-                renderRankingTable(analytics);
+            try {
+                const res = await fetch(`/AdminProfile/GetAnalyticsByRange?range=${range}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!res.ok) throw new Error('Failed to fetch analytics');
+
+                const analytics = await res.json();
+
+                document.querySelector('#completionValue').textContent = analytics.completionRate + '%';
+                document.querySelector('#enrollmentValue').textContent = analytics.totalEnrollments;
+                document.querySelector('.card div:first-child').textContent = analytics.totalActiveCourses;
+            } catch (err) {
+                console.error(err);
             }
         });
     });

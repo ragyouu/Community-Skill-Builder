@@ -926,17 +926,145 @@ namespace SkillBuilder.Controllers
             public string Description { get; set; } = "";
         }
 
-        [HttpGet("Forum/{id}")]
-        public IActionResult Forum(int id)
+        // GET: /Courses/Forum/5
+        [HttpGet("Forum/{courseId}")]
+        public async Task<IActionResult> Forum(int courseId)
         {
-            var course = _context.Courses.FirstOrDefault(c => c.Id == id);
-            if (course == null)
-                return NotFound();
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return NotFound();
 
-            ViewBag.CourseId = id;
-            ViewBag.CourseTitle = course.Title; // pass the title
+            var posts = await _context.CourseForumPosts
+                .Where(p => p.CourseId == courseId)
+                .Include(p => p.User)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
 
-            return View("~/Views/Shared/Sections/_CourseForum.cshtml");
+            ViewBag.CourseTitle = course.Title;
+            ViewBag.CourseId = courseId;
+
+            return View("~/Views/Shared/Sections/_CourseForum.cshtml", posts);
+        }
+
+        public class ForumPostRequest
+        {
+            public string Content { get; set; }
+        }
+
+        [HttpPost("Forum/{courseId}")]
+        public async Task<IActionResult> AddForumPost(int courseId, [FromBody] ForumPostRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Content))
+                return BadRequest("Content is empty");
+
+            var userId = User.FindFirstValue("UserId");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var post = new CourseForumPost
+            {
+                CourseId = courseId,
+                UserId = userId,
+                Content = request.Content,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.CourseForumPosts.Add(post);
+            await _context.SaveChangesAsync();
+
+            // Include User navigation to render name in partial view
+            await _context.Entry(post).Reference(p => p.User).LoadAsync();
+
+            return Json(new
+            {
+                id = post.Id,
+                content = post.Content,
+                createdAt = post.CreatedAt.ToString("MMM dd, yyyy"),
+                userName = post.User.FirstName + " " + post.User.LastName,
+                userRole = post.User.Role
+            });
+        }
+
+        [HttpPost("UploadForumMedia")]
+        [AllowAnonymous] // Optional: allow anonymous uploads too
+        public async Task<IActionResult> UploadForumMedia(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { location = "" });
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var fileUrl = $"/assets/uploads/{fileName}";
+            return Json(new { location = fileUrl });
+        }
+
+        public class EditForumPostRequest
+        {
+            public string Content { get; set; } = "";
+        }
+
+        [HttpPut("Forum/Edit/{postId}")]
+        public async Task<IActionResult> EditForumPost(int postId, [FromBody] ForumPostRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Content))
+                return BadRequest(new { success = false, message = "Content cannot be empty." });
+
+            var userId = User.FindFirstValue("UserId");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var post = await _context.CourseForumPosts
+                .FirstOrDefaultAsync(p => p.Id == postId);
+
+            if (post == null)
+                return NotFound(new { success = false, message = "Post not found." });
+
+            if (post.UserId != userId)
+                return Forbid();
+
+            post.Content = request.Content;
+            post.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                postId = post.Id,
+                content = post.Content,
+                updatedAt = post.UpdatedAt?.ToString("MMM dd, yyyy HH:mm")
+            });
+        }
+
+        [HttpDelete("Forum/Delete/{postId}")]
+        public async Task<IActionResult> DeleteForumPost(int postId)
+        {
+            var userId = User.FindFirstValue("UserId");
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var post = await _context.CourseForumPosts
+                .FirstOrDefaultAsync(p => p.Id == postId);
+
+            if (post == null)
+                return NotFound(new { success = false, message = "Post not found." });
+
+            if (post.UserId != userId)
+                return Forbid();
+
+            _context.CourseForumPosts.Remove(post);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Post deleted successfully." });
         }
     }
 }

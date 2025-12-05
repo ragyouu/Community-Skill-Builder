@@ -12,6 +12,7 @@ namespace SkillBuilder.Services
     public interface IAnalyticsService
     {
         Task<AnalyticsOverviewDto> GetOverviewAsync(int monthsBack = 6);
+        Task<AnalyticsOverviewDto> GetOverviewByDateAsync(string range);
     }
 
     public class AnalyticsService : IAnalyticsService
@@ -168,11 +169,13 @@ namespace SkillBuilder.Services
                 .OrderBy(x => x.Year).ThenBy(x => x.Month)
                 .ToList();
 
-            result.EnrollmentGrowth = monthlyGroups.Count >= 2
-                ? (monthlyGroups[monthlyGroups.Count - 2].Count == 0
-                    ? (monthlyGroups.Last().Count > 0 ? 100 : 0)
-                    : (int)Math.Round((double)(monthlyGroups.Last().Count - monthlyGroups[monthlyGroups.Count - 2].Count) / monthlyGroups[monthlyGroups.Count - 2].Count * 100))
-                : 0;
+            //result.EnrollmentGrowth = monthlyGroups.Count >= 2
+            //    ? (monthlyGroups[monthlyGroups.Count - 2].Count == 0
+            //        ? (monthlyGroups.Last().Count > 0 ? 100 : 0)
+            //        : (int)Math.Round((double)(monthlyGroups.Last().Count - monthlyGroups[monthlyGroups.Count - 2].Count) / monthlyGroups[monthlyGroups.Count - 2].Count * 100))
+            //    : 0;
+
+            result.TotalEnrollments = filteredEnrollments.Count;
 
             var monthList = new List<MonthlyEnrollmentDto>();
             for (int i = 0; i < monthsBack; i++)
@@ -373,6 +376,101 @@ namespace SkillBuilder.Services
             result.TopCommunities = topCommunities;
 
             return result;
+        }
+
+        public async Task<AnalyticsOverviewDto> GetOverviewByDateAsync(string range)
+        {
+            DateTime start = range switch
+            {
+                "today" => DateTime.UtcNow.Date,
+                "yesterday" => DateTime.UtcNow.Date.AddDays(-1),
+                "lastweek" => DateTime.UtcNow.Date.AddDays(-7),
+                "lastmonth" => DateTime.UtcNow.Date.AddMonths(-1),
+                "lastyear" => DateTime.UtcNow.Date.AddYears(-1),
+                "overall" => DateTime.MinValue,
+                _ => DateTime.UtcNow.Date.AddMonths(-1)
+            };
+            DateTime end = DateTime.UtcNow;
+
+            var dto = await GetOverviewAsync();
+
+            // --- LEARNERS ---
+            var learners = await _db.Users
+                .Where(u => u.Role == "Learner" && !u.IsArchived && u.CreatedAt >= start && u.CreatedAt <= end)
+                .Include(u => u.Enrollments)
+                .ToListAsync();
+
+            dto.TotalLearners = learners.Count;
+
+            // Total enrolled students within range
+            var totalEnrolledStudents = learners.Count(u => u.Enrollments.Any(e => e.EnrolledAt >= start && e.EnrolledAt <= end));
+            dto.TotalEnrollments = totalEnrolledStudents;
+
+            // Unenrolled students = total learners - enrolled learners
+            dto.LearnerCharts.UnenrolledStudents = dto.TotalLearners - totalEnrolledStudents;
+
+            // Enrollment rate = enrolled / total learners * 100
+            dto.LearnerCharts.EnrollmentRate = dto.TotalLearners > 0
+                ? Math.Round((double)totalEnrolledStudents / dto.TotalLearners * 100, 2)
+                : 0;
+
+            // --- COURSES & ARTISANS ---
+            dto.TotalArtisans = await _db.Artisans
+                .Where(a => !a.IsArchived && a.User != null && a.User.CreatedAt >= start && a.User.CreatedAt <= end)
+                .CountAsync();
+
+            var courses = await _db.Courses
+                .Where(c => !c.IsArchived)
+                .Include(c => c.Enrollments)
+                .ToListAsync();
+
+            // Total Courses in range
+            dto.TotalCourses = courses.Count(c => c.CreatedAt >= start && c.CreatedAt <= end);
+
+            // Total Published Courses
+            dto.PublishedCourses = courses.Count(c => c.IsPublished && c.CreatedAt >= start && c.CreatedAt <= end);
+            dto.UnpublishedCourses = dto.TotalCourses - dto.PublishedCourses;
+
+            // --- TOP CARDS DYNAMIC CALCULATIONS ---
+            var filteredEnrollments = courses
+                .SelectMany(c => c.Enrollments)
+                .Where(e => e.EnrolledAt >= start && e.EnrolledAt <= end)
+                .ToList();
+
+            var totalEnrollmentsCount = filteredEnrollments.Count;
+            var completedEnrollmentsCount = filteredEnrollments.Count(e => e.IsCompleted);
+
+            dto.CompletionRate = totalEnrollmentsCount > 0
+                ? (int)Math.Round((double)completedEnrollmentsCount / totalEnrollmentsCount * 100)
+                : 0;
+
+            dto.TotalEnrollments = filteredEnrollments.Count;
+
+            //// Enrollment Growth
+            //var monthlyGroups = filteredEnrollments
+            //    .GroupBy(e => new { e.EnrolledAt.Year, e.EnrolledAt.Month })
+            //    .Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count() })
+            //    .OrderBy(x => x.Year).ThenBy(x => x.Month)
+            //    .ToList();
+
+            //dto.EnrollmentGrowth = monthlyGroups.Count >= 2
+            //    ? (monthlyGroups[monthlyGroups.Count - 2].Count == 0
+            //        ? (monthlyGroups.Last().Count > 0 ? 100 : 0)
+            //        : (int)Math.Round((double)(monthlyGroups.Last().Count - monthlyGroups[monthlyGroups.Count - 2].Count)
+            //            / monthlyGroups[monthlyGroups.Count - 2].Count * 100))
+            //    : 0;
+
+            // --- PENDING APPLICATIONS ---
+            dto.PendingArtisanApplications = await _db.ArtisanApplications
+                .CountAsync(a => a.Status == "Pending" && a.SubmittedAt >= start && a.SubmittedAt <= end);
+
+            // --- ARTISAN RATINGS ---
+            dto.AverageArtisanRating = await _db.CourseReviews
+                .Where(r => r.CreatedAt >= start && r.CreatedAt <= end)
+                .DefaultIfEmpty()
+                .AverageAsync(r => r == null ? 0 : r.Rating);
+
+            return dto;
         }
     }
 }

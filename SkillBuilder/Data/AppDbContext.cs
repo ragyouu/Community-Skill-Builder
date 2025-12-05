@@ -19,6 +19,7 @@ namespace SkillBuilder.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<AboutFeature> AboutFeatures { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseForumPost> CourseForumPosts { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CourseModule> CourseModules { get; set; }
         public DbSet<CourseMaterial> CourseMaterials { get; set; }

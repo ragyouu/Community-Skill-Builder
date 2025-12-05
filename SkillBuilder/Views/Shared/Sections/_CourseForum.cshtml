@@ -1,32 +1,30 @@
-﻿@{
-    ViewData["Title"] = "Course Forum";
+﻿@model List<SkillBuilder.Models.CourseForumPost>
 
-    // Dummy posts
-    var forumPosts = new[]
-    {
-        new { Id = 1, Name="Sample Name", Role="Learner", Date="Nov 30, 2025", Content="Ayay! bagong thread na naman.. hehehe.. BTW kahit saang way naman eh okei lang sa atin, Cruising speed lang naman tayo at hindi magmamadali.. basta ako na lang ang sweeper as always.", Likes=10 },
-        new { Id = 2, Name="Sample Name", Role="Learner", Date="Nov 28, 2025", Content="May nakita ako for beginners like me yung Street Smarts do's and don'ts sa motorcycle...", Likes=8 },
-        new { Id = 3, Name="Sample Name", Role="Learner", Date="Nov 26, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.", Likes=7 },
-        new { Id = 4, Name="Sample Name", Role="Learner", Date="Nov 24, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.", Likes=6 },
-        new { Id = 5, Name="Sample Name", Role="Learner", Date="Nov 24, 2025", Content="Lorem ipsum dolor sit amet consectetur adipiscing elit. In id cursus mi pretium tellus duis convallis...", Likes=5 }
-    };
+@{
+    ViewData["Title"] = "Course Forum";
+    ViewData["UseCourseNavbar"] = true;
+    int postsPerPage = 10;
+    var sortedPosts = (Model ?? new List<SkillBuilder.Models.CourseForumPost>())
+                        .OrderByDescending(p => p.CreatedAt)
+                        .ToList();
+    int totalPages = (int)Math.Ceiling((double)sortedPosts.Count / postsPerPage);
 }
 
 <style>
-    .forum-container {
+    .course-forum-container {
         width: 100%;
         max-width: 1500px;
         margin: 6rem auto;
     }
 
-    .forum-header {
+    .course-forum-header {
         display: flex;
         align-items: center;
         gap: 1rem;
         margin-bottom: 2rem;
     }
 
-        .forum-header button {
+        .course-forum-header button {
             background: none;
             border: none;
             cursor: pointer;
@@ -34,13 +32,13 @@
             color: #344AEA;
         }
 
-        .forum-header h1 {
+        .course-forum-header h1 {
             font-size: 1.75rem;
             font-weight: bold;
             margin: 0;
         }
 
-    .forum-post {
+    .course-forum-post {
         border: 1px solid #ddd;
         border-radius: 8px;
         padding: 1rem;
@@ -48,7 +46,7 @@
         background-color: #fff;
     }
 
-        .forum-post .post-meta {
+        .course-forum-post .course-forum-post-meta {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -57,33 +55,13 @@
             margin-bottom: 0.5rem;
         }
 
-        .forum-post .post-content {
+        .course-forum-post .course-forum-post-content {
             font-size: 1rem;
             color: #333;
             margin-bottom: 0.5rem;
         }
 
-        .forum-post .post-actions {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.85rem;
-        }
-
-            .forum-post .post-actions button {
-                background-color: #344AEA;
-                color: white;
-                border: none;
-                padding: 0.25rem 0.5rem;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 0.8rem;
-            }
-
-                .forum-post .post-actions button:hover {
-                    opacity: 0.9;
-                }
-
-    .forum-reply {
+    .course-forum-reply {
         border: 1px solid #4A90E2;
         border-radius: 8px;
         padding: 1rem;
@@ -91,39 +69,33 @@
         background-color: #f0f6ff;
     }
 
-        .forum-reply textarea {
-            width: 100%;
-            min-height: 80px;
-            padding: 0.75rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 0.95rem;
-            resize: vertical;
-            margin-bottom: 0.5rem;
-        }
-
-        .forum-reply button {
+        .course-forum-reply button {
             background-color: #344AEA;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 6px;
             cursor: pointer;
-            float: right;
+            margin-right: 0.5rem;
         }
 
-            .forum-reply button:hover {
+            .course-forum-reply button.clear-btn {
+                background-color: #ccc;
+                color: #333;
+            }
+
+            .course-forum-reply button:hover {
                 opacity: 0.9;
             }
 
-    .pagination {
+    .course-forum-pagination {
         display: flex;
         gap: 0.5rem;
         justify-content: center;
         margin-top: 1rem;
     }
 
-        .pagination button {
+        .course-forum-pagination button {
             border: 1px solid #ccc;
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
@@ -131,58 +103,425 @@
             background: white;
         }
 
-            .pagination button.active {
+            .course-forum-pagination button.active {
                 background-color: #344AEA;
                 color: white;
             }
 
+    .course-forum-post-content img,
+    .tinymce-editor img {
+        width: 400px;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 4px; /* optional: small rounded corners */
+    }
+
+    .post-menu-container {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: bold;
+        user-select: none; 
+    }
+
+    .post-menu-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 1.5rem;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        z-index: 100;
+        min-width: 100px;
+    }
+
+    .post-menu-dropdown button {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .post-menu-dropdown button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .course-forum-post {
+        position: relative; /* for absolute positioning of menu */
+    }
+
+    .course-forum-modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+    }
+    .course-forum-modal-content {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        width: 500px;
+        max-width: 90%;
+        position: relative;
+    }
+    .course-forum-modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .course-forum-modal-actions button {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+    }
+    #course-forum-save-edit-btn { background-color: #344AEA; color: white; }
+    #course-forum-cancel-edit-btn,
+    #course-forum-cancel-delete-btn { background-color: #ccc; color: #333; }
+    #course-forum-confirm-delete-btn { background-color: red; color: white; }
 </style>
 
-<div class="forum-container">
-    <div class="forum-header">
+<div class="course-forum-container">
+    <div class="course-forum-header">
         <button onclick="history.back()">&lt; Back</button>
         <h1>@ViewBag.CourseTitle Course Forum</h1>
     </div>
 
-    <!-- Featured/Pinned Post -->
-    <div class="forum-post" style="border:2px solid #344AEA;">
-        <div class="post-meta">
-            <strong>Sample Name</strong> • Artisan • x days ago
-        </div>
-        <div class="post-content">
-            Lorem ipsum odor amet, consectetur adipiscing elit. Conubia aliquam facilisi hendrerit sit, facilisis cubilia.
-        </div>
-        <button style="background:#344AEA; color:white;">Reply to this topic</button>
-    </div>
-
-    <!-- Reply box -->
-    <div class="forum-reply">
-        <textarea placeholder="Tell us what's on your mind"></textarea>
-        <button>Add Reply</button>
-        <button style="background:#ccc; color:#333; margin-right:1rem;">Cancel</button>
+    <!-- Reply box with TinyMCE -->
+    <div class="course-forum-reply">
+        <form id="forumForm">
+            <input type="hidden" name="courseId" value="@ViewBag.CourseId" />
+            <textarea id="forumContent" class="tinymce-editor" name="content" placeholder="Tell us what's on your mind"></textarea>
+            <button type="submit">Post to Forum</button>
+            <button type="button" id="clearBtn">Clear</button>
+        </form>
     </div>
 
     <!-- Forum posts -->
-    @foreach (var post in forumPosts)
-    {
-        <div class="forum-post">
-            <div class="post-meta">
-                <strong>@post.Name</strong> • @post.Role • @post.Date
-            </div>
-            <div class="post-content">@post.Content</div>
-            <div class="post-actions">
-                <span>@post.Likes 👍</span>
-                <button>Quote</button>
-            </div>
-        </div>
-    }
+    <div id="forumPostsContainer">
+        @* Posts will be rendered by JS *@
+    </div>
 
     <!-- Pagination -->
-    <div class="pagination">
-        <button class="active">1</button>
-        <button>2</button>
-        <button>3</button>
-        <span>...</span>
-        <button>Next &gt;</button>
+    <div class="course-forum-pagination" id="paginationContainer">
+        @* Pagination buttons will be rendered by JS *@
     </div>
 </div>
+
+<!-- Edit Post Modal -->
+<div id="course-forum-edit-modal" class="course-forum-modal" style="display:none;">
+    <div class="course-forum-modal-content">
+        <h2>Edit Post</h2>
+        <textarea id="course-forum-edit-modal-content" class="tinymce-editor"></textarea>
+        <div class="course-forum-modal-actions">
+            <button id="course-forum-save-edit-btn">Save</button>
+            <button id="course-forum-cancel-edit-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="course-forum-delete-modal" class="course-forum-modal" style="display:none;">
+    <div class="course-forum-modal-content">
+        <h2>Delete Post</h2>
+        <p>Are you sure you want to delete this forum post?</p>
+        <div class="course-forum-modal-actions">
+            <button id="course-forum-confirm-delete-btn">Yes, Delete</button>
+            <button id="course-forum-cancel-delete-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const currentUserId = '@User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value';
+    const postsPerPage = 10;
+    const allPosts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(sortedPosts.Select(p => new {
+        Id = p.Id,
+        UserId = p.UserId,
+        UserName = p.User.FirstName + " " + p.User.LastName,
+        UserRole = p.User.Role,
+        CreatedAt = p.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy"),
+        Content = p.Content
+    })));
+    let currentPage = 1;
+
+    // Modal variables
+    let courseForumEditingPostId = null;
+    let courseForumDeletingPostId = null;
+
+    function renderPosts(page = 1) {
+        const container = document.getElementById('forumPostsContainer');
+        container.innerHTML = '';
+
+        if (!allPosts.length) {
+            container.innerHTML = `<div class="course-forum-post"><em>No posts yet. Be the first to ask a question about this course!</em></div>`;
+            return;
+        }
+
+        const start = (page - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const postsToShow = allPosts.slice(start, end);
+
+        postsToShow.forEach(post => {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'course-forum-post';
+
+            let menuHtml = '';
+            if (post.UserId === currentUserId) {
+                menuHtml = `
+                    <div class="post-menu-container">⋮
+                        <div class="post-menu-dropdown">
+                            <button onclick="courseForumEditPost('${post.Id}')">Edit</button>
+                            <button onclick="courseForumDeletePost('${post.Id}')">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            postDiv.innerHTML = `
+                <div class="course-forum-post-meta">
+                    <strong>${post.UserName}</strong> • ${post.UserRole} • ${post.CreatedAt}
+                </div>
+                ${menuHtml}
+                <div class="course-forum-post-content" id="post-content-${post.Id}">${post.Content}</div>
+            `;
+
+            container.appendChild(postDiv);
+
+            // Dropdown toggle logic
+            const menuContainer = postDiv.querySelector('.post-menu-container');
+            if (menuContainer) {
+                const dropdown = menuContainer.querySelector('.post-menu-dropdown');
+                menuContainer.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+        });
+
+        renderPagination();
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.post-menu-dropdown').forEach(dropdown => dropdown.style.display = 'none');
+    });
+
+    // ================= Edit Post Modal =================
+    function courseForumEditPost(postId) {
+        courseForumEditingPostId = postId;
+        const contentDiv = document.getElementById(`post-content-${postId}`);
+        tinymce.get('course-forum-edit-modal-content').setContent(contentDiv.innerHTML);
+        document.getElementById('course-forum-edit-modal').style.display = 'flex';
+    }
+
+    document.getElementById('course-forum-save-edit-btn').addEventListener('click', async function() {
+        const newContent = tinymce.get('course-forum-edit-modal-content').getContent().trim();
+        if (!newContent) return alert('Post cannot be empty.');
+
+        try {
+            const response = await fetch(`/Courses/Forum/Edit/${courseForumEditingPostId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: newContent })
+            });
+            const data = await response.json();
+            if (data.success) {
+                const contentDiv = document.getElementById(`post-content-${courseForumEditingPostId}`);
+                contentDiv.innerHTML = data.content;
+
+                const postIndex = allPosts.findIndex(p => p.Id === courseForumEditingPostId);
+                if(postIndex !== -1) allPosts[postIndex].Content = data.content;
+
+                document.getElementById('course-forum-edit-modal').style.display = 'none';
+            } else {
+                alert(data.message || 'Failed to edit post.');
+            }
+        } catch(err) {
+            console.error(err);
+            alert('Error editing post.');
+        }
+    });
+
+    document.getElementById('course-forum-cancel-edit-btn').addEventListener('click', function() {
+        document.getElementById('course-forum-edit-modal').style.display = 'none';
+    });
+
+    // ================= Delete Post Modal =================
+    function courseForumDeletePost(postId) {
+        courseForumDeletingPostId = postId;
+        document.getElementById('course-forum-delete-modal').style.display = 'flex';
+    }
+
+    document.getElementById('course-forum-confirm-delete-btn').addEventListener('click', async function() {
+        try {
+            const response = await fetch(`/Courses/Forum/Delete/${courseForumDeletingPostId}`, { method: 'DELETE' });
+            const data = await response.json();
+            if(data.success) {
+                const postDiv = document.getElementById(`post-content-${courseForumDeletingPostId}`).closest('.course-forum-post');
+                postDiv.remove();
+                const index = allPosts.findIndex(p => p.Id === courseForumDeletingPostId);
+                if(index !== -1) allPosts.splice(index, 1);
+
+                document.getElementById('course-forum-delete-modal').style.display = 'none';
+            } else {
+                alert(data.message || 'Failed to delete post.');
+            }
+        } catch(err) {
+            console.error(err);
+            alert('Error deleting post.');
+        }
+    });
+
+    document.getElementById('course-forum-cancel-delete-btn').addEventListener('click', function() {
+        document.getElementById('course-forum-delete-modal').style.display = 'none';
+    });
+
+    // ================= Pagination =================
+    function renderPagination() {
+        const container = document.getElementById('paginationContainer');
+        container.innerHTML = '';
+        const totalPages = Math.ceil(allPosts.length / postsPerPage);
+        if(totalPages <= 1) return;
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            if (i === currentPage) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                currentPage = i;
+                renderPosts(currentPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            container.appendChild(btn);
+        }
+    }
+
+    renderPosts(currentPage);
+
+    // ================= TinyMCE for main forum post =================
+    const forumForm = document.getElementById('forumForm');
+    const clearBtn = document.getElementById('clearBtn');
+    const forumContentId = 'forumContent';
+    const textareaDirtyFlag = { value: false };
+
+    tinymce.init({
+        selector: 'textarea.tinymce-editor',
+        menubar: false,
+        plugins: 'lists link image media table code',
+        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | image media',
+        height: 250,
+        branding: false,
+        automatic_uploads: true,
+        license_key: 'gpl',
+        images_upload_url: '/Courses/UploadForumMedia',
+        file_picker_types: 'image media',
+        setup: function(editor) {
+            editor.on('Change KeyUp', function() {
+                textareaDirtyFlag.value = editor.getContent().trim().length > 0;
+            });
+        },
+        file_picker_callback: function(callback, value, meta) {
+            let input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', meta.filetype === 'image' ? 'image/*' : 'video/*');
+
+            input.onchange = function () {
+                let file = this.files[0];
+
+                if (!file) return;
+
+                // 🔥 20MB (20 * 1024 * 1024 bytes)
+                const maxSize = 20 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+                    alert("File too large! Maximum allowed size is 20MB.");
+                    return;
+                }
+
+                let formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/Courses/UploadForumMedia', { method: 'POST', body: formData })
+                    .then(r => r.json())
+                    .then(data => data.location
+                        ? callback(data.location)
+                        : alert('Upload failed'))
+                    .catch(() => alert('Upload error'));
+            };
+
+            input.click();
+        }
+    });
+
+    // ================= Forum Post Submit =================
+    forumForm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const content = tinymce.get(forumContentId).getContent({ format: 'html' }).trim();
+        const courseId = forumForm.querySelector('input[name="courseId"]').value;
+        if(!content) return alert('Please write something.');
+
+        try {
+            const response = await fetch(`/Courses/Forum/${courseId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content }),
+                credentials: "same-origin"
+            });
+            if(!response.ok) {
+                const errorText = await response.text();
+                return alert('Error posting: ' + errorText);
+            }
+
+            textareaDirtyFlag.value = false;
+            tinymce.get(forumContentId).setContent('');
+
+            const newPost = await response.json();
+            allPosts.unshift({
+                UserName: newPost.userName,
+                UserRole: newPost.userRole, 
+                CreatedAt: newPost.createdAt,
+                Content: newPost.content
+            });
+
+            currentPage = 1;
+            renderPosts(currentPage);
+            
+            window.location.reload();
+
+        } catch(err) {
+            console.error(err);
+            alert('Error posting: ' + err.message);
+        }
+    });
+
+    // ================= Clear Button =================
+    clearBtn.addEventListener('click', function(){
+        const editor = tinymce.get(forumContentId);
+        if(editor.getContent().trim().length > 0){
+            if(confirm('You have unsaved content. Are you sure you want to clear?')){
+                editor.setContent('');
+                textareaDirtyFlag.value = false;
+            }
+        }
+    });
+
+    // ================= Warn on Leaving Page =================
+    window.addEventListener('beforeunload', function(e){
+        if(textareaDirtyFlag.value){
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>

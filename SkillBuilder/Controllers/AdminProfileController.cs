@@ -660,5 +660,48 @@ namespace SkillBuilder.Controllers
             var data = await _communityAnalytics.GetAnalyticsAsync(range);
             return Json(data.CommunityJoinHistory);
         }
+
+        [HttpGet("GetAnalyticsByRange")]
+        public async Task<IActionResult> GetAnalyticsByRange(string range)
+        {
+            var data = await _analytics.GetOverviewByDateAsync(range);
+
+            return Json(new
+            {
+                totalActiveCourses = data.PublishedCourses,
+                completionRate = data.CompletionRate,
+                totalEnrollments = data.TotalEnrollments,
+                totalArtisans = data.TotalArtisans,
+                totalCourses = data.TotalCourses,
+                publishedCourses = data.PublishedCourses,
+                unpublishedCourses = data.UnpublishedCourses,
+                pendingApps = data.PendingArtisanApplications,
+                averageRating = data.AverageArtisanRating,
+                learnerAnalytics = new
+                {
+                    totalLearners = data.TotalLearners,
+                    totalEnrollments = data.TotalEnrollments,
+                    unenrolledStudents = data.LearnerCharts.UnenrolledStudents,
+                    enrollmentRate = data.LearnerCharts.EnrollmentRate
+                }
+            });
+        }
+
+        [HttpGet("GetCommunitySummaryByRange")]
+        public async Task<IActionResult> GetCommunitySummaryByRange(string range)
+        {
+            if (string.IsNullOrEmpty(range))
+                range = "overall"; // default
+
+            var data = await _communityAnalytics.GetAnalyticsAsync(range);
+
+            return Ok(new
+            {
+                totalCommunities = data.TotalCommunities,
+                totalPosts = data.TotalPosts,
+                flaggedPosts = data.FlaggedPostsCount
+            });
+        }
+
     }
 }

@@ -32,7 +32,8 @@ namespace SkillBuilder.Services
                     "lastweek" => (now.AddDays(-7), now),
                     "lastmonth" => (now.AddMonths(-1), now),
                     "lastyear" => (now.AddYears(-1), now),
-                    _ => (now.AddMonths(-1), now) // default
+                    "overall" => (DateTime.MinValue, DateTime.MaxValue), // <-- all data
+                    _ => (DateTime.MinValue, DateTime.MaxValue)         // fallback
                 };
             }
         }
@@ -44,9 +45,18 @@ namespace SkillBuilder.Services
             var dto = new CommunityAnalyticsDto();
 
             // --- Summary counts ---
-            dto.TotalCommunities = await _db.Communities.CountAsync(c => !c.IsArchived);
-            dto.TotalPosts = await _db.CommunityPosts.CountAsync(p => p.IsPublished);
-            dto.TotalMembers = await _db.CommunityMemberships.CountAsync();
+            dto.TotalCommunities = await _db.Communities
+                .Where(c => !c.IsArchived && c.CreatedAt >= start && c.CreatedAt < end)
+                .CountAsync();
+
+            dto.TotalPosts = await _db.CommunityPosts
+                .Where(p => p.IsPublished && p.SubmittedAt >= start && p.SubmittedAt < end)
+                .CountAsync();
+
+            dto.FlaggedPostsCount = await _db.CommunityPostReports
+                .Include(r => r.Post)
+                .Where(r => r.Post.SubmittedAt >= start && r.Post.SubmittedAt < end)
+                .CountAsync();
 
             var communityIds = await _db.Communities
                 .Where(c => !c.IsArchived)
@@ -62,7 +72,10 @@ namespace SkillBuilder.Services
 
             dto.MembersWithoutPosts = Math.Max(0, dto.TotalMembers - dto.MembersWithPosts);
 
-            dto.FlaggedPostsCount = await _db.CommunityPostReports.CountAsync();
+            dto.FlaggedPostsCount = await _db.CommunityPostReports
+                .Include(r => r.Post)
+                .Where(r => r.Post.SubmittedAt >= start && r.Post.SubmittedAt < end)
+                .CountAsync();
 
             // --- Top communities by members ---
             dto.TopCommunities = await _db.Communities

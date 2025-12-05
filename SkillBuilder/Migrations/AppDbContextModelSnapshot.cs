@@ -681,6 +681,40 @@ namespace SkillBuilder.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("SkillBuilder.Models.CourseForumPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CourseForumPosts");
+                });
+
             modelBuilder.Entity("SkillBuilder.Models.CourseMaterial", b =>
                 {
                     b.Property<int>("Id")
@@ -1437,6 +1471,25 @@ namespace SkillBuilder.Migrations
                         .IsRequired();
 
                     b.Navigation("Artisan");
+                });
+
+            modelBuilder.Entity("SkillBuilder.Models.CourseForumPost", b =>
+                {
+                    b.HasOne("SkillBuilder.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SkillBuilder.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SkillBuilder.Models.CourseMaterial", b =>

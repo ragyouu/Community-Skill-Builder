@@ -14,8 +14,9 @@
                 <option value="today">Today</option>
                 <option value="yesterday">Yesterday</option>
                 <option value="lastweek">Last Week</option>
-                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastmonth">Last Month</option>
                 <option value="lastyear">Last Year</option>
+                <option value="overall" selected>Overall</option>
             </select>
         </div>
     </div>
@@ -24,32 +25,32 @@
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:20px;">
 
         <!-- Total Learners -->
-        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
-            <div style="font-size:2rem; font-weight:700;">
+        <div class="card" style="...">
+            <div id="totalLearners" style="font-size:2rem; font-weight:700;">
                 @Model.Analytics.TotalLearners
             </div>
             <div style="color:#666;">Total Number of Learners</div>
         </div>
 
         <!-- Total Enrolled Students -->
-        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
-            <div style="font-size:2rem; font-weight:700;">
+        <div class="card" style="...">
+            <div id="totalEnrollments" style="font-size:2rem; font-weight:700;">
                 @Model.Analytics.TotalEnrollments
             </div>
             <div style="color:#666;">Enrolled Students</div>
         </div>
 
         <!-- Unenrolled Students -->
-        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
-            <div style="font-size:2rem; font-weight:700;">
+        <div class="card" style="...">
+            <div id="unenrolledStudents" style="font-size:2rem; font-weight:700;">
                 @Model.Analytics.LearnerCharts.UnenrolledStudents
             </div>
             <div style="color:#666;">Unenrolled Students</div>
         </div>
 
         <!-- Student Enrollment Rate -->
-        <div class="card" style="background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
-            <div style="font-size:2rem; font-weight:700;">
+        <div class="card" style="...">
+            <div id="enrollmentRate" style="font-size:2rem; font-weight:700;">
                 @Model.Analytics.LearnerCharts.EnrollmentRate%
             </div>
             <div style="color:#666;">Enrollment Rate</div>
@@ -104,7 +105,7 @@
 
     async function fetchLearnerAnalytics(range = 'lastmonth') {
         try {
-            const res = await fetch(`/AdminProfile/GetLearnerAnalytics?range=${range}`, { headers: { 'Accept':'application/json' } });
+            const res = await fetch(`/AdminProfile/GetAnalyticsByRange?range=${range}`, { headers: { 'Accept':'application/json' } });
             if (!res.ok) throw new Error('Failed to fetch learner analytics: ' + res.status);
             return await res.json();
         } catch(err) {
@@ -115,9 +116,11 @@
 
     function updateLearnerCards(analytics) {
         if (!analytics) return;
-        document.getElementById('enrolledValue').textContent = analytics.TotalEnrollments || 0;
-        document.getElementById('unenrolledValue').textContent = analytics.LearnerCharts.UnenrolledStudents || 0;
-        document.getElementById('enrollmentRate').textContent = (analytics.LearnerCharts.EnrollmentRate || 0) + '%';
+
+        document.getElementById("totalLearners").innerText = analytics.learnerAnalytics.totalLearners;
+        document.getElementById("totalEnrollments").innerText = analytics.learnerAnalytics.totalEnrollments;
+        document.getElementById("unenrolledStudents").innerText = analytics.learnerAnalytics.unenrolledStudents;
+        document.getElementById("enrollmentRate").innerText = analytics.learnerAnalytics.enrollmentRate + "%";
     }
 
     document.getElementById('learnerDateRange').addEventListener('change', async e => {

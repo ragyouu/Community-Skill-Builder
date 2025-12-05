@@ -459,7 +459,6 @@
     }
 
     .course-detail-right a.course-detail-enroll-btn {
-        margin-bottom: 1rem;
         text-align: center;
     }
 
@@ -517,9 +516,21 @@
                     @* Delete button only for Artisan owner *@
                     @if (userRole == "Artisan" && Model.Artisan?.UserId == userId)
                     {
-                        <button class="course-detail-delete-btn" onclick="showDeleteModal(@Model.Id)">
+                        <button class="course-detail-delete-btn" style="margin-bottom: 1rem;" onclick="showDeleteModal(@Model.Id)">
                             Delete Course
                         </button>
+                    }
+
+                    <!-- ADD THIS HERE -->
+                    @if (userRole == "Artisan" && Model.Artisan?.UserId == userId)
+                    {
+                        <div class="course-detail-button-group">
+                            <a asp-controller="Courses" asp-action="Forum" asp-route-courseId="@Model.Id"
+                               class="course-detail-enroll-btn"
+                               style="text-decoration:none;">
+                                Course Forum
+                            </a>
+                        </div>
                     }
                 </div>
             }
@@ -564,24 +575,24 @@
                                 @if (Model.IsFree)
                                 {
                                     <h1 class="course-detail-free-label" style="
-                                                            font-size: 2rem;
-                                                            font-weight: bold;
-                                                            margin-bottom: 1rem;
-                                                            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-                                                        ">
+                                        font-size: 2rem;
+                                        font-weight: bold;
+                                        margin-bottom: 1rem;
+                                        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+                                    ">
                                         FREE COURSE
                                     </h1>
                                 }
                                 else
                                 {
                                     <h1 class="course-detail-free-label" style="
-                                                            font-size: 1.25rem; /* smaller text */
-                                                            font-weight: bold;
-                                                            margin-bottom: 1rem;
-                                                            display: flex;
-                                                            align-items: center;
-                                                            gap: 0.5rem;
-                                                        ">
+                                        font-size: 1.25rem; /* smaller text */
+                                        font-weight: bold;
+                                        margin-bottom: 1rem;
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 0.5rem;
+                                    ">
                                         <img src="/assets/icons/coin.ico" alt="Coin" style="width:20px; height:20px;" />
                                         @Model.DesiredThreads.ToString("0.##") Threads
                                     </h1>
@@ -601,8 +612,9 @@
                                         <button type="button" class="course-detail-enroll-btn" id="view-completion-btn">Receive Completion</button>
                                     }
 
-                                    <a asp-controller="Courses" asp-action="Forum" asp-route-id="@Model.Id"
-                                       class="course-detail-enroll-btn" style="text-decoration:none;">
+                                    <a asp-controller="Courses" asp-action="Forum" asp-route-courseId="@Model.Id"
+                                       class="course-detail-enroll-btn"
+                                       style="text-decoration:none;">
                                         Course Forum
                                     </a>
                                 </form>

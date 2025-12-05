@@ -15,8 +15,9 @@
                 <option value="today">Today</option>
                 <option value="yesterday">Yesterday</option>
                 <option value="lastweek">Last Week</option>
-                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastmonth">Last Month</option>
                 <option value="lastyear">Last Year</option>
+                <option value="overall" selected>Overall</option>
             </select>
         </div>
     </div>
@@ -37,19 +38,19 @@
 <!-- Summary Cards -->
 <div style="display:flex; gap:16px; margin-bottom:24px;">
     <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
-        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.TotalArtisans</h2>
+        <h2 class="total-artisans" style="font-size:20px; font-weight:600;">@Model.Analytics.TotalArtisans</h2>
         <p>Total Artisans Onboarded</p>
     </div>
     <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
-        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.TotalCourses</h2>
+        <h2 class="total-courses" style="font-size:20px; font-weight:600;">@Model.Analytics.TotalCourses</h2>
         <p>Total Courses Created</p>
     </div>
     <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
-        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.AverageArtisanRating ⭐</h2>
+        <h2 class="avg-rating" style="font-size:20px; font-weight:600;">@Model.Analytics.AverageArtisanRating ⭐</h2>
         <p>Average Artisan Rating</p>
     </div>
     <div style="flex:1; background-color:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1); text-align:center;">
-        <h2 style="font-size:20px; font-weight:600;">@Model.Analytics.PendingArtisanApplications</h2>
+        <h2 class="pending-apps" style="font-size:20px; font-weight:600;">@Model.Analytics.PendingArtisanApplications</h2>
         <p>Pending Artisan Applications</p>
     </div>
 </div>
@@ -180,19 +181,55 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-            // Click handler for "Review Artisan Application Now"
-            document.addEventListener('click', function(e) {
-                if (e.target && e.target.id === 'reviewArtisanApplicationsLink') {
-                    e.preventDefault(); // prevent default link behavior
+        // Click handler for "Review Artisan Application Now"
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'reviewArtisanApplicationsLink') {
+                e.preventDefault();
 
-                    // Switch to the "applications" tab
-                    const artisanAppTab = document.querySelector('.admin-tab[data-tab="applications"]');
-                    if (artisanAppTab) artisanAppTab.click();
+                const artisanAppTab = document.querySelector('.admin-tab[data-tab="applications"]');
+                if (artisanAppTab) artisanAppTab.click();
 
-                    // Scroll to top
-                    const mainPanel = document.querySelector('.admin-main');
-                    if (mainPanel) mainPanel.scrollTop = 0;
+                const mainPanel = document.querySelector('.admin-main');
+                if (mainPanel) mainPanel.scrollTop = 0;
+            }
+        });
+
+        // Date filter change handler
+        const dateSelect = document.getElementById('artisanDateRange');
+        if (dateSelect) {
+            dateSelect.addEventListener('change', async function() {
+                const range = this.value;
+
+                try {
+                    const response = await fetch(`/AdminProfile/GetAnalyticsByRange?range=${range}`);
+                    if (!response.ok) throw new Error('Failed to fetch analytics');
+
+                    const data = await response.json();
+
+                    // ✅ Update summary cards dynamically
+                    document.querySelector('.total-artisans').textContent = data.totalArtisans;
+                    document.querySelector('.total-courses').textContent = data.totalCourses;
+                    document.querySelector('.avg-rating').textContent = `${data.averageRating.toFixed(2)} ⭐`;
+                    document.querySelector('.pending-apps').textContent = data.pendingApps;
+
+                    // Update pending applications alert
+                    const alertDiv = document.querySelector('.analytics-container + div');
+                    if (data.pendingApps > 0) {
+                        if (alertDiv) {
+                            alertDiv.innerHTML = `You have ${data.pendingApps} pending artisan applications waiting for review.
+                            <a href="javascript:void(0);" id="reviewArtisanApplicationsLink" style="text-decoration:underline; color:#B91C1C;">
+                                Review Artisan Application Now
+                            </a>`;
+                            alertDiv.style.display = 'block';
+                        }
+                    } else if (alertDiv) {
+                        alertDiv.style.display = 'none';
+                    }
+                } catch (err) {
+                    console.error(err);
                 }
             });
-        });
+        }
+    });
+
 </script>

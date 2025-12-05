@@ -10,7 +10,7 @@ namespace SkillBuilder.Models.Analytics
         public int TotalCourses { get; set; }
         public int TotalEnrollments { get; set; }
         public int UnenrolledLearners { get; set; }
-        public int EnrollmentRate { get; set; }
+        public double EnrollmentRate { get; set; }
         public double AverageArtisanRating { get; set; }
         public int CompletionRate { get; set; }
         public int EnrollmentGrowth { get; set; }
@@ -107,7 +107,7 @@ namespace SkillBuilder.Models.Analytics
         public List<int> TopCourseMillennials { get; set; } = new();
 
         public int UnenrolledStudents { get; set; } = 0;
-        public int EnrollmentRate { get; set; } = 0;
+        public double EnrollmentRate { get; set; } = 0;
     }
 
     public class MonthlyActiveUsersDto

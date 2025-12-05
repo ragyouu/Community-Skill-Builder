@@ -1,72 +1,6 @@
 ﻿@model SkillBuilder.Models.ViewModels.AdminProfileViewModel
 @using System.Text.Json
 
-
-<style>
-    .donut-chart {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background: conic-gradient( #2563EB 0% var(--activePercent), #C7D2FE var(--activePercent) 100% );
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.3s;
-    }
-
-        .donut-chart:hover {
-            transform: scale(1.05);
-        }
-
-    .donut-hole {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 60%;
-        height: 60%;
-        background: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 1.2rem;
-        color: #111;
-    }
-
-    .donut-chart:hover .tooltip {
-        opacity: 1;
-    }
-
-    .tooltip {
-        position: absolute;
-        background: #fff;
-        border-radius: 6px;
-        padding: 6px 10px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-        font-size: 0.85rem;
-        font-weight: 600;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s;
-        white-space: nowrap;
-    }
-
-    .tooltip-active {
-        top: 10%;
-        left: 50%;
-        transform: translateX(-50%);
-        color: #2563EB;
-    }
-
-    .tooltip-inactive {
-        bottom: 10%;
-        left: 50%;
-        transform: translateX(-50%);
-        color: #C7D2FE;
-    }
-</style>
-
 <div style="max-width:1100px; margin:0 auto; font-family:Inter, sans-serif; padding:20px;">
 
     <!-- Header and Date Range -->
@@ -81,8 +15,9 @@
                 <option value="today">Today</option>
                 <option value="yesterday">Yesterday</option>
                 <option value="lastweek">Last Week</option>
-                <option value="lastmonth" selected>Last Month</option>
+                <option value="lastmonth">Last Month</option>
                 <option value="lastyear">Last Year</option>
+                <option value="overall" selected>Overall</option>
             </select>
         </div>
     </div>
@@ -110,17 +45,17 @@
     <!-- Summary cards -->
     <div style="display:flex; background:#F9FAFB; border-radius:12px; padding:24px; justify-content:space-between; box-shadow:0 2px 12px rgba(0,0,0,0.1); margin-bottom:32px;">
         <div style="text-align:center; flex:1;">
-            <div style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalCommunities</div>
+            <div id="totalCommunities" style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalCommunities</div>
             <div style="color:#555; margin-top:4px;">Total Communities</div>
         </div>
         <div style="text-align:center; flex:1;">
-            <div style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalPosts</div>
+            <div id="totalPosts" style="font-weight:700; font-size:2rem; color:#111;">@Model.CommunityAnalytics?.TotalPosts</div>
             <div style="color:#555; margin-top:4px;">
                 Total General Posts
             </div>
         </div>
         <div style="text-align:center; flex:1;">
-            <div style="font-weight:700; font-size:2rem; color:#111;">@flaggedCount</div>
+            <div id="flaggedPosts" style="font-weight:700; font-size:2rem; color:#111;">@flaggedCount</div>
             <div style="color:#555; margin-top:4px;">Flagged Posts</div>
         </div>
     </div>
@@ -128,7 +63,7 @@
     <!-- Communities with Highest Engagement and Members Distribution -->
     <div style="display:flex; gap:24px; margin-bottom:32px;">
         <!-- Communities Table -->
-        <div style="flex:3; border-radius:8px; padding:20px; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+        <div style="flex:3; border-radius:8px; padding:20px; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,0.1); max-width: 600px;">
             <h3 style="font-weight:600; font-size:1.25rem; margin-bottom:16px;">Communities with Highest Engagement</h3>
 
             <table style="width:100%; border-collapse: collapse; font-size:0.9rem;">
@@ -161,32 +96,20 @@
         <div style="flex:1; background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center;">
             <h3 style="font-weight:600; font-size:1.1rem; margin-bottom:16px;">Community Members Distribution</h3>
 
-            @{
-                var active = Model.CommunityAnalytics?.MembersWithPosts ?? 0;
-                var inactive = Model.CommunityAnalytics?.MembersWithoutPosts ?? 0;
-                var total = active + inactive;
-                var activePercent = total > 0 ? (active * 100.0 / total) : 0;
-                var inactivePercent = 100 - activePercent;
-            }
-
             <div style="width:100%; max-width:250px; aspect-ratio:1/1; position:relative;">
-                <div class="donut-chart" style="
-            --activePercent:@activePercent%;
-            --inactivePercent:@inactivePercent%;
-        ">
-                    <div class="donut-hole">@total</div>
-                    <div class="tooltip tooltip-active">Active: @active</div>
-                    <div class="tooltip tooltip-inactive">Inactive: @inactive</div>
+                <canvas id="membersDonutChart"></canvas>
+                <div id="donutCenter" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-weight:700; font-size:1.2rem; color:#111;">
+                    0
                 </div>
             </div>
 
             <div style="display:flex; justify-content:center; gap:40px; margin-top:16px; font-weight:700;">
-                <div style="text-align:center; color:#2563EB;">
-                    <div style="font-size:1.6rem;">@active</div>
+                <div id="activeLabel" style="text-align:center; color:#2563EB;">
+                    <div style="font-size:1.6rem;">0</div>
                     <div style="font-weight:600; font-size:0.9rem;">Active</div>
                 </div>
-                <div style="text-align:center; color:#C7D2FE;">
-                    <div style="font-size:1.6rem;">@inactive</div>
+                <div id="inactiveLabel" style="text-align:center; color:#C7D2FE;">
+                    <div style="font-size:1.6rem;">0</div>
                     <div style="font-weight:600; font-size:0.9rem;">Inactive</div>
                 </div>
             </div>
@@ -195,51 +118,114 @@
 
 </div>
 
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const analytics = @Html.Raw(JsonSerializer.Serialize(Model.CommunityAnalytics ?? new SkillBuilder.Models.Analytics.CommunityAnalyticsDto()));
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateSelect = document.getElementById('communityDateRange');
 
-            const ctx = document.getElementById('membersDonutChart').getContext('2d');
+        // Date range change logic (unchanged)
+        dateSelect.addEventListener('change', async () => {
+            const range = dateSelect.value;
 
-            // Destroy previous chart if it exists
-            if (window.membersDonutChartInstance) {
-                window.membersDonutChartInstance.destroy();
+            try {
+                const res = await fetch(`/AdminProfile/GetCommunitySummaryByRange?range=${range}`);
+                if (!res.ok) throw new Error('Failed to fetch');
+
+                const data = await res.json();
+
+                // Update the summary cards
+                document.getElementById('totalCommunities').textContent = data.totalCommunities;
+                document.getElementById('totalPosts').textContent = data.totalPosts;
+                document.getElementById('flaggedPosts').textContent = data.flaggedPosts;
+
+            } catch (err) {
+                console.error('Error updating summary cards:', err);
+            }
+        });
+
+        // Initial analytics data
+        const analytics = @Html.Raw(JsonSerializer.Serialize(Model.CommunityAnalytics ?? new SkillBuilder.Models.Analytics.CommunityAnalyticsDto()));
+        const initialActive = analytics.MembersWithPosts || 0;
+        const initialInactive = analytics.MembersWithoutPosts || 0;
+
+        // Update center and labels function
+        function updateDonutChart(active, inactive) {
+            const total = active + inactive;
+
+            // Animate center number
+            const centerEl = document.getElementById('donutCenter');
+            const start = parseInt(centerEl.textContent, 10) || 0;
+            const duration = 800; // animation duration in ms
+            const startTime = performance.now();
+
+            function animateNumber(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(start + (total - start) * progress);
+                centerEl.textContent = value;
+                if (progress < 1) requestAnimationFrame(animateNumber);
             }
 
-            // Use requestAnimationFrame to ensure canvas has computed dimensions
-            requestAnimationFrame(() => {
-                window.membersDonutChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Active', 'Inactive'],
-                        datasets: [{
-                            data: [analytics.MembersWithPosts || 0, analytics.MembersWithoutPosts || 0],
-                            backgroundColor: ['#2563EB', '#C7D2FE'],
-                            hoverOffset: 20,
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        cutout: '70%',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } }
-                    }
-                });
-            });
+            requestAnimationFrame(animateNumber);
 
-            // Click handler for Review Posts link
-            document.addEventListener('click', e => {
-                if (e.target && e.target.id === 'reviewPostsLink') {
-                    e.preventDefault();
-                    const reportTab = document.querySelector('.admin-tab[data-tab="reports"]');
-                    if (reportTab) reportTab.click();
-                    const mainPanel = document.querySelector('.admin-main');
-                    if (mainPanel) mainPanel.scrollTop = 0;
+            // Update Active/Inactive labels instantly
+            document.querySelector('#activeLabel div:first-child').textContent = active;
+            document.querySelector('#inactiveLabel div:first-child').textContent = inactive;
+
+            // Update Chart.js data
+            if (window.membersDonutChartInstance) {
+                window.membersDonutChartInstance.data.datasets[0].data = [active, inactive];
+                window.membersDonutChartInstance.update();
+            }
+        }
+
+        // Initialize Chart.js donut
+        const ctx = document.getElementById('membersDonutChart').getContext('2d');
+
+        if (window.membersDonutChartInstance) {
+            window.membersDonutChartInstance.destroy();
+        }
+
+        window.membersDonutChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Inactive'],
+                datasets: [{
+                    data: [initialActive, initialInactive],
+                    backgroundColor: ['#2563EB', '#C7D2FE'],
+                    hoverOffset: 20,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}`;
+                            }
+                        }
+                    }
                 }
-            });
+            }
         });
-    </script>
-}
+
+        // Set initial center and labels
+        updateDonutChart(initialActive, initialInactive);
+
+        // Click handler for Review Posts link (unchanged)
+        document.addEventListener('click', e => {
+            if (e.target && e.target.id === 'reviewPostsLink') {
+                e.preventDefault();
+                const reportTab = document.querySelector('.admin-tab[data-tab="reports"]');
+                if (reportTab) reportTab.click();
+                const mainPanel = document.querySelector('.admin-main');
+                if (mainPanel) mainPanel.scrollTop = 0;
+            }
+        });
+    });
+</script>
