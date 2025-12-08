@@ -16,7 +16,7 @@
         public List<int> MaterialsToDelete { get; set; } = new();
         public string? CustomCategory { get; set; }
         public bool IsFree { get; set; } = true;
-        public decimal DesiredThreads { get; set; } = 0.00M;
+        public decimal? DesiredThreads { get; set; } = 0.00M;
         public List<InteractiveContentViewModel> Interactives { get; set; } = new();
     }
 }

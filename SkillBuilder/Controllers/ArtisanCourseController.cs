@@ -6,6 +6,7 @@ using SkillBuilder.Data;
 using SkillBuilder.Models;
 using SkillBuilder.Models.ViewModels;
 using SkillBuilder.Services;
+using System.Text.RegularExpressions;
 
 namespace SkillBuilder.Controllers
 {
@@ -38,6 +39,12 @@ namespace SkillBuilder.Controllers
             return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", viewModel);
         }
 
+        public static string StripHtml(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return input;
+            return Regex.Replace(input, "<.*?>", string.Empty);
+        }
+
         [HttpPost("CreateCourse")]
         [RequestSizeLimit(50 * 1024 * 1024)] // Allow up to 50 MB for this action
         public async Task<IActionResult> CreateCourse(CourseBuilderViewModel model)
@@ -61,6 +68,11 @@ namespace SkillBuilder.Controllers
             course.CreatedBy = artisan.ArtisanId;
             course.CreatedAt = DateTime.UtcNow;
             course.Duration = $"{model.DurationValue} {model.DurationUnit}";
+
+            // ---------------------- STRIP HTML FROM TINYMCE FIELDS ----------------------
+            course.Overview = System.Net.WebUtility.HtmlDecode(StripHtml(course.Overview));
+            course.Requirements = System.Net.WebUtility.HtmlDecode(StripHtml(course.Requirements));
+            course.FullDescription = System.Net.WebUtility.HtmlDecode(StripHtml(course.FullDescription));
 
             if (course.Category == "Other" && !string.IsNullOrWhiteSpace(model.CustomCategory))
             {
@@ -182,7 +194,7 @@ namespace SkillBuilder.Controllers
                                 {
                                     ModuleContentId = moduleContent.Id,
                                     ContentType = string.IsNullOrWhiteSpace(ic.ContentType) ? "Text" : ic.ContentType,
-                                    ContentText = ic.ContentText ?? "",
+                                    ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(ic.ContentText ?? "")),
                                     OptionA = ic.OptionA,
                                     OptionB = ic.OptionB,
                                     OptionC = ic.OptionC,
@@ -331,6 +343,8 @@ namespace SkillBuilder.Controllers
                 DurationValue = int.TryParse(course.Duration?.Split(' ')[0], out var val) ? val : 0,
                 DurationUnit = course.Duration?.Split(' ').ElementAtOrDefault(1) ?? "hours",
                 LearningObjectives = course.WhatToLearn?.Split("||").ToList() ?? new List<string> { "" },
+                IsFree = course.IsFree,
+                DesiredThreads = course.DesiredThreads,
                 Modules = course.CourseModules
                     .OrderBy(m => m.Order)
                     .Select(m => new CourseModuleViewModel
@@ -442,12 +456,18 @@ namespace SkillBuilder.Controllers
             course.Difficulty = model.Course.Difficulty;
             course.Duration = $"{model.DurationValue} {model.DurationUnit}";
             course.IsFree = model.Course.IsFree;
-            course.DesiredThreads = !model.Course.IsFree ? model.Course.DesiredThreads : 0M;
+            course.DesiredThreads = model.Course.IsFree
+                ? (decimal?)null
+                : model.Course.DesiredThreads;
             course.Requirements = model.Course.Requirements;
             course.WhatToLearn = model.LearningObjectives != null
                 ? string.Join("||", model.LearningObjectives.Where(o => !string.IsNullOrWhiteSpace(o)))
                 : null;
             course.FullDescription = model.Course.FullDescription;
+
+            course.Overview = System.Net.WebUtility.HtmlDecode(StripHtml(course.Overview));
+            course.Requirements = System.Net.WebUtility.HtmlDecode(StripHtml(course.Requirements));
+            course.FullDescription = System.Net.WebUtility.HtmlDecode(StripHtml(course.FullDescription));
 
             // Update media
             if (model.ImageFile != null)
@@ -653,7 +673,7 @@ namespace SkillBuilder.Controllers
                                         // Existing interactive
                                         ic = lesson.InteractiveContents.First(c => c.Id == icVm.Id);
                                         ic.ContentType = icVm.ContentType;
-                                        ic.ContentText = icVm.ContentText;
+                                        ic.ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(icVm.ContentText ?? ""));
                                         ic.OptionA = icVm.OptionA;
                                         ic.OptionB = icVm.OptionB;
                                         ic.OptionC = icVm.OptionC;
@@ -669,7 +689,7 @@ namespace SkillBuilder.Controllers
                                         {
                                             ModuleContentId = lesson.Id,
                                             ContentType = icVm.ContentType,
-                                            ContentText = icVm.ContentText,
+                                            ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(icVm.ContentText ?? "")),
                                             OptionA = icVm.OptionA,
                                             OptionB = icVm.OptionB,
                                             OptionC = icVm.OptionC,
@@ -678,6 +698,7 @@ namespace SkillBuilder.Controllers
                                             ReflectionMinChars = icVm.ReflectionMinChars
                                         };
                                         _context.InteractiveContents.Add(ic);
+                                        await _context.SaveChangesAsync();
                                     }
                                 }
                             }

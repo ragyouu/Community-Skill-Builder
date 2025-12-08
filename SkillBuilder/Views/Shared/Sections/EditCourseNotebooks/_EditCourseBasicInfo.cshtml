@@ -183,6 +183,40 @@
 
 <div class="basicinfo-form-wrapper">
 
+    <!-- Course Pricing -->
+    <div class="basicinfo-form-group">
+        <label>Course Pricing *</label>
+
+        <div style="display:flex; gap:2rem; align-items:center; margin-top:0.5rem;">
+            <!-- Free Option -->
+            <label style="display:flex; align-items:center; gap:0.5rem;">
+                <input type="radio" name="Course.IsFree" value="true"
+                       @(Model.Course.IsFree ? "checked" : "") />
+                Free Course
+            </label>
+
+            <!-- Paid Option -->
+            <label style="display:flex; align-items:center; gap:0.5rem;">
+                <input type="radio" name="Course.IsFree" value="false"
+                       @(!Model.Course.IsFree ? "checked" : "") />
+                Requires Threads
+            </label>
+        </div>
+
+        <!-- Desired Threads Input -->
+        <div id="threadsSection" style="margin-top:1rem; display:@(Model.Course.IsFree ? "none" : "block");">
+            <label for="DesiredThreads">Required Threads *</label>
+            <input type="number"
+                   id="DesiredThreads"
+                   name="Course.DesiredThreads"
+                   class="basicinfo-form-control"
+                   placeholder="Enter required number of threads"
+                   value="@(Model.Course.DesiredThreads)"
+                   min="1"
+                   @(Model.Course.IsFree ? "" : "required") />
+        </div>
+    </div>
+
     <!-- Course Title & Category -->
     <div class="basicinfo-form-row">
         <div class="basicinfo-form-col basicinfo-form-group">
@@ -317,6 +351,32 @@
 
 <script>
 
+    // ====================== FREE / PAID TOGGLE ======================
+    const freeRadios = document.querySelectorAll('input[name="Course.IsFree"]');
+    const threadsSection = document.getElementById("threadsSection");
+    const desiredThreadsInput = document.getElementById("DesiredThreads");
+
+    // ====================== Form Validation ======================
+    const form = document.getElementById("edit-course-form");
+    const submitBtn = document.getElementById("editBtn");
+
+    freeRadios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            if (this.value === "true") {
+                // Free Course
+                threadsSection.style.display = "none";
+                desiredThreadsInput.required = false;
+                desiredThreadsInput.value = ""; // remove value
+            } else {
+                // Paid Course
+                threadsSection.style.display = "block";
+                desiredThreadsInput.required = true;
+            }
+
+            validateForm(); // existing function from your code
+        });
+    });
+
     tinymce.init({
         selector: 'textarea.tinymce-editor',
         menubar: false,
@@ -442,6 +502,32 @@
         validateFile(this, "video");
     });
 
+    function validateForm() {
+        let allValid = true;
+        if (!form || !submitBtn) return;
+
+        const requiredFields = form.querySelectorAll("input[required], select[required], textarea[required]");
+        requiredFields.forEach(field => {
+            if (field && field.offsetParent !== null && (!field.value || field.value.trim() === "")) {
+                allValid = false;
+            }
+        });
+
+        const objectiveInputs = form.querySelectorAll("#objectives-container input");
+        objectiveInputs.forEach(input => {
+            if (!input.value || input.value.trim() === "") allValid = false;
+        });
+
+        const workItems = form.querySelectorAll(".artisan-work-item");
+        workItems.forEach(item => {
+            const title = item.querySelector('input[placeholder="Work Title"]');
+            const caption = item.querySelector('input[placeholder="Work Caption"]');
+            if (!title || !title.value.trim() || !caption || !caption.value.trim()) allValid = false;
+        });
+
+        submitBtn.disabled = !allValid;
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
 
         // ====================== Image Preview ======================
@@ -533,37 +619,7 @@
             durationInput.addEventListener("input", () => { durationInput.value = durationInput.value.replace(/\D/g, ''); });
         }
 
-        // ====================== Form Validation ======================
-        const form = document.getElementById("edit-course-form");
-        const submitBtn = document.getElementById("editBtn");
-
         if (submitBtn) submitBtn.disabled = true; // Disabled by default
-
-        function validateForm() {
-            let allValid = true;
-            if (!form || !submitBtn) return;
-
-            const requiredFields = form.querySelectorAll("input[required], select[required], textarea[required]");
-            requiredFields.forEach(field => {
-                if (field && field.offsetParent !== null && (!field.value || field.value.trim() === "")) {
-                    allValid = false;
-                }
-            });
-
-            const objectiveInputs = form.querySelectorAll("#objectives-container input");
-            objectiveInputs.forEach(input => {
-                if (!input.value || input.value.trim() === "") allValid = false;
-            });
-
-            const workItems = form.querySelectorAll(".artisan-work-item");
-            workItems.forEach(item => {
-                const title = item.querySelector('input[placeholder="Work Title"]');
-                const caption = item.querySelector('input[placeholder="Work Caption"]');
-                if (!title || !title.value.trim() || !caption || !caption.value.trim()) allValid = false;
-            });
-
-            submitBtn.disabled = !allValid;
-        }
 
         validateForm();
         form.addEventListener("input", validateForm);

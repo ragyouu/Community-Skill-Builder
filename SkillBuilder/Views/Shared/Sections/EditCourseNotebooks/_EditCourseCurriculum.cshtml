@@ -735,34 +735,41 @@
                 container.innerHTML = `<div class="curriculum-edit-form-group">
                     <label>Question *</label>
                     <input type="text" class="curriculum-edit-form-control"
-                           name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
-                           value="${existing.ContentText || ''}" required />
+                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
+                            value="${existing.ContentText || ''}" required />
                 </div>
                 <div class="curriculum-edit-form-group">
                     <label>Options *</label>
                     <div class="curriculum-edit-form-row">
-                        ${['A','B','C','D'].map(letter => {
+                        ${['A','B','C','D'].map((letter, i) => {
                             const val = existing[`Option${letter}`] || '';
                             return `<div style="flex:1;">
-                                <input type="text" class="curriculum-edit-form-control"
-                                       name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].Option${letter}"
-                                       placeholder="Option ${letter}" value="${val}" required />
+                                <input type="text" class="curriculum-edit-form-control option-input"
+                                        name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].Option${letter}"
+                                        placeholder="Option ${letter}" value="${val}" required />
                                 <input type="radio"
-                                       name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].CorrectAnswer"
-                                       value="${val}" ${existing.CorrectAnswer === val ? 'checked' : ''} /> Correct
+                                        name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].CorrectAnswer"
+                                        data-letter="${letter}"
+                                        value="${val || letter}" ${existing.CorrectAnswer === val || (!existing.CorrectAnswer && i===0) ? 'checked' : ''} required /> Correct
                             </div>`;
                         }).join('')}
                     </div>
                 </div>`;
 
-                // Sync radio buttons if option text changes
+                // Sync each radio's value with its corresponding option input
                 ['A','B','C','D'].forEach(letter => {
                     const optInput = container.querySelector(`input[name$='Option${letter}']`);
-                    const radio = container.querySelector(`input[type='radio'][name$='CorrectAnswer'][value='${optInput?.value}']`);
+                    const radio = container.querySelector(`input[type='radio'][name$='CorrectAnswer'][data-letter='${letter}']`);
                     if(optInput && radio){
+                        // Ensure radio always has a value
+                        radio.value = optInput.value || letter;
+
+                        // If no existing CorrectAnswer, check first option
+                        if(!existing.CorrectAnswer && letter === 'A') radio.checked = true;
+
+                        // Sync radio value when user types in option input
                         optInput.addEventListener('input', e => {
-                            radio.value = e.target.value;
-                            if(existing.CorrectAnswer === e.target.value) radio.checked = true;
+                            radio.value = e.target.value || letter;
                         });
                     }
                 });
@@ -970,15 +977,17 @@
             <div class="curriculum-edit-form-group">
                 <label>Options *</label>
                 <div class="curriculum-edit-form-row">
-                    ${['A','B','C','D'].map(letter => {
-                        const val = questionData ? questionData[`Option${letter}`] || '' : '';
-                        return `<div style="flex:1;">
-                            <input type="text" name="${nameBase}.QuizQuestions[${index}].Option${letter}" class="curriculum-edit-form-control" placeholder="Option ${letter}" value="${val}" required />
-                            <input type="radio"
-                                   name="${nameBase}.QuizQuestions[${index}].CorrectAnswer"
-                                   value="${val}" ${questionData?.CorrectAnswer === val ? 'checked' : ''} /> Correct
-                        </div>`;
-                    }).join('')}
+                ${['A','B','C','D'].map((letter, i) => {
+                    const val = questionData ? questionData[`Option${letter}`] || '' : '';
+                    return `<div style="flex:1;">
+                        <input type="text" name="${nameBase}.QuizQuestions[${index}].Option${letter}" class="curriculum-edit-form-control" placeholder="Option ${letter}" value="${val}" required />
+                        <input type="radio"
+                                name="${nameBase}.QuizQuestions[${index}].CorrectAnswer"
+                                data-letter="${letter}"
+                                value="${val}"
+                                ${questionData?.CorrectAnswer === val || (!questionData?.CorrectAnswer && i===0) ? 'checked' : ''} required required/> Correct
+                    </div>`;
+                }).join('')}
                 </div>
             </div>
                     `;
@@ -987,18 +996,15 @@
         // Add listener so radio value updates if option text changes
         ['A','B','C','D'].forEach(letter => {
             const optInput = qBlock.querySelector(`input[name$='Option${letter}']`);
-            const radio = qBlock.querySelector(`input[type='radio'][name$='CorrectAnswer'][data-letter='${letter}']`);
+            const radio = qBlock.querySelector(`input[type='radio'][data-letter='${letter}']`);
 
-            // initial value
-            if(optInput && radio) {
+            if(optInput && radio){
                 radio.value = optInput.value;
-                radio.checked = questionData?.CorrectAnswer === optInput.value;
+                if(!questionData?.CorrectAnswer && letter==='A') radio.checked = true;
 
-                // sync value on input change
                 optInput.addEventListener('input', e => {
-                    const newVal = e.target.value;
-                    radio.value = newVal;
-                    // preserve checked
+                    radio.value = e.target.value;
+                    // preserve checked state
                     if(radio.checked) radio.checked = true;
                 });
             }

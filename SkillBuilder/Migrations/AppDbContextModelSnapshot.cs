@@ -615,7 +615,7 @@ namespace SkillBuilder.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DesiredThreads")
+                    b.Property<decimal?>("DesiredThreads")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Difficulty")

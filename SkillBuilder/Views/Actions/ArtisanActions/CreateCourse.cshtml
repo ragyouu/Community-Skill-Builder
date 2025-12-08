@@ -213,11 +213,31 @@
 
             if (type === "radio") return;
 
-            if (isVisible && input.value.trim() === "") {
+            let value = input.value.trim();
+
+            // Check TinyMCE editors without changing structure
+            if (input.classList.contains("tinymce-editor")) {
+                const editor = tinymce.get(input.id);
+                value = editor ? editor.getContent({ format: 'text' }).trim() : "";
+            }
+
+            if (isVisible && value === "") {
                 input.classList.add("input-invalid");
                 allValid = false;
             } else {
                 input.classList.remove("input-invalid");
+            }
+        });
+
+        const tinyMCETextareas = form.querySelectorAll("textarea.tinymce-editor");
+        tinyMCETextareas.forEach(t => {
+            const editor = tinymce.get(t.id);
+            const content = editor ? editor.getContent({ format: 'text' }).trim() : "";
+            if (!content) {
+                allValid = false;
+                t.classList.add("input-invalid");
+            } else {
+                t.classList.remove("input-invalid");
             }
         });
 

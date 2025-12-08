@@ -723,7 +723,10 @@
                             <span class="plus-icon">＋</span>
                             <div class="create-community-text">
                                 <span>Create a community</span>
-                                <small class="threads-required">Requires 100 threads</small>
+                                @if (currentUserRole == "learner")
+                                {
+                                    <small class="threads-required">Requires 100 threads</small>
+                                }
                             </div>
                         </div>
                     }

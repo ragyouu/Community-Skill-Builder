@@ -782,19 +782,16 @@
     const currentUserFirstName = "@currentUserFirstName";
     const currentUserLastName = "@currentUserLastName";
     const currentUserAvatar = "@currentUserAvatar";
-    const userDisabled = @userDisabled.ToString().ToLower();
 
+    // Removed userDisabled check
     function getPostComments(){ return JSON.parse(localStorage.getItem("postComments")) || {}; }
     function setPostComments(comments){ localStorage.setItem("postComments", JSON.stringify(comments)); }
 
     function addComment(postId) {
-        if (userDisabled) return;
-
         const input = document.getElementById(`comment-input-${postId}`);
         const text = input.value.trim();
         if (!text) return;
 
-        // 1️⃣ Create a consistent comment object with unique id
         const comment = {
             id: `c_${Date.now()}_${Math.random().toString(36).slice(2)}`,
             userId: currentUserId,
@@ -805,28 +802,22 @@
             createdAt: new Date().toISOString()
         };
 
-        // 2️⃣ Retrieve and update saved comments
         let saved = getPostComments();
         if (!saved[postId]) saved[postId] = [];
         saved[postId].push(comment);
 
-        // 3️⃣ Persist to localStorage
         localStorage.setItem("postComments", JSON.stringify(saved));
-
-        // 4️⃣ Render immediately (real-time)
         renderComment(postId, comment);
 
-        // 5️⃣ Update count instantly
         const countEl = document.getElementById(`comment-count-${postId}`);
         if (countEl) countEl.innerText = saved[postId].length;
 
-        // 6️⃣ Clear input
         input.value = '';
     }
 
     function renderComment(postId, comment) {
         const commentList = document.getElementById(`comments-list-${postId}`);
-        if (!commentList) return; // prevent null error
+        if (!commentList) return;
 
         const commentId = comment.id || `c_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
@@ -834,7 +825,6 @@
         commentItem.classList.add("comment");
         commentItem.dataset.commentId = commentId;
 
-        // Only show delete if owner or admin
         const isOwner = comment.userId === currentUserId;
         const isAdmin = "@currentUserIsAdmin".toLowerCase() === "true";
         const showDelete = isOwner || isAdmin;
@@ -1008,14 +998,6 @@
             if (!list) continue;
             const countEl = document.getElementById(`comment-count-${pid}`);
             if (countEl) countEl.innerText = saved[pid].length;
-        }
-
-        if (userDisabled) {
-            document.querySelectorAll(".comment-btn, .comments-section textarea, .comments-section button")
-                .forEach(el => {
-                    el.disabled = true;
-                    el.style.cursor = 'not-allowed';
-                });
         }
 
         // --- Delete Comment Confirmation Modal Logic ---

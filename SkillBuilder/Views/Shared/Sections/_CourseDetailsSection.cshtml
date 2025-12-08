@@ -575,30 +575,30 @@
                                 @if (Model.IsFree)
                                 {
                                     <h1 class="course-detail-free-label" style="
-                                        font-size: 2rem;
-                                        font-weight: bold;
-                                        margin-bottom: 1rem;
-                                        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-                                    ">
+                                                            font-size: 2rem;
+                                                            font-weight: bold;
+                                                            margin-bottom: 1rem;
+                                                            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+                                                        ">
                                         FREE COURSE
                                     </h1>
                                 }
                                 else
                                 {
                                     <h1 class="course-detail-free-label" style="
-                                        font-size: 1.25rem; /* smaller text */
-                                        font-weight: bold;
-                                        margin-bottom: 1rem;
-                                        display: flex;
-                                        align-items: center;
-                                        gap: 0.5rem;
-                                    ">
+                                                            font-size: 1.25rem; /* smaller text */
+                                                            font-weight: bold;
+                                                            margin-bottom: 1rem;
+                                                            display: flex;
+                                                            align-items: center;
+                                                            gap: 0.5rem;
+                                                        ">
                                         <img src="/assets/icons/coin.ico" alt="Coin" style="width:20px; height:20px;" />
-                                        @Model.DesiredThreads.ToString("0.##") Threads
+                                        @Model.DesiredThreads?.ToString("0.##") Threads
                                     </h1>
                                 }
                                 <button class="course-detail-enroll-btn"
-                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), @Model.DesiredThreads.ToString("0.##"), @ViewData["UserThreads"].ToString())">
+                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), @Model.DesiredThreads?.ToString("0.##"), @ViewData["UserThreads"].ToString())">
                                     Enroll Now
                                 </button>
                             }
@@ -721,7 +721,7 @@
                 }
                 else
                 {
-                    <text>This course costs @Model.DesiredThreads.ToString("0.##") Threads. Do you still want to enroll?</text>
+                    <text>This course costs @Model.DesiredThreads?.ToString("0.##") Threads. Do you still want to enroll?</text>
                 }
             </p>
             <div class="enroll-modal-buttons">

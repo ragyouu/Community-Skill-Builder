@@ -175,7 +175,7 @@ namespace SkillBuilder.Controllers
                 return BadRequest(new { success = false, message = "Already enrolled." });
 
             // ✅ Deduct threads based on course.DesiredThreads
-            decimal threadsToDeduct = course.DesiredThreads;
+            decimal threadsToDeduct = course.DesiredThreads ?? 0M;
 
             if (user.Threads < threadsToDeduct)
                 return BadRequest(new { success = false, message = "Not enough threads to enroll in this course." });

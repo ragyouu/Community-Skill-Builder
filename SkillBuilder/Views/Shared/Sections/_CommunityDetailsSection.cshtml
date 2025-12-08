@@ -143,7 +143,7 @@
         background: #344AEA;
         color: #fff;
         cursor: pointer;
-        font-size: 14px;
+        font-weight: bold;
     }
 
         .community-details-btn:disabled {
@@ -1829,18 +1829,6 @@
         if (titleEl) titleEl.addEventListener('input', updateEditSaveButtonState);
         if (contentEl) contentEl.addEventListener('input', updateEditSaveButtonState);
         if (imageInputEl) imageInputEl.addEventListener('change', updateEditSaveButtonState);
-
-        if (userDisabled) {
-            document.querySelectorAll(".comment-btn").forEach(btn => {
-                btn.disabled = true;
-                btn.style.cursor = "not-allowed";
-            });
-
-            document.querySelectorAll(".comments-section textarea, .comments-section button").forEach(el => {
-                el.disabled = true;
-                el.style.cursor = "not-allowed";
-            });
-        }
 
         // Restore comments
         const savedComments = getPostComments();
