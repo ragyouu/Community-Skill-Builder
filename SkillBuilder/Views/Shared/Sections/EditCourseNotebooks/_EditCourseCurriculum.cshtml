@@ -250,34 +250,43 @@
 <script>
 
     function initTinyMCE(target = '.tinymce-editor') {
-        if(typeof tinymce === 'undefined') return;
+        if (typeof tinymce === 'undefined') return;
 
         // Remove only specific editor if element is passed
-        if(target instanceof HTMLElement){
-            const id = target.id || (`tinymce-${Date.now()}`);
-            if(!target.id) target.id = id;
-            if(tinymce.get(id)) tinymce.get(id).remove();
+        if (target instanceof HTMLElement) {
+            const id = target.id || `tinymce-${Date.now()}`;
+            if (!target.id) target.id = id;
+
+            if (tinymce.get(id)) tinymce.get(id).remove();
+
             tinymce.init({
+                height: 250,
                 target: target,
                 menubar: false,
-                plugins: 'lists link image table code',
-                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
-                height: 250,
+                plugins: 'lists link image table code autoresize',
+                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
+                resize: true,
+                autoresize_min_height: 120,
+                autoresize_bottom_margin: 40,
                 branding: false,
                 license_key: 'gpl',
                 setup: (editor) => {
                     editor.on('change', () => editor.save());
                 }
             });
-        } else {
-            // default selector string
+        }
+        // default selector string
+        else {
             tinymce.remove(target);
             tinymce.init({
+                height: 250,
                 selector: target,
                 menubar: false,
-                plugins: 'lists link image table code',
-                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist ',
-                height: 250,
+                plugins: 'lists link image table code autoresize',
+                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
+                resize: true,
+                autoresize_min_height: 120,
+                autoresize_bottom_margin: 40,
                 branding: false,
                 license_key: 'gpl',
                 setup: (editor) => {

@@ -6,6 +6,8 @@
 @{
     var userId = User.FindFirst("UserId")?.Value;
     var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+    var desiredThreads = Model.DesiredThreads?.ToString("0.##") ?? "0";
+    var desiredThreadsStr = Model.DesiredThreads?.ToString("0.##") ?? "0";
 
     // ✅ Get user from DB instead of claims
     bool isVerified = false;
@@ -27,11 +29,13 @@
     var signatureUrl = userEnrollment?.DigitalSignatureUrl;
 
     // Get user's Threads
-    decimal userThreads = 0;
+    decimal userThreadsDecimal = 0;
     if (ViewData["UserThreads"] != null)
     {
-        userThreads = Convert.ToDecimal(ViewData["UserThreads"]);
+        userThreadsDecimal = Convert.ToDecimal(ViewData["UserThreads"]);
     }
+
+    var userThreadsStr = userThreadsDecimal.ToString("0.##");
 
     // ✅ Show completion button if enrollment exists and is marked completed
     bool showCompletionBtn = userEnrollment != null && userEnrollment.IsCompleted;
@@ -598,7 +602,7 @@
                                     </h1>
                                 }
                                 <button class="course-detail-enroll-btn"
-                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), @Model.DesiredThreads?.ToString("0.##"), @ViewData["UserThreads"].ToString())">
+                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), '@desiredThreads', '@desiredThreadsStr')">
                                     Enroll Now
                                 </button>
                             }

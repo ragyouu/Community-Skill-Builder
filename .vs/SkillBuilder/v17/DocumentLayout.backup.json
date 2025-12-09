@@ -576,7 +576,7 @@
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
               "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
               "RelativeToolTip": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
-              "ViewState": "AgIAANQIAAAAAAAAAAAmwNwIAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAAFYFAAAAAAAAAAAswF4FAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-04T07:38:02.902Z",
               "EditorCaption": ""
@@ -615,8 +615,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
               "ViewState": "AgIAAL4AAAAAAAAAAAAmwMUAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:51:12.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:51:12.522Z"
             },
             {
               "$type": "Document",

@@ -265,10 +265,12 @@
         const baseConfig = {
             height: 250,
             menubar: false,
-            plugins: 'lists link image code',
-            toolbar: 'undo redo | bold italic underline | bullist numlist',
+            plugins: 'lists link image code autoresize', // added autoresize
+            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
             branding: false,
             license_key: 'gpl', // ensures GPL/open source license
+            autoresize_min_height: 120,      // minimum height
+            autoresize_bottom_margin: 40,    // extra space at bottom
             setup: function(editor) {
                 editor.on('Change', () => editor.save());
             }
