@@ -213,7 +213,7 @@
                    placeholder="Enter required number of threads"
                    value="@(Model.Course.DesiredThreads)"
                    min="1"
-                   @(Model.Course.IsFree ? "" : "required") />
+                   @(Model.Course.IsFree ? "disabled" : "required") />
         </div>
     </div>
 
@@ -366,10 +366,12 @@
                 // Free Course
                 threadsSection.style.display = "none";
                 desiredThreadsInput.required = false;
-                desiredThreadsInput.value = ""; // remove value
+                desiredThreadsInput.disabled = true;
+                desiredThreadsInput.value = "";
             } else {
-                // Paid Course
+                // Paid
                 threadsSection.style.display = "block";
+                desiredThreadsInput.disabled = false;
                 desiredThreadsInput.required = true;
             }
 

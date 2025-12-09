@@ -1415,12 +1415,14 @@
             // VIDEO + TEXT
             else if (data.type === "Video + Text") {
                 // Title
-                inner.innerHTML = `<h1>${data.title}</h1>`;
+                inner.innerHTML = `<h1 style="text-align: center;">${data.title}</h1>`;
 
                 // Video element
                 const videoEl = document.createElement('video');
                 videoEl.controls = true;
-                videoEl.style.width = "100%";
+                videoEl.style.display = "block";
+                videoEl.style.margin = "0 auto";
+                videoEl.style.width = "75%";
                 videoEl.style.borderRadius = "8px";
                 videoEl.style.marginBottom = "1rem";
                 videoEl.innerHTML = `<source src="${data.mediaUrl}" type="video/mp4">Your browser does not support the video tag.`;
@@ -1428,8 +1430,8 @@
 
                 // Text content
                 if (data.contentText && data.contentText.trim() !== "") {
-                    const p = document.createElement("p");
-                    p.innerText = data.contentText;
+                    const p = document.createElement("div");   // <-- changed from <p> to <div>
+                    p.innerHTML = data.contentText;            // <-- changed from innerText to innerHTML
                     p.style.marginTop = "1rem";
                     p.style.textAlign = "left";
                     p.style.whiteSpace = "pre-wrap";
