@@ -116,6 +116,10 @@
         font-weight: 500;
         color: #333;
         transition: background-color 0.3s ease, color 0.3s ease;
+        display: flex; /* ⭐ keeps title + lock horizontally aligned */
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
     }
 
         .module-tab.locked {
@@ -126,9 +130,8 @@
 
             .module-tab.locked::after {
                 content: '🔒';
-                float: right;
-                margin-left: 8px;
                 color: #666;
+                flex-shrink: 0; /* ⭐ prevents the icon from wrapping */
             }
 
         .module-tab:hover:not(.locked) {
@@ -1202,7 +1205,7 @@
 
                                 if (questionCompleted) {
                                     buttons.forEach(btn => {
-                                        if (btn.dataset.value === content.correctAnswer) {
+                                        if (btn.innerText.trim() === content.correctAnswer) {
                                             btn.style.background = "#007bff";
                                             btn.style.color = "#fff";
                                         }
@@ -1222,7 +1225,8 @@
                                         btn.style.color = "#fff";
 
                                         // Mark completed only if correct
-                                        content.completed = btn.dataset.value === content.correctAnswer;
+                                        const selectedText = btn.innerText.trim();
+                                        content.completed = selectedText === content.correctAnswer;
                                         if (content.completed) localStorage.setItem(questionKey, "true");
 
                                         updateNextButtonState();
@@ -1361,7 +1365,7 @@
                                 const buttons = contentBlock.querySelectorAll(".question-btn");
                                 if (questionCompleted) {
                                     buttons.forEach(btn => {
-                                        if (btn.dataset.value === content.correctAnswer) {
+                                        if (btn.innerText.trim() === content.correctAnswer) {
                                             btn.style.background = "#007bff";
                                             btn.style.color = "#fff";
                                         }
@@ -1373,7 +1377,8 @@
                                         buttons.forEach(b => { b.style.background = "#fff"; b.style.color = "#007bff"; });
                                         btn.style.background = "#007bff";
                                         btn.style.color = "#fff";
-                                        content.completed = btn.dataset.value === content.correctAnswer;
+                                        const selectedText = btn.innerText.trim();
+                                        content.completed = selectedText === content.correctAnswer;
                                         if (content.completed) localStorage.setItem(questionKey, "true");
                                         updateNextButtonState();
                                     });
@@ -1454,7 +1459,7 @@
             // QUIZ
             else if (data.type === "Quiz") {
                 inner.innerHTML = `
-                    <div>
+                    <div style="text-align: center;">
                         <h1>${data.title}</h1>
                         <p style="margin-bottom: 2rem; color: #555;">Take this quiz to continue.</p>
                         <button onclick="startDynamicQuizByIndex(${index})" class="quiz-launch-btn">Start Quiz</button>
@@ -1481,7 +1486,7 @@
             // SESSION
             else if (data.type === "Session") {
                 inner.innerHTML = `
-                    <div>
+                    <div style="text-align: center;">
                         <h1>${data.title}</h1>
                         <p style="margin-bottom: 2rem; color: #555;">
                             Request a live session for guided instruction (optional).
