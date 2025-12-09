@@ -15,6 +15,7 @@
         margin-top: 5rem;
         display: flex;
         width: 100%;
+        height: 120vh;
         background-color: #f3f3f3;
         flex-direction: column;
     }
@@ -33,6 +34,8 @@
         display: flex;
         padding: 2rem 4rem;
         gap: 2rem;
+        min-height: 900px;
+        max-height: 900px;
     }
 
     .progress-header {
@@ -82,6 +85,9 @@
         padding: 2rem;
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        min-height: 900px;
+        max-height: 900px;
+        overflow-y: auto; /* enable vertical scroll if content is long */
     }
 
         .module-sidebar h2 {
@@ -144,9 +150,11 @@
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.06);
         position: relative;
-        min-height: 600px;
+        min-height: 900px;
+        max-height: 900px;
         display: flex;
         flex-direction: column;
+        overflow-y: auto; /* enable vertical scroll if content is long */
     }
 
         .module-content h1 {
@@ -1095,7 +1103,7 @@
             // TEXT CONTENT
             if (data.type === "Text") {
                 inner.innerHTML = `
-                    <h1 style="margin-bottom:1rem; font-size:1.8rem; color:#222; text-align:left;">${data.title}</h1>
+                    <h1 style="margin-bottom:1rem; font-size:1.8rem; color:#222; text-align:center;">${data.title}</h1>
                     <p style="margin-bottom:1.5rem; font-size:1rem; color:#444; line-height:1.6; text-align:left;">${data.contentText}</p>
                 `;
 
@@ -1260,8 +1268,10 @@
             // IMAGE + TEXT
             else if (data.type === "Image + Text") {
                 inner.innerHTML = `
-                    <h1>${data.title}</h1>
-                    <img src="${data.mediaUrl}" alt="Image content" style="max-width:100%; border-radius:8px; margin-bottom:1rem;" />
+                    <h1 style="text-align: center;">${data.title}</h1>
+                    <img src="${data.mediaUrl}"
+                         alt="Image content"
+                         style="display: block; margin: 0 auto; max-width: 70%; border-radius: 8px; margin-bottom: 1rem;" />
                     <p style="text-align: left; white-space: pre-wrap;">${data.contentText}</p>
                 `;
 
