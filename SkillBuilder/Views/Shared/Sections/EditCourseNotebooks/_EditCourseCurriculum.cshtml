@@ -224,7 +224,7 @@
 
         <div class="curriculum-edit-form-group">
             <label>Details / Context *</label>
-            <textarea class="curriculum-edit-form-control" name="FinalProject.Description" rows="4" placeholder="Describe the final project..." required></textarea>
+            <textarea style="height: 350px;" class="curriculum-edit-form-control" name="FinalProject.Description" rows="4" placeholder="Describe the final project..." required></textarea>
         </div>
     </div>
 </div>
@@ -272,6 +272,12 @@
                 license_key: 'gpl',
                 setup: (editor) => {
                     editor.on('change', () => editor.save());
+
+                    editor.on('init', () => {
+                    setTimeout(() => {
+                            editor.execCommand('mceAutoResize');
+                        }, 50);
+                    });
                 }
             });
         }
@@ -291,6 +297,12 @@
                 license_key: 'gpl',
                 setup: (editor) => {
                     editor.on('change', () => editor.save());
+
+                    editor.on('init', () => {
+                        setTimeout(() => {
+                            editor.execCommand('mceAutoResize');
+                        }, 50);
+                    });
                 }
             });
         }
@@ -928,13 +940,13 @@
         const errorSpan = input.closest(".curriculum-edit-form-group").querySelector(".file-error");
         const file = input.files[0];
         const maxSizeMB = 200;
-        const allowedTypes = ['video/mp4','video/webm','video/ogg'];
+        const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
 
         if(!file) return;
 
         if(!allowedTypes.includes(file.type)){
             if(errorSpan){
-                errorSpan.textContent = "Invalid file type. Allowed: MP4, WebM, OGG.";
+                errorSpan.textContent = "Invalid file type. Allowed: MP4, WebM, OGG, MOV.";
                 errorSpan.style.display = 'block';
             }
             input.value = '';
