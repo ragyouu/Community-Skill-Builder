@@ -609,7 +609,6 @@ C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\ne
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\SkillBui.B2448FA2.Up2Date
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\SkillBuilder.dll
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\refint\SkillBuilder.dll
@@ -868,3 +867,4 @@ C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\ne
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\compressed\upcun5m2ck-v58uv4692o.gz
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\compressed\187hblwbyn-t7uokpxb7x.gz
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\compressed\gwr47kqyb5-gc9kuqjae3.gz
+C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
