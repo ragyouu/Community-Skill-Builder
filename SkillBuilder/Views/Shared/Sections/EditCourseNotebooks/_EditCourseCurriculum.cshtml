@@ -180,6 +180,7 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 1rem;
+        margin-top: 1rem;
         margin-bottom: 1rem;
         background: #fafafa;
     }
@@ -249,62 +250,83 @@
 
 <script>
 
-    function initTinyMCE(target = '.tinymce-editor') {
+    function initTinyMCE(target = '.tinymce-editor', allowImages = true) {
         if (typeof tinymce === 'undefined') return;
 
-        // Remove only specific editor if element is passed
-        if (target instanceof HTMLElement) {
-            const id = target.id || `tinymce-${Date.now()}`;
-            if (!target.id) target.id = id;
+        const plugins = allowImages ? 'lists link image table code autoresize' : 'lists link table code autoresize';
+        const toolbar = allowImages
+            ? 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist | image'
+            : 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist';
 
-            if (tinymce.get(id)) tinymce.get(id).remove();
+        const config = {
+            height: 250,
+            menubar: false,
+            plugins,
+            toolbar,
+            automatic_uploads: allowImages,
+            convert_urls: false,
+            relative_urls: false,
+            branding: false,
+            license_key: 'gpl',
+            setup: (editor) => {
+                editor.on('change', () => editor.save());
+                editor.on('init', () => setTimeout(() => editor.execCommand('mceAutoResize'), 50));
+            }
+        };
 
-            tinymce.init({
-                height: 250,
-                target: target,
-                menubar: false,
-                plugins: 'lists link image table code autoresize',
-                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
-                resize: true,
-                autoresize_min_height: 120,
-                autoresize_bottom_margin: 40,
-                branding: false,
-                license_key: 'gpl',
-                setup: (editor) => {
-                    editor.on('change', () => editor.save());
+        // Special handling for interactive content
+        if (allowImages) {
+            config.images_upload_url = '/ArtisanActions/UploadInteractiveImage';
+            config.images_reuse_filename = false;
+            config.file_picker_types = 'image';
+            config.file_picker_callback = function(callback, value, meta) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function() {
+                    const file = this.files[0];
+                    if (!file) return;
 
-                    editor.on('init', () => {
-                    setTimeout(() => {
-                            editor.execCommand('mceAutoResize');
-                        }, 50);
-                    });
-                }
-            });
+                    const maxSizeMB = 20;
+                    if (file.size > maxSizeMB * 1024 * 1024) {
+                        alert(`File too large! Maximum allowed size is ${maxSizeMB}MB.`);
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    fetch('/ArtisanActions/UploadInteractiveImage', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.location) callback(data.location);
+                        else alert('Upload failed.');
+                    })
+                    .catch(() => alert('Upload error.'));
+                };
+                input.click();
+            };
         }
-        // default selector string
-        else {
-            tinymce.remove(target);
-            tinymce.init({
-                height: 250,
-                selector: target,
-                menubar: false,
-                plugins: 'lists link image table code autoresize',
-                toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
-                resize: true,
-                autoresize_min_height: 120,
-                autoresize_bottom_margin: 40,
-                branding: false,
-                license_key: 'gpl',
-                setup: (editor) => {
-                    editor.on('change', () => editor.save());
 
-                    editor.on('init', () => {
-                        setTimeout(() => {
-                            editor.execCommand('mceAutoResize');
-                        }, 50);
-                    });
-                }
-            });
+        if (target instanceof HTMLElement) {
+            const id = target.id || `tinymce-${crypto.randomUUID()}`;
+            target.id = id;
+
+            // ✅ ALWAYS REMOVE EXISTING INSTANCE BEFORE REINITIALIZING
+            if (tinymce.get(id)) {
+                tinymce.get(id).remove();
+            }
+
+            config.target = target;
+            tinymce.init(config);
+        } else {
+            // ✅ REMOVE ALL MATCHING SELECTORS
+            tinymce.remove(target);
+            config.selector = target;
+            tinymce.init(config);
         }
     }
 
@@ -383,7 +405,7 @@
                            value="${moduleData?.Title || ''}" required />
                 </div>
                 <div class="curriculum-edit-lessons" id="curriculum-edit-lessons-${moduleIndex}"></div>
-                <button type="button" class="curriculum-edit-add-btn" onclick="curriculumEditAddLesson(${moduleIndex})">+ Add Lesson</button>
+                <button type="button" class="curriculum-edit-add-btn" style="margin-top: 3rem;" onclick="curriculumEditAddLesson(${moduleIndex})">+ Add Lesson</button>
             `;
 
             container.appendChild(moduleDiv);
@@ -454,7 +476,7 @@
                 <input type="text" class="curriculum-edit-form-control" name="Modules[${moduleIndex}].Title" placeholder="Module title" value="${moduleData?.Title || ''}" required />
             </div>
             <div class="curriculum-edit-lessons" id="curriculum-edit-lessons-${moduleIndex}"></div>
-            <button type="button" class="curriculum-edit-add-btn" onclick="curriculumEditAddLesson(${moduleIndex})">+ Add Lesson</button>
+            <button type="button" class="curriculum-edit-add-btn" style="margin-top: 3rem;" onclick="curriculumEditAddLesson(${moduleIndex})">+ Add Lesson</button>
         `;
         container.appendChild(moduleDiv);
 
@@ -693,7 +715,7 @@
                         name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentType"
                         onchange="handleLessonInteractiveTypeChange(this, ${moduleIndex}, ${lessonIndex}, ${index})" required>
                     <option value="">-- Select Type --</option>
-                    <option value="Text" ${data?.ContentType==='Text'?'selected':''}>Text</option>
+                    <option value="Text" ${data?.ContentType==='Text'?'selected':''}>Text/Image</option>
                     <option value="Link" ${data?.ContentType==='Link'?'selected':''}>Link</option>
                     <option value="Reflection" ${data?.ContentType==='Reflection'?'selected':''}>Reflection</option>
                     <option value="Question" ${data?.ContentType==='Question'?'selected':''}>Question</option>
@@ -732,13 +754,18 @@
                               rows="4" required>${data?.ContentText || ''}</textarea>
                 </div>`;
 
-                const textarea = container.querySelector("textarea.tinymce-editor");
-                if(textarea) initTinyMCE(textarea);
+                setTimeout(() => {
+                    const textarea = container.querySelector("textarea.tinymce-editor");
+                    if(textarea){
+                        initTinyMCE(textarea, true); // ✅ Enable image plugin for interactive content
+                    }
+                }, 0);
                 break;
             case 'Link':
                 container.innerHTML = `<div class="curriculum-edit-form-group">
                     <label>Link *</label>
                     <input type="url" class="curriculum-edit-form-control"
+                           placeholder="https://example.com"
                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
                            value="${data?.ContentText || ''}" required />
                 </div>`;
@@ -807,27 +834,15 @@
 
         switch(selectEl.value){
             case 'Text':
-            case 'Image + Text':
+                // Only ContentText textarea, no image upload
                 html = `<div class="curriculum-edit-form-group">
                             <label>Content</label>
                             <textarea class="curriculum-edit-form-control tinymce-editor"
                                       name="${nameBase}.ContentText"
                                       rows="4" required>${lessonData?.ContentText || ''}</textarea>
                         </div>`;
-                if(selectEl.value === 'Image + Text'){
-                    html += `<div class="curriculum-edit-form-group">
-                                <label>Upload Image</label>
-                                <div style="display:flex; gap:1rem; align-items:center;">
-                                    <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-edit-form-control" onchange="previewUploadImage(this)" />
-                                    <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">
-                                        ${lessonData?.ExistingImageUrl  ? `<img src="${lessonData.ExistingImageUrl}" style="max-width:100%; max-height:100%;" />` : '🖼️'}
-                                    </div>
-                                </div>
-                                <input type="hidden" name="${nameBase}.ExistingImageUrl" value="${lessonData?.ExistingImageUrl ?? lessonData?.MediaUrl ?? ''}" />
-                            </div>`;
-                }
 
-                // interactive container
+                // Interactive contents container (can have image uploads)
                 html += `<div class="lesson-interactive-contents">
                             <h4>Interactive Contents</h4>
                             <div class="interactive-contents-container"></div>
@@ -836,12 +851,77 @@
 
                 configContainer.innerHTML = html;
 
-                // preload existing lesson interactives
+                // Preload existing interactive contents
                 if(lessonData?.InteractiveContents?.length){
                     lessonData.InteractiveContents.forEach(ic => {
                         addLessonInteractiveContent(moduleIndex, lessonIndex, ic);
                     });
                 }
+
+                // Initialize TinyMCE for lesson content only (no image upload)
+                const textareaText = configContainer.querySelector("textarea.tinymce-editor");
+                if(textareaText){
+                    initTinyMCE(textareaText, false); // ✅ disable image plugin for Text lesson ContentText
+                }
+
+                // ✅ Reinitialize TinyMCE for all interactive content textareas
+                setTimeout(() => {
+                    const interactiveTextareas = configContainer.querySelectorAll(".interactive-contents-container textarea.tinymce-editor");
+                    interactiveTextareas.forEach(ta => {
+                        initTinyMCE(ta, true); // ✅ Enable image upload for interactive content
+                    });
+                }, 100);
+                break;
+
+            case 'Image + Text':
+                // ContentText textarea + Image Upload for Image + Text type
+                html = `<div class="curriculum-edit-form-group">
+                            <label>Content</label>
+                            <textarea class="curriculum-edit-form-control tinymce-editor"
+                                      name="${nameBase}.ContentText"
+                                      rows="4" required>${lessonData?.ContentText || ''}</textarea>
+                        </div>
+                        <div class="curriculum-edit-form-group">
+                            <label>Upload Image</label>
+                            <div style="display:flex; gap:1rem; align-items:center;">
+                                <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-edit-form-control" onchange="previewUploadImage(this)" />
+                                <div class="curriculum-upload-preview" style="width:120px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">
+                                    ${lessonData?.ExistingImageUrl ? `<img src="${lessonData.ExistingImageUrl}" style="max-width:100%; max-height:100%;" />` : '🖼️'}
+                                </div>
+                            </div>
+                            <span class="file-error" style="display:none; color:red; font-size:0.9rem; margin-top:0.5rem;"></span>
+                            <input type="hidden" name="${nameBase}.ExistingImageUrl" value="${lessonData?.ExistingImageUrl ?? lessonData?.MediaUrl ?? ''}" />
+                        </div>`;
+
+                // Interactive contents container (can have image uploads)
+                html += `<div class="lesson-interactive-contents">
+                            <h4>Interactive Contents</h4>
+                            <div class="interactive-contents-container"></div>
+                            <button type="button" class="curriculum-edit-add-btn" onclick="addLessonInteractiveContent(${moduleIndex}, ${lessonIndex})">+ Add Interactive Content</button>
+                        </div>`;
+
+                configContainer.innerHTML = html;
+
+                // Preload existing interactive contents
+                if(lessonData?.InteractiveContents?.length){
+                    lessonData.InteractiveContents.forEach(ic => {
+                        addLessonInteractiveContent(moduleIndex, lessonIndex, ic);
+                    });
+                }
+
+                // Initialize TinyMCE for lesson content only (no image upload)
+                const textareaImageText = configContainer.querySelector("textarea.tinymce-editor");
+                if(textareaImageText){
+                    initTinyMCE(textareaImageText, false); // ✅ disable image plugin for Image + Text lesson ContentText
+                }
+
+                // ✅ Reinitialize TinyMCE for all interactive content textareas
+                setTimeout(() => {
+                    const interactiveTextareas = configContainer.querySelectorAll(".interactive-contents-container textarea.tinymce-editor");
+                    interactiveTextareas.forEach(ta => {
+                        initTinyMCE(ta, true); // ✅ Enable image upload for interactive content
+                    });
+                }, 100);
                 break;
 
             case 'Video + Text':
@@ -888,11 +968,6 @@
                 break;
         }
 
-        // ---------- SAFELY initialize TinyMCE only if there is a textarea ----------
-        const textarea = lessonBlock.querySelector(".tinymce-editor");
-        if(textarea){
-            initTinyMCE(textarea);
-        }
     }
 
         // ------------------ PREVIEW & FILE VALIDATION HANDLERS ------------------
@@ -1057,6 +1132,10 @@
     // ------------------ PRELOAD MODULES & FINAL PROJECT ------------------
     document.addEventListener("DOMContentLoaded", () => {
 
+        if (typeof tinymce !== 'undefined') {
+            tinymce.remove(); // Remove all instances
+        }
+
         const modules = @Html.Raw(JsonSerializer.Serialize(Model.Modules ?? []));
         modules.forEach(m => curriculumEditAddModule(m));
 
@@ -1134,7 +1213,6 @@
         const observer = new MutationObserver(validateCurriculumEditForm);
         observer.observe(form, {childList:true, subtree:true});
 
-        initTinyMCE('.tinymce-editor');
     });
 
 </script>

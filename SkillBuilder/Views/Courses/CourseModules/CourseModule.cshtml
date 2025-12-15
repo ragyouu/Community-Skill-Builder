@@ -602,7 +602,7 @@
         right: 0;
         bottom: 0;
         background: rgba(0,0,0,0.5);
-        z-index: 9999;
+        z-index: 1;
         justify-content: center;
         align-items: center;
     }
@@ -633,6 +633,13 @@
                 font-weight: 600;
                 cursor: pointer;
             }
+
+    .interactive-text-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 1rem;
+    }
 </style>
 
 <div class="course-module-container">
@@ -1131,7 +1138,12 @@
 
                         switch (content.type) {
                             case "Text":
-                                contentBlock.innerHTML = `<p style="font-size:1rem; color:#444; line-height:1.6;">${content.contentText}</p>`;
+                                contentBlock.innerHTML = `
+                                    <div class="interactive-text-content">
+                                        ${content.contentText}
+                                    </div>
+                                `;
+                                content.completed = true;
                                 break;
 
                             case "Link":
@@ -1275,7 +1287,7 @@
                     <h1 style="text-align: center;">${data.title}</h1>
                     <img src="${data.mediaUrl}"
                          alt="Image content"
-                         style="display: block; margin: 0 auto; max-width: 70%; border-radius: 8px; margin-bottom: 1rem;" />
+                         style="display: block; position: relative; left: 50%; transform: translateX(-50%); min-width: 700px; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
                     <p style="text-align: left; white-space: pre-wrap;">${data.contentText}</p>
                 `;
 
@@ -1298,7 +1310,12 @@
 
                         switch (content.type) {
                             case "Text":
-                                contentBlock.innerHTML = `<p style="font-size:1rem; color:#444; line-height:1.6;">${content.contentText}</p>`;
+                                contentBlock.innerHTML = `
+                                    <div class="interactive-text-content">
+                                        ${content.contentText}
+                                    </div>
+                                `;
+                                content.completed = true;
                                 break;
 
                             case "Link":
@@ -1734,7 +1751,7 @@
 
             const wrapper = document.createElement("div");
             wrapper.style.position = "absolute";  // relative to module
-            wrapper.style.bottom = "1.5rem";
+            wrapper.style.top = "1.5rem";
             wrapper.style.right = "1.5rem";
             wrapper.style.zIndex = 10; // above module content
 

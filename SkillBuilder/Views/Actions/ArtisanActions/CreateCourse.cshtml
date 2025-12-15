@@ -206,21 +206,34 @@
         const form = document.getElementById("create-course-form");
         const requiredInputs = form.querySelectorAll("[required]");
         let allValid = true;
-
         requiredInputs.forEach(input => {
             const isVisible = input.offsetParent !== null;
             const type = input.getAttribute("type");
-
             if (type === "radio") return;
-
             let value = input.value.trim();
-
             // Check TinyMCE editors without changing structure
             if (input.classList.contains("tinymce-editor")) {
                 const editor = tinymce.get(input.id);
-                value = editor ? editor.getContent({ format: 'text' }).trim() : "";
-            }
 
+                // ✅ FIX: Check if textarea allows images and has image content
+                const isInteractiveContent = input.closest(".interactive-content-block") !== null;
+                const allowsImages = input.dataset.allowImage === "true";
+
+                if (editor) {
+                    const textContent = editor.getContent({ format: 'text' }).trim();
+                    const htmlContent = editor.getContent().trim();
+                    const hasImage = htmlContent.includes('<img');
+
+                    // ✅ Valid if has text OR (is interactive content with image upload and has image)
+                    if (isInteractiveContent && allowsImages && hasImage) {
+                        value = "valid"; // Mark as valid
+                    } else {
+                        value = textContent;
+                    }
+                } else {
+                    value = "";
+                }
+            }
             if (isVisible && value === "") {
                 input.classList.add("input-invalid");
                 allValid = false;
@@ -228,26 +241,47 @@
                 input.classList.remove("input-invalid");
             }
         });
-
         const tinyMCETextareas = form.querySelectorAll("textarea.tinymce-editor");
         tinyMCETextareas.forEach(t => {
+            const isVisible = t.offsetParent !== null;
+            if (!isVisible) return; // ✅ Skip hidden textareas
+
             const editor = tinymce.get(t.id);
-            const content = editor ? editor.getContent({ format: 'text' }).trim() : "";
-            if (!content) {
-                allValid = false;
-                t.classList.add("input-invalid");
+
+            // ✅ FIX: Check if textarea allows images and has image content
+            const isInteractiveContent = t.closest(".interactive-content-block") !== null;
+            const allowsImages = t.dataset.allowImage === "true";
+
+            if (editor) {
+                const textContent = editor.getContent({ format: 'text' }).trim();
+                const htmlContent = editor.getContent().trim();
+                const hasImage = htmlContent.includes('<img');
+
+                // ✅ Valid if has text OR (is interactive content with image upload and has image)
+                const isValid = textContent !== "" || (isInteractiveContent && allowsImages && hasImage);
+
+                if (!isValid) {
+                    allValid = false;
+                    t.classList.add("input-invalid");
+                } else {
+                    t.classList.remove("input-invalid");
+                }
             } else {
-                t.classList.remove("input-invalid");
+                const content = "";
+                if (!content) {
+                    allValid = false;
+                    t.classList.add("input-invalid");
+                } else {
+                    t.classList.remove("input-invalid");
+                }
             }
         });
-
         const requiredRadioNames = new Set();
         requiredInputs.forEach(input => {
             if (input.type === "radio") {
                 requiredRadioNames.add(input.name);
             }
         });
-
         requiredRadioNames.forEach(name => {
             const radios = form.querySelectorAll(`input[name="${name}"]`);
             const isVisible = Array.from(radios).some(r => r.offsetParent !== null);
@@ -259,33 +293,27 @@
                 radios.forEach(r => r.classList.remove("input-invalid"));
             }
         });
-
         const modules = document.querySelectorAll(".curriculum-module:not(#final-project-module)");
         const moduleWarning = document.getElementById("module-warning");
-
         if (modules.length < 2) {
             allValid = false;
             if (moduleWarning) moduleWarning.style.display = "block";
         } else {
             if (moduleWarning) moduleWarning.style.display = "none";
         }
-
         modules.forEach(module => {
             const lessons = module.querySelectorAll(".curriculum-lesson-block");
             if (lessons.length === 0) {
                 allValid = false;
             }
         });
-
         const quizQuestions = form.querySelectorAll(".quiz-question");
         quizQuestions.forEach(q => {
             const hasDuplicates = checkDuplicateOptions(q);
             if (hasDuplicates) allValid = false;
         });
-
         const createBtn = document.getElementById("createBtn");
         if (createBtn) createBtn.disabled = !allValid;
-
         return allValid;
     }
 </script>

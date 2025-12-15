@@ -194,7 +194,7 @@ namespace SkillBuilder.Controllers
                                 {
                                     ModuleContentId = moduleContent.Id,
                                     ContentType = string.IsNullOrWhiteSpace(ic.ContentType) ? "Text" : ic.ContentType,
-                                    ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(ic.ContentText ?? "")),
+                                    ContentText = System.Net.WebUtility.HtmlDecode(ic.ContentText ?? ""),
                                     OptionA = ic.OptionA,
                                     OptionB = ic.OptionB,
                                     OptionC = ic.OptionC,
@@ -673,7 +673,7 @@ namespace SkillBuilder.Controllers
                                         // Existing interactive
                                         ic = lesson.InteractiveContents.First(c => c.Id == icVm.Id);
                                         ic.ContentType = icVm.ContentType;
-                                        ic.ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(icVm.ContentText ?? ""));
+                                        ic.ContentText = System.Net.WebUtility.HtmlDecode(icVm.ContentText ?? "");
                                         ic.OptionA = icVm.OptionA;
                                         ic.OptionB = icVm.OptionB;
                                         ic.OptionC = icVm.OptionC;
@@ -689,7 +689,7 @@ namespace SkillBuilder.Controllers
                                         {
                                             ModuleContentId = lesson.Id,
                                             ContentType = icVm.ContentType,
-                                            ContentText = System.Net.WebUtility.HtmlDecode(StripHtml(icVm.ContentText ?? "")),
+                                            ContentText = System.Net.WebUtility.HtmlDecode(icVm.ContentText ?? ""),
                                             OptionA = icVm.OptionA,
                                             OptionB = icVm.OptionB,
                                             OptionC = icVm.OptionC,
@@ -784,6 +784,19 @@ namespace SkillBuilder.Controllers
             );
 
             return RedirectToAction("ArtisanProfile", "ArtisanProfile", new { id = artisan.ArtisanId });
+        }
+
+        [HttpPost("UploadInteractiveImage")]
+        [Authorize(Roles = "Artisan")]
+        public async Task<IActionResult> UploadInteractiveImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            var imageUrl = await SaveFileAsync(file, "interactive-images");
+
+            // TinyMCE REQUIRED response format
+            return Json(new { location = imageUrl });
         }
     }
 }

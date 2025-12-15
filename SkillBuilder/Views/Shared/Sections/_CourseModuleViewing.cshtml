@@ -64,7 +64,7 @@
                         @for (int j = 0; j < Model.Modules[i].Lessons.Count; j++)
                         {
                             <button class="artisanView-lessonBtn" data-module="@i" data-lesson="@j">
-                                @Model.Modules[i].Lessons[j].Title
+                                Lesson @(j + 1): @Model.Modules[i].Lessons[j].Title
                             </button>
                         }
                     }
@@ -157,7 +157,7 @@
                     switch(ic.contentType) {
                         case "Text":
                             html += `<div class="interactive-content-block">
-                                        <p>${ic.contentText}</p>
+                                        <div class="interactive-text-content">${ic.contentText}</div>
                                      </div>`;
                             break;
                         case "Link":
@@ -338,7 +338,10 @@
     }
 
     .lesson-image {
-        max-width: 100%;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 700px;
         border-radius: 8px;
         margin-bottom: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -425,4 +428,11 @@
         .interactive-content-block a {
             margin: 0.2rem 0;
         }
+
+    .interactive-text-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 1rem;
+    }
 </style>

@@ -138,6 +138,8 @@
         padding: 1rem;
         border-radius: 8px;
         margin-top: 1rem;
+        margin-bottom: 1rem;
+        background: #fafafa;
     }
 
     /* Top-right delete button */
@@ -261,40 +263,75 @@
 <script>
 
     // ------------------ TinyMCE Initialization ------------------
-    function initTinyMCE(target = null) {
+    function initTinyMCE(target = null, allowImages = null) {
         const baseConfig = {
             height: 250,
             menubar: false,
-            plugins: 'lists link image code autoresize', // added autoresize
-            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist',
+            plugins: 'lists link code autoresize',
+            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist',
             branding: false,
-            license_key: 'gpl', // ensures GPL/open source license
-            autoresize_min_height: 120,      // minimum height
-            autoresize_bottom_margin: 40,    // extra space at bottom
+            license_key: 'gpl',
+            autoresize_min_height: 120,
+            autoresize_bottom_margin: 40,
             setup: function(editor) {
-                editor.on('Change', () => editor.save());
+                editor.on('Change KeyUp', function() { editor.save(); });
             }
         };
 
-        if (target) {
-            if (!target.classList.contains('tinymce-initialized')) {
-                tinymce.init({
-                    ...baseConfig,
-                    target: target
-                });
-                target.classList.add('tinymce-initialized');
+        const isTarget = target ? [target] : document.querySelectorAll('.main-lesson-content, .interactive-content-block textarea');
+
+        isTarget.forEach(el => {
+            if (el.classList.contains('tinymce-initialized')) return;
+
+            let allowImg = allowImages;
+            if (allowImg === null) allowImg = el.dataset.allowImage === "true";
+
+            const config = { ...baseConfig, target: el };
+
+            if (allowImg) {
+                config.plugins += ' image';
+                config.toolbar += ' | image';
+                config.automatic_uploads = true;
+                // ✅ Use correct interactive image upload endpoint
+                config.images_upload_url = '/ArtisanActions/UploadInteractiveImage';
+                config.relative_urls = false;
+                config.convert_urls = false;
+                config.file_picker_types = 'image';
+                config.file_picker_callback = function(callback, value, meta) {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = function() {
+                        const file = this.files[0];
+                        if (!file) return;
+                        if (file.size > 20 * 1024 * 1024) {
+                            alert("File too large! Maximum allowed size is 20MB.");
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        // ✅ Updated endpoint for interactive images
+                        fetch('/ArtisanActions/UploadInteractiveImage', {
+                            method: 'POST',
+                            body: formData,
+                            credentials: 'include' // send auth cookies
+                        })
+                        .then(r => {
+                            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                            return r.json();
+                        })
+                        .then(data => data.location ? callback(data.location) : alert('Upload failed.'))
+                        .catch(() => alert('Upload error.'));
+                    };
+                    input.click();
+                };
             }
-        } else {
-            document.querySelectorAll('.main-lesson-content, .interactive-content-block textarea').forEach(el => {
-                if (!el.classList.contains('tinymce-initialized')) {
-                    tinymce.init({
-                        ...baseConfig,
-                        target: el
-                    });
-                    el.classList.add('tinymce-initialized');
-                }
-            });
-        }
+
+            tinymce.init(config);
+            el.classList.add('tinymce-initialized');
+        });
     }
 
     let pendingDeleteCallback = null;
@@ -390,90 +427,6 @@
         });
     }
 
-    // ------------------ INTERACTIVE CONTENT HANDLERS ------------------
-    function attachInteractiveContentHandlers(lessonBlock, moduleIndex, lessonIndex) {
-        const addBtn = lessonBlock.querySelector(".add-content-btn");
-        const dropdown = lessonBlock.querySelector(".content-type-dropdown");
-        const container = lessonBlock.querySelector(".interactive-content-container");
-
-        if (!addBtn || !dropdown || !container) return;
-
-        addBtn.addEventListener("click", () => {
-            const type = dropdown.value;
-            if (!type) return;
-
-            const contentIndex = container.children.length;
-            const nameBase = `Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${contentIndex}]`;
-            let html = "";
-
-            switch (type) {
-                case "Text":
-                    html =
-                        `<div class="interactive-content-block">
-                            <input type="hidden" name="${nameBase}.ContentType" value="Text" />
-                            <label>Additional Text *</label>
-                            <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="3" required></textarea>
-                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
-                        </div>`;
-                    break;
-
-                case "Link":
-                    html =
-                        `<div class="interactive-content-block">
-                            <input type="hidden" name="${nameBase}.ContentType" value="Link" />
-                            <label>Link URL *</label>
-                            <input type="url" class="curriculum-form-control" name="${nameBase}.ContentText" placeholder="https://example.com" required />
-                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
-                        </div>`;
-                    break;
-
-                case "Reflection":
-                    html =
-                        `<div class="interactive-content-block">
-                            <input type="hidden" name="${nameBase}.ContentType" value="Reflection" />
-                            <div class="curriculum-form-group">
-                                <label>Set Minimum Characters for Reflection *</label>
-                                <p style="margin-top:0.5rem; font-style:italic; color:#555;">
-                                    This is a Reflection Text Area, adding this means adding a Text Area to Course Module for Reflection input for learners.
-                                </p>
-                                <input type="number" min="1" class="curriculum-form-control reflection-min-chars"
-                                    name="${nameBase}.ReflectionMinChars" placeholder="Enter minimum characters" required />
-                            </div>
-                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
-                        </div>`;
-                    break;
-
-                case "Question":
-                    html =
-                        `<div class="interactive-content-block">
-                            <input type="hidden" name="${nameBase}.ContentType" value="Question" />
-                            <label>Question *</label>
-                            <input type="text" class="curriculum-form-control" name="${nameBase}.ContentText" required />
-                            <div class="curriculum-form-row">
-                                ${["A","B","C","D"].map(l => `
-                                    <div style="flex:1; display:flex; flex-direction: column;">
-                                        <input type="text" class="curriculum-form-control" name="${nameBase}.Option${l}" placeholder="Option ${l}" required />
-                                        <label>
-                                            <input type="radio" name="${nameBase}.CorrectAnswer" value="Option${l}" required /> Correct
-                                        </label>
-                                    </div>
-                                `).join("")}
-                            </div>
-                            <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
-                        </div>`;
-                    break;
-            }
-
-            container.insertAdjacentHTML("beforeend", html);
-
-            const newBlock = container.lastElementChild;
-            const textarea = newBlock.querySelector('textarea');
-            if (textarea) initTinyMCE(textarea);
-
-            checkRequiredFields();
-        });
-    }
-
     function removeInteractiveContent(btn) {
         showDeleteConfirmation(() => {
             const block = btn.closest(".interactive-content-block");
@@ -481,7 +434,6 @@
             checkRequiredFields();
         });
     }
-
 
     let curriculumModuleIndex = 0;
     let sessionLessonExists = false;
@@ -740,16 +692,12 @@
             initTinyMCE(textarea);
         }
 
-        if (selectEl.value === "Text" || selectEl.value === "Image + Text") {
-            attachInteractiveContentHandlers(lessonBlock, moduleIndex, lessonIndex);
-        }
-
         if (selectEl.value === "Image + Text") {
             const imgInput = configContainer.querySelector(`input[type='file'][name$='.ImageFile']`);
             attachPreviewAndValidation(imgInput, "image");
         }
 
-        if (selectEl.value === "Video + Text") {
+        if (selectEl.value === "Video +let curriculumModuleInde Text") {
             const videoInput = configContainer.querySelector(`input[type='file'][name$='.VideoFile']`);
             attachPreviewAndValidation(videoInput, "video");
         }
@@ -779,6 +727,137 @@
         selectEl.setAttribute("data-prev", selectEl.value);
     }
 
+    function handleCreateInteractiveTypeChange(selectEl) {
+        const block = selectEl.closest(".interactive-content-block");
+        const body = block.querySelector(".interactive-content-body");
+        const nameBase = selectEl.name.replace(".ContentType", "");
+
+        let html = "";
+
+        switch (selectEl.value) {
+            case "Text":
+                html = `
+                    <div class="curriculum-form-group">
+                        <label>Content *</label>
+                        <textarea class="curriculum-form-control tinymce-editor"
+                            name="${nameBase}.ContentText"
+                            rows="3"
+                            data-allow-image="true"
+                            required></textarea>
+                    </div>
+                `;
+                break;
+
+            case "Link":
+                html = `
+                    <div class="curriculum-form-group">
+                        <label>Link *</label>
+                        <input type="url"
+                            class="curriculum-form-control"
+                            name="${nameBase}.ContentText"
+                            placeholder="https://example.com"
+                            required />
+                    </div>
+                `;
+                break;
+
+            case "Reflection":
+                html = `
+                    <div class="curriculum-form-group">
+                        <label>Minimum Characters *</label>
+                        <input type="number" min="1"
+                            class="curriculum-form-control reflection-min-chars"
+                            name="${nameBase}.ReflectionMinChars"
+                            required />
+                    </div>
+                `;
+                break;
+
+            case "Question":
+                html = `
+                    <div class="curriculum-form-group">
+                        <label>Question *</label>
+                        <input type="text"
+                            class="curriculum-form-control"
+                            name="${nameBase}.ContentText"
+                            required />
+                    </div>
+                    <div class="curriculum-form-group">
+                        <label>Options *</label>
+                        <div class="curriculum-form-row">
+                            ${["A","B","C","D"].map(l => `
+                                <div style="flex:1; display:flex; flex-direction: column;">
+                                    <input type="text"
+                                        class="curriculum-form-control"
+                                        name="${nameBase}.Option${l}"
+                                        placeholder="Option ${l}" required />
+                                    <label>
+                                        <input type="radio"
+                                            name="${nameBase}.CorrectAnswer"
+                                            value="Option${l}" required /> Correct
+                                    </label>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
+                `;
+                break;
+        }
+
+        body.innerHTML = html;
+
+        // Initialize TinyMCE and allow image upload if data-allow-image is true
+        const textarea = body.querySelector("textarea");
+        if (textarea) {
+            const allowImages = textarea.dataset.allowImage === "true";
+            initTinyMCE(textarea, allowImages);
+        }
+
+        checkRequiredFields();
+    }
+
+
+    function addLessonInteractiveContentCreate(moduleIndex, lessonIndex) {
+        const lessonBlock = document
+            .querySelectorAll(".curriculum-module")[moduleIndex]
+            .querySelectorAll(".curriculum-lesson-block")[lessonIndex];
+
+        const container = lessonBlock.querySelector(".interactive-contents-container");
+        if (!container) return;
+
+        const index = container.children.length;
+        const nameBase = `Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}]`;
+
+        const html = `
+            <div class="interactive-content-block">
+                <div class="curriculum-form-group" style="margin-top: 1rem;">
+                    <label>Type *</label>
+                    <select class="curriculum-form-select"
+                        name="${nameBase}.ContentType"
+                        onchange="handleCreateInteractiveTypeChange(this)"
+                        required>
+                        <option value="">-- Select Type --</option>
+                        <option value="Text">Text/Image</option>
+                        <option value="Link">Link</option>
+                        <option value="Reflection">Reflection</option>
+                        <option value="Question">Question</option>
+                    </select>
+                </div>
+
+                <div class="interactive-content-body"></div>
+
+                <button type="button"
+                    style="font-size: 0.9rem;"
+                    class="curriculum-delete-btn top-right"
+                    onclick="removeInteractiveContent(this)">
+                    🗑️
+                </button>
+            </div>
+        `;
+
+        container.insertAdjacentHTML("beforeend", html);
+    }
+
     function getLessonConfigBlock(moduleIndex, lessonIndex, type) {
         const nameBase = `Modules[${moduleIndex}].Lessons[${lessonIndex}]`;
 
@@ -791,25 +870,20 @@
                             name="${nameBase}.ContentText" rows="4" required></textarea>
                     </div>
 
-                    <div class="curriculum-form-group">
-                        <label>Add Interactive Content</label>
+                    <!-- INTERACTIVE CONTENTS (EDIT-STYLE UI) -->
+                    <div class="lesson-interactive-contents">
+                        <h4>Interactive Contents</h4>
 
-                        <!-- Interactive contents appear here -->
-                        <div class="interactive-content-container" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
-
-                        <!-- Dropdown and Add button below the content -->
-                        <div style="display:flex; gap:0.5rem; margin-top: 0.5rem;">
-                            <select class="curriculum-form-select content-type-dropdown" style="width: 15%; padding: 0.5rem;">
-                                <option value="">-- Select Type --</option>
-                                <option value="Text">Add Text</option>
-                                <option value="Link">Add Link</option>
-                                <option value="Reflection">Add Reflection</option>
-                                <option value="Question">Add Question</option>
-                            </select>
-                            <button type="button" class="curriculum-add-btn add-content-btn" style="margin-bottom:0;">
-                                + Add Content
-                            </button>
+                        <div class="interactive-contents-container"
+                             data-module="${moduleIndex}"
+                             data-lesson="${lessonIndex}">
                         </div>
+
+                        <button type="button"
+                                class="curriculum-add-btn"
+                                onclick="addLessonInteractiveContentCreate(${moduleIndex}, ${lessonIndex})">
+                            + Add Interactive Content
+                        </button>
                     </div>
                 `;
 
@@ -817,37 +891,39 @@
                 return `
                     <div class="curriculum-form-group">
                         <label>Lesson Content</label>
-                        <textarea class="curriculum-form-control" name="${nameBase}.ContentText" rows="4" required></textarea>
+                        <textarea class="curriculum-form-control"
+                            name="${nameBase}.ContentText" rows="4" required></textarea>
                     </div>
 
                     <div class="curriculum-form-group">
                         <label>Upload Image</label>
                         <div style="display:flex; gap:1rem; align-items:center;">
-                            <input type="file" name="${nameBase}.ImageFile" accept="image/*" class="curriculum-form-control" required />
-                            <div class="curriculum-upload-preview" style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#aaa;">🖼️</div>
+                            <input type="file"
+                                   name="${nameBase}.ImageFile"
+                                   accept="image/*"
+                                   class="curriculum-form-control"
+                                   required />
+                            <div class="curriculum-upload-preview"
+                                 style="width:80px; height:80px; background:#eee; display:flex; align-items:center; justify-content:center;">
+                                🖼️
+                            </div>
                         </div>
-                        <span class="file-error" style="color:red; font-size:0.85rem; display:none;"></span>
                     </div>
 
-                    <div class="curriculum-form-group">
-                        <label>Add Interactive Content</label>
+                    <!-- INTERACTIVE CONTENTS (EDIT-STYLE UI) -->
+                    <div class="lesson-interactive-contents">
+                        <h4>Interactive Contents</h4>
 
-                        <!-- Interactive contents container on top -->
-                        <div class="interactive-content-container" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem;"></div>
-
-                        <!-- Dropdown and add button below the content -->
-                        <div style="display:flex; gap:0.5rem;">
-                            <select class="curriculum-form-select content-type-dropdown" style="width: 15%; padding: 0.5rem;">
-                                <option value="">-- Select Type --</option>
-                                <option value="Text">Add Text</option>
-                                <option value="Link">Add Link</option>
-                                <option value="Reflection">Add Reflection</option>
-                                <option value="Question">Add Question</option>
-                            </select>
-                            <button type="button" class="curriculum-add-btn add-content-btn" style="margin-bottom:0;">
-                                + Add Content
-                            </button>
+                        <div class="interactive-contents-container"
+                             data-module="${moduleIndex}"
+                             data-lesson="${lessonIndex}">
                         </div>
+
+                        <button type="button"
+                                class="curriculum-add-btn"
+                                onclick="addLessonInteractiveContentCreate(${moduleIndex}, ${lessonIndex})">
+                            + Add Interactive Content
+                        </button>
                     </div>
                 `;
 
@@ -1062,6 +1138,11 @@
                     if (type === "Text" || type === "Image + Text") {
                         const contentEl = lessonBlock.querySelector(`[name='Modules[${i}].Lessons[${j}].ContentText']`);
                         if (contentEl) contentEl.value = lesson.contentText ?? "";
+
+                        // Do NOT allow image uploads for ContentText
+                        contentEl.dataset.allowImage = "false";
+
+                        initTinyMCE(contentEl, false); // always false → no image upload
                     }
 
                     if (type === "Quiz" && Array.isArray(lesson.quizQuestions)) {
@@ -1174,13 +1255,13 @@
                             container.insertAdjacentHTML("beforeend", html);
 
                             // Initialize TinyMCE on the newly added textarea (inside this block only)
-                            const newBlock = container.lastElementChild;
                             const textarea = newBlock.querySelector('textarea');
                             if (textarea) {
-                                initTinyMCE(textarea);
+                                // This is for interactive content: always allow images
+                                textarea.dataset.allowImage = "true";
+                                initTinyMCE(textarea, true);
                             }
 
-                            attachInteractiveContentHandlers(lessonBlock, i, j);
                         });
                     }
                 });
