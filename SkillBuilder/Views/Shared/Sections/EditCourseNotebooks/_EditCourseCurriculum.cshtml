@@ -196,6 +196,13 @@
             padding: 0.2rem 0.5rem;
             cursor: pointer;
         }
+
+    .link-edit-error {
+        color: red;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
 </style>
 
 <div class="curriculum-edit-container">
@@ -739,6 +746,7 @@
         if(textarea){
             initTinyMCE(textarea);
         }
+
     }
 
     function handleLessonInteractiveTypeChange(selectEl, moduleIndex, lessonIndex, index, data = null){
@@ -768,7 +776,29 @@
                            placeholder="https://example.com"
                            name="Modules[${moduleIndex}].Lessons[${lessonIndex}].InteractiveContents[${index}].ContentText"
                            value="${data?.ContentText || ''}" required />
+                    <span class="link-edit-error" style="display:none;">Please enter a valid URL.</span>
                 </div>`;
+
+                const linkInput = container.querySelector("input[type='url']");
+                const errorSpan = container.querySelector(".link-edit-error");
+
+                if(linkInput && errorSpan){
+                    linkInput.addEventListener("input", () => {
+                        try {
+                            if(linkInput.value.trim() === ''){
+                                errorSpan.style.display = 'none';
+                                linkInput.setCustomValidity('');
+                                return;
+                            }
+                            new URL(linkInput.value);
+                            errorSpan.style.display = 'none';
+                            linkInput.setCustomValidity('');
+                        } catch {
+                            errorSpan.style.display = 'block';
+                            linkInput.setCustomValidity('Invalid URL');
+                        }
+                    });
+                }
                 break;
             case 'Reflection':
                 container.innerHTML = `<div class="curriculum-edit-form-group">

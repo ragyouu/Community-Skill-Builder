@@ -181,6 +181,13 @@
         .module-tab.no-delete {
             cursor: default;
         }
+
+    .link-error {
+        color: red;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
 </style>
 
 <!-- Top bar: warning + Add Module button -->
@@ -697,7 +704,7 @@
             attachPreviewAndValidation(imgInput, "image");
         }
 
-        if (selectEl.value === "Video +let curriculumModuleInde Text") {
+        if (selectEl.value === "Video + Text") {
             const videoInput = configContainer.querySelector(`input[type='file'][name$='.VideoFile']`);
             attachPreviewAndValidation(videoInput, "video");
         }
@@ -727,6 +734,31 @@
         selectEl.setAttribute("data-prev", selectEl.value);
     }
 
+    // Live validation for all current and future interactive link inputs
+    function attachLiveLinkValidation(input) {
+        if (!input) return;
+
+        const errorEl = input.parentElement.querySelector(".link-error");
+        if (!errorEl) return;
+
+        input.addEventListener("input", () => {
+            const value = input.value.trim();
+
+            try {
+                if (!value) throw new Error("Empty");
+                new URL(value); // Throws if invalid
+                errorEl.style.display = "none";
+            } catch {
+                errorEl.style.display = "block";
+            }
+        });
+    }
+
+    // Attach validation for existing inputs on page load
+    document.querySelectorAll(".interactive-link-input").forEach(input => {
+        attachLiveLinkValidation(input);
+    });
+
     function handleCreateInteractiveTypeChange(selectEl) {
         const block = selectEl.closest(".interactive-content-block");
         const body = block.querySelector(".interactive-content-body");
@@ -753,10 +785,11 @@
                     <div class="curriculum-form-group">
                         <label>Link *</label>
                         <input type="url"
-                            class="curriculum-form-control"
+                            class="curriculum-form-control interactive-link-input"
                             name="${nameBase}.ContentText"
                             placeholder="https://example.com"
                             required />
+                        <span class="link-error">Please enter a valid URL.</span>
                     </div>
                 `;
                 break;
@@ -805,6 +838,9 @@
         }
 
         body.innerHTML = html;
+
+        const linkInput = body.querySelector(".interactive-link-input");
+        if (linkInput) attachLiveLinkValidation(linkInput);
 
         // Initialize TinyMCE and allow image upload if data-allow-image is true
         const textarea = body.querySelector("textarea");
@@ -1189,10 +1225,11 @@
                                     html =
                                         `<div class="interactive-content-block">
                                             <label>Link URL *</label>
-                                            <input type="url" class="curriculum-form-control"
+                                            <input type="url" class="curriculum-form-control interactive-link-input"
                                                 name="${nameBase}.ContentText"
                                                 placeholder="https://example.com"
                                                 value="${content.contentText ?? ""}" required />
+                                            <span class="link-error">Please enter a valid URL.</span>
                                             <button type="button" class="curriculum-delete-btn top-right" onclick="removeInteractiveContent(this)">🗑️</button>
                                         </div>`;
                                     break;
