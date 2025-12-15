@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -15,20 +35,8 @@
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\actions\\artisanactions\\createcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -199,10 +207,6 @@
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\models\\viewmodels\\lessonviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -273,10 +277,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_coursecatalognavbar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_coursecatalognavbar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursematerials.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editnotebooks\\_editusernotebookprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -570,7 +570,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -582,54 +582,54 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
+              "Title": "_CreateCourseMaterials.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
+              "ViewState": "AgIAADcBAAAAAAAAAAAqwD8BAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-30T23:14:03.015Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ArtisanCourseController.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
               "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
               "RelativeToolTip": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
-              "ViewState": "AgIAAAkDAAAAAAAAAAAowCEDAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAA8DAAAAAAAAAAAqwCEDAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-15T06:57:50.335Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CourseController.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\CourseController.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
-              "RelativeToolTip": "SkillBuilder\\Controllers\\CourseController.cs",
-              "ViewState": "AgIAACAEAAAAAAAAAAAwwC0EAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:33:19.491Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "_CourseModuleViewing.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "ViewState": "AgIAAJ0BAAAAAAAAAAAowLUBAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T00:59:29.036Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "_CourseForum.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "ViewState": "AgIAAPYBAAAAAAAAAAAowP8BAAAyAAAAAAAAAA==",
+              "Title": "_EditCourseMaterials.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
+              "ViewState": "AgIAACYBAAAAAAAAAAAqwD4BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-04T03:41:54.143Z",
+              "WhenOpened": "2025-10-20T04:28:29.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_EditCourseCurriculum.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "ViewState": "AgIAALsEAAAAAAAAAAAqwNMEAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-15T08:03:39.477Z",
               "EditorCaption": ""
             },
             {
@@ -640,7 +640,7 @@
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
               "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
-              "ViewState": "AgIAAPEEAAAAAAAAAAAowAkFAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAPEEAAAAAAAAAAAqwAkFAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-11-04T07:41:15.899Z",
               "EditorCaption": ""
@@ -648,6 +648,43 @@
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "_CourseForum.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "ViewState": "AgIAAPYBAAAAAAAAAAAowAYCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-04T03:41:54.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_CourseModuleViewing.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "ViewState": "AgIAAJ0BAAAAAAAAAAAowLUBAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-02T00:59:29.036Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CourseController.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\CourseController.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
+              "RelativeToolTip": "SkillBuilder\\Controllers\\CourseController.cs",
+              "ViewState": "AgIAACAEAAAAAAAAAAAwwC0EAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T06:33:19.491Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "CourseModule.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
@@ -655,25 +692,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
               "ViewState": "AgIAAO0IAAAAAAAAAAAowAUJAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:38:02.902Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:38:02.902Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_EditCourseCurriculum.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "ViewState": "AgIAAKkEAAAAAAAAAAAkwLQEAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T08:03:39.477Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "CreateCourse.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
@@ -681,12 +704,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
               "ViewState": "AgIAAAsBAAAAAAAAAAAkwBIBAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T13:36:21.13Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T13:36:21.13Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\appsettings.json",
               "RelativeDocumentMoniker": "SkillBuilder\\appsettings.json",
@@ -694,12 +716,11 @@
               "RelativeToolTip": "SkillBuilder\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-10-15T08:22:59.098Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T08:22:59.098Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "20251210154024_Fix.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210154024_Fix.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210154024_Fix.cs",
@@ -711,7 +732,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "20251210160439_AddFix.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
@@ -723,7 +744,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "20251210161023_DbNew.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
@@ -735,7 +756,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Program.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Program.cs",
@@ -747,7 +768,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "20251208014042_CourseCreationFix.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251208014042_CourseCreationFix.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251208014042_CourseCreationFix.cs",
@@ -759,7 +780,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "_ArtisanNotebookDashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookDashboard.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookDashboard.cshtml",
@@ -771,7 +792,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "_EditCourseBasicInfo.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseBasicInfo.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseBasicInfo.cshtml",
@@ -783,7 +804,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "_CourseDetailsSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseDetailsSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseDetailsSection.cshtml",
@@ -795,7 +816,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "_CreateCourseBasicInfo.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseBasicInfo.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseBasicInfo.cshtml",
@@ -807,7 +828,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "_AdminNotebookLearnerAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
@@ -819,7 +840,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "AdminProfile.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Profile\\AdminProfile.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Profile\\AdminProfile.cshtml",
@@ -831,7 +852,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "_AdminNotebookCommunityAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityAnalytics.cshtml",
@@ -843,7 +864,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "_CourseCatalogSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogSection.cshtml",
@@ -855,7 +876,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "Course.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Course.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Course.cs",
@@ -867,7 +888,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "CourseBuilderViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\CourseBuilderViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\CourseBuilderViewModel.cs",
@@ -879,7 +900,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "_CommunityNotebookPosts.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookPosts.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookPosts.cshtml",
@@ -891,7 +912,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "CommunityHub.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Community\\CommunityHub.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Community\\CommunityHub.cshtml",
@@ -903,7 +924,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "_CommunityDetailsSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CommunityDetailsSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CommunityDetailsSection.cshtml",
@@ -915,7 +936,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "_AdminNotebookAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookAnalytics.cshtml",
@@ -927,7 +948,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "_AdminNotebookCourseAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseAnalytics.cshtml",
@@ -939,7 +960,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "_AdminNotebookArtisanAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanAnalytics.cshtml",
@@ -951,7 +972,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "script.js",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\wwwroot\\assets\\js\\script.js",
               "RelativeDocumentMoniker": "SkillBuilder\\wwwroot\\assets\\js\\script.js",
@@ -963,7 +984,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "_SignupModal.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_SignupModal.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_SignupModal.cshtml",
@@ -975,7 +996,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\User.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\User.cs",
@@ -987,7 +1008,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "20251204183905_AddEnrollmentRateToDouble.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251204183905_AddEnrollmentRateToDouble.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251204183905_AddEnrollmentRateToDouble.cs",
@@ -999,7 +1020,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "CourseForumPost.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\CourseForumPost.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\CourseForumPost.cs",
@@ -1011,7 +1032,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "AdminProfileController.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\AdminProfileController.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\AdminProfileController.cs",
@@ -1023,7 +1044,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Data\\AppDbContext.cs",
@@ -1035,7 +1056,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "AdminProfileViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\AdminProfileViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\AdminProfileViewModel.cs",
@@ -1047,7 +1068,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "AnalyticsService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\AnalyticsService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\AnalyticsService.cs",
@@ -1059,7 +1080,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "AnalyticsDtos.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Analytics\\AnalyticsDtos.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Analytics\\AnalyticsDtos.cs",
@@ -1071,7 +1092,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "CommunityAnalyticsDto.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Analytics\\CommunityAnalyticsDto.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Analytics\\CommunityAnalyticsDto.cs",
@@ -1083,7 +1104,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "ICommunityAnalyticsService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\ICommunityAnalyticsService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\ICommunityAnalyticsService.cs",
@@ -1095,7 +1116,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 44,
               "Title": "20251204034548_AddedInteractive.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251204034548_AddedInteractive.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251204034548_AddedInteractive.cs",
@@ -1107,7 +1128,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 46,
               "Title": "InteractiveContent.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\InteractiveContent.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\InteractiveContent.cs",
@@ -1119,7 +1140,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 45,
               "Title": "IAchievementService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\IAchievementService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\IAchievementService.cs",
@@ -1131,7 +1152,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 47,
               "Title": "InteractiveContentViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\InteractiveContentViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\InteractiveContentViewModel.cs",
@@ -1143,7 +1164,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 48,
               "Title": "_ArtisanNotebookCourses.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookCourses.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookCourses.cshtml",
@@ -1155,7 +1176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "ModuleContent.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ModuleContent.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ModuleContent.cs",
@@ -1167,7 +1188,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "LessonViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\LessonViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\LessonViewModel.cs",
@@ -1179,19 +1200,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
-              "Title": "_EditCourseMaterials.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
-              "ViewState": "AgIAANgAAAAAAAAAAAAuwPMAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:28:29.825Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\_Layout.cshtml",
@@ -1203,7 +1212,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "EditCourse.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\EditCourse.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Actions\\ArtisanActions\\EditCourse.cshtml",
@@ -1215,7 +1224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "20251130233002_AddedIsFree.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251130233002_AddedIsFree.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251130233002_AddedIsFree.cs",
@@ -1227,7 +1236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "_LoginModal.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_LoginModal.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_LoginModal.cshtml",
@@ -1239,7 +1248,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 56,
               "Title": "style.css",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\wwwroot\\assets\\css\\style.css",
               "RelativeDocumentMoniker": "SkillBuilder\\wwwroot\\assets\\css\\style.css",
@@ -1251,7 +1260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "SignUpRequest.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\SignUpRequest.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\SignUpRequest.cs",
@@ -1263,7 +1272,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 55,
               "Title": "_TeachOnTahiModal.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_TeachOnTahiModal.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_TeachOnTahiModal.cshtml",
@@ -1275,7 +1284,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "UserProfileController.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\UserProfileController.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\UserProfileController.cs",
@@ -1287,7 +1296,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "_AdminNotebookUserManagement.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookUserManagement.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookUserManagement.cshtml",
@@ -1299,7 +1308,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "_AdminNotebookCourseManagement.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseManagement.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseManagement.cshtml",
@@ -1311,7 +1320,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "_AdminNotebookCommunityManagement.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityManagement.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityManagement.cshtml",
@@ -1323,7 +1332,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "_AdminNotebookArtisanApplicationManagement.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanApplicationManagement.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanApplicationManagement.cshtml",
@@ -1335,7 +1344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "_AdminNotebookReportLogs.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookReportLogs.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookReportLogs.cshtml",
@@ -1347,7 +1356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "_AdminNotebookArtisanManagement.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanManagement.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanManagement.cshtml",
@@ -1359,7 +1368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "_LandingPageNavbar.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_LandingPageNavbar.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_LandingPageNavbar.cshtml",
@@ -1371,7 +1380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\AccountController.cs",
@@ -1383,7 +1392,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "WeeklyLeaderboardRewardService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\WeeklyLeaderboardRewardService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\WeeklyLeaderboardRewardService.cs",
@@ -1395,7 +1404,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "_CourseCatalogNavbar.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogNavbar.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogNavbar.cshtml",
@@ -1404,18 +1413,6 @@
               "ViewState": "AgIAAHAFAAAAAAAAAAAwwI4FAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-10-20T04:30:35.703Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 68,
-              "Title": "_CreateCourseMaterials.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
-              "ViewState": "AgIAAN0AAAAAAAAAAAAwwPsAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:14:03.015Z"
             },
             {
               "$type": "Document",

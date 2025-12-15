@@ -110,7 +110,102 @@
     </div>
 </div>
 
+<!-- Edit Material Delete Modal -->
+<div id="edit-material-delete-modal" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+">
+    <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    ">
+        <p style="font-size:1.1rem; margin-bottom: 1.5rem;">
+            Are you sure you want to delete this material?
+        </p>
+
+        <div style="display:flex; justify-content: center; gap:1rem;">
+            <button id="edit-material-confirm-delete-btn" type="button" style="
+                padding:0.5rem 1rem;
+                background:#e74c3c;
+                color:white;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Yes, Delete
+            </button>
+
+            <button id="edit-material-cancel-delete-btn" type="button" style="
+                padding:0.5rem 1rem;
+                background:#ccc;
+                color:black;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    // ------------------------------
+    // Edit Material Delete Modal Logic
+    // ------------------------------
+    let editMaterialPendingDelete = null;
+
+    function showEditMaterialDeleteConfirmation(callback) {
+        editMaterialPendingDelete = callback;
+        const modal = document.getElementById("edit-material-delete-modal");
+        modal.style.display = "flex";
+
+        document.getElementById("edit-material-cancel-delete-btn").onclick = () => {
+            editMaterialPendingDelete = null;
+            modal.style.display = "none";
+        };
+
+        document.getElementById("edit-material-confirm-delete-btn").onclick = () => {
+            if (editMaterialPendingDelete) editMaterialPendingDelete();
+            editMaterialPendingDelete = null;
+            modal.style.display = "none";
+        };
+    }
+
+    function removeMaterial(index) {
+        const item = document.querySelector(`.material-entry[data-index='${index}']`);
+        if (!item) return;
+
+        showEditMaterialDeleteConfirmation(() => {
+            const idInput = item.querySelector("input[name*='Id']");
+            if (idInput && idInput.value != "0") {
+                const form = document.getElementById("edit-course-form");
+                if (form) {
+                    const deleteInput = document.createElement("input");
+                    deleteInput.type = "hidden";
+                    deleteInput.name = "MaterialsToDelete";
+                    deleteInput.value = idInput.value;
+                    form.appendChild(deleteInput);
+                }
+            }
+
+            item.remove();
+            renumberMaterials();
+        });
+    }
+
     let materialIndex = 0;
 
     const maxFileSize = 100 * 1024 * 1024; // 100 MB
@@ -187,26 +282,6 @@
         `;
 
         list.appendChild(container);
-        renumberMaterials();
-    }
-
-    function removeMaterial(index) {
-        const item = document.querySelector(`.material-entry[data-index='${index}']`);
-        if (!item) return;
-
-        const idInput = item.querySelector("input[name*='Id']");
-        if (idInput && idInput.value != "0") {
-            const form = document.getElementById("edit-course-form");
-            if (form) {
-                const deleteInput = document.createElement("input");
-                deleteInput.type = "hidden";
-                deleteInput.name = "MaterialsToDelete";
-                deleteInput.value = idInput.value;
-                form.appendChild(deleteInput);
-            }
-        }
-
-        item.remove();
         renumberMaterials();
     }
 

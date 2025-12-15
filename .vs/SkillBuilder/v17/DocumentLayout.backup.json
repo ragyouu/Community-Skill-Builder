@@ -3,6 +3,38 @@
   "WorkspaceRootPath": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_coursemoduleviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_coursemoduleviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\actions\\artisanactions\\createcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\actions\\artisanactions\\createcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -31,20 +63,8 @@
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\artisannotebooks\\_artisannotebookdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\createcoursenotebooks\\_createcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursecurriculum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursebasicinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\editcoursenotebooks\\_editcoursebasicinfo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\courses\\coursemodules\\coursemodule.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_coursedetailssection.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -83,20 +103,8 @@
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\models\\viewmodels\\coursebuilderviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\actions\\artisanactions\\createcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\actions\\artisanactions\\createcourse.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\community\\communityhub.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\community\\communityhub.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\coursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\artisancoursecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_communitydetailssection.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -133,10 +141,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\controllers\\adminprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\controllers\\adminprofilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_courseforum.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\models\\courseforumpost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -181,10 +185,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\models\\viewmodels\\interactivecontentviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\models\\viewmodels\\interactivecontentviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\_coursemoduleviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|solutionrelative:skillbuilder\\views\\shared\\sections\\_coursemoduleviewing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{BB428528-01D6-444F-98EF-812DEB4043F2}|SkillBuilder\\SkillBuilder.csproj|c:\\users\\predator\\desktop\\tahi\\community-skill-builder\\skillbuilder\\views\\shared\\sections\\artisannotebooks\\_artisannotebookcourses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -583,45 +583,110 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "20251210161023_DbNew.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
-              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Title": "ArtisanCourseController.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
+              "RelativeToolTip": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
+              "ViewState": "AgIAAAkDAAAAAAAAAAAowCEDAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T16:10:23.808Z",
+              "WhenOpened": "2025-10-15T06:57:50.335Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "20251210160439_AddFix.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
-              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAaAAAAAAAAAA==",
+              "Title": "CourseController.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\CourseController.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
+              "RelativeToolTip": "SkillBuilder\\Controllers\\CourseController.cs",
+              "ViewState": "AgIAACAEAAAAAAAAAAAwwC0EAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T16:04:39.396Z",
+              "WhenOpened": "2025-10-15T06:33:19.491Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "20251210154024_Fix.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210154024_Fix.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210154024_Fix.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210154024_Fix.cs",
-              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210154024_Fix.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-10T15:40:24.278Z",
+              "Title": "_CourseModuleViewing.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
+              "ViewState": "AgIAAJ0BAAAAAAAAAAAowLUBAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-02T00:59:29.036Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "_CourseForum.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
+              "ViewState": "AgIAAPYBAAAAAAAAAAAowP8BAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-04T03:41:54.143Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_CreateCourseCurriculum.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
+              "ViewState": "AgIAAPEEAAAAAAAAAAAowAkFAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-04T07:41:15.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CourseModule.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
+              "ViewState": "AgIAAO0IAAAAAAAAAAAowAUJAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-04T07:38:02.902Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_EditCourseCurriculum.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
+              "ViewState": "AgIAAKkEAAAAAAAAAAAkwLQEAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-15T08:03:39.477Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CreateCourse.cshtml",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
+              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
+              "RelativeToolTip": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
+              "ViewState": "AgIAAAsBAAAAAAAAAAAkwBIBAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-04T13:36:21.13Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\appsettings.json",
               "RelativeDocumentMoniker": "SkillBuilder\\appsettings.json",
@@ -634,7 +699,43 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
+              "Title": "20251210154024_Fix.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210154024_Fix.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210154024_Fix.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210154024_Fix.cs",
+              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210154024_Fix.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-10T15:40:24.278Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "20251210160439_AddFix.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
+              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210160439_AddFix.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-10T16:04:39.396Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "20251210161023_DbNew.cs",
+              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
+              "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
+              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
+              "RelativeToolTip": "SkillBuilder\\Migrations\\20251210161023_DbNew.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-10T16:10:23.808Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Program.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Program.cs",
@@ -642,25 +743,11 @@
               "RelativeToolTip": "SkillBuilder\\Program.cs",
               "ViewState": "AgIAAFEAAAAAAAAAAAAmwGIAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T01:27:22.813Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T01:27:22.813Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "_CreateCourseCurriculum.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseCurriculum.cshtml",
-              "ViewState": "AgIAAJ8EAAAAAAAAAAAmwKEEAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:41:15.899Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 13,
               "Title": "20251208014042_CourseCreationFix.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251208014042_CourseCreationFix.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251208014042_CourseCreationFix.cs",
@@ -668,12 +755,11 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251208014042_CourseCreationFix.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T01:40:43.012Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-08T01:40:43.012Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 14,
               "Title": "_ArtisanNotebookDashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookDashboard.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookDashboard.cshtml",
@@ -681,25 +767,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookDashboard.cshtml",
               "ViewState": "AgIAAG4AAAAAAAAAAAAiwIUAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:07:56.444Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:07:56.444Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "_EditCourseCurriculum.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseCurriculum.cshtml",
-              "ViewState": "AgIAAFoEAAAAAAAAAAAmwGcEAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T08:03:39.477Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 15,
               "Title": "_EditCourseBasicInfo.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseBasicInfo.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseBasicInfo.cshtml",
@@ -707,25 +779,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseBasicInfo.cshtml",
               "ViewState": "AgIAAMIAAAAAAAAAAAAswNAAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T08:02:14.697Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T08:02:14.697Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "CourseModule.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Courses\\CourseModules\\CourseModule.cshtml",
-              "ViewState": "AgIAANsIAAAAAAAAAAAmwPQIAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:38:02.902Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 16,
               "Title": "_CourseDetailsSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseDetailsSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseDetailsSection.cshtml",
@@ -733,12 +791,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseDetailsSection.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAIBJwCEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T06:02:25.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T06:02:25.378Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 17,
               "Title": "_CreateCourseBasicInfo.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseBasicInfo.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseBasicInfo.cshtml",
@@ -746,12 +803,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseBasicInfo.cshtml",
               "ViewState": "AgIAADkCAAAAAAAAAIBJwFUCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:41:26.635Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:41:26.635Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 18,
               "Title": "_AdminNotebookLearnerAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
@@ -759,12 +815,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookLearnerAnalytics.cshtml",
               "ViewState": "AgIAAL4AAAAAAAAAAAAmwMUAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:51:12.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:51:12.522Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 19,
               "Title": "AdminProfile.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Profile\\AdminProfile.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Profile\\AdminProfile.cshtml",
@@ -772,12 +827,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Profile\\AdminProfile.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:37:47.903Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:37:47.903Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 20,
               "Title": "_AdminNotebookCommunityAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityAnalytics.cshtml",
@@ -785,12 +839,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityAnalytics.cshtml",
               "ViewState": "AgIAANgAAAAAAAAAAAAmwPEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-26T01:27:43.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T01:27:43.086Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 22,
               "Title": "_CourseCatalogSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogSection.cshtml",
@@ -798,12 +851,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogSection.cshtml",
               "ViewState": "AgIAAE8BAAAAAAAAAIBJwFsBAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:52:26.349Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:52:26.349Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 23,
               "Title": "Course.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Course.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Course.cs",
@@ -811,12 +863,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\Course.cs",
               "ViewState": "AgIAABMAAAAAAAAAAAA5wDEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:50:24.241Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:50:24.241Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 24,
               "Title": "CourseBuilderViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\CourseBuilderViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\CourseBuilderViewModel.cs",
@@ -824,12 +875,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\CourseBuilderViewModel.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAA5wBYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T23:19:50.349Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:19:50.349Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 21,
               "Title": "_CommunityNotebookPosts.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookPosts.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookPosts.cshtml",
@@ -837,25 +887,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookPosts.cshtml",
               "ViewState": "AgIAAP4CAAAAAAAAAAAjwAoDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T07:39:35.089Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T07:39:35.089Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "CreateCourse.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Actions\\ArtisanActions\\CreateCourse.cshtml",
-              "ViewState": "AgIAAAYBAAAAAAAAAIBJwCIBAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T13:36:21.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 25,
               "Title": "CommunityHub.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Community\\CommunityHub.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Community\\CommunityHub.cshtml",
@@ -863,38 +899,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Community\\CommunityHub.cshtml",
               "ViewState": "AgIAADEGAAAAAAAAAAAAwEoGAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:00:01.624Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:00:01.624Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "CourseController.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\CourseController.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\CourseController.cs",
-              "RelativeToolTip": "SkillBuilder\\Controllers\\CourseController.cs",
-              "ViewState": "AgIAABQEAAAAAAAAAAAAwC0EAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:33:19.491Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "ArtisanCourseController.cs",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
-              "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\ArtisanCourseController.cs",
-              "RelativeToolTip": "SkillBuilder\\Controllers\\ArtisanCourseController.cs",
-              "ViewState": "AgIAAPsCAAAAAAAAAAAAwBQDAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:57:50.335Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "_CommunityDetailsSection.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CommunityDetailsSection.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CommunityDetailsSection.cshtml",
@@ -902,12 +911,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CommunityDetailsSection.cshtml",
               "ViewState": "AgIAADYIAAAAAAAAAAAAwE8IAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T08:12:34.491Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T08:12:34.491Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "_AdminNotebookAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookAnalytics.cshtml",
@@ -915,12 +923,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookAnalytics.cshtml",
               "ViewState": "AgIAAGgCAAAAAAAAAAAswG0CAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:21:09.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:21:09.157Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "_AdminNotebookCourseAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseAnalytics.cshtml",
@@ -928,12 +935,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseAnalytics.cshtml",
               "ViewState": "AgIAABoBAAAAAAAAAAAswDQBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:49:40.561Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:49:40.561Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "_AdminNotebookArtisanAnalytics.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanAnalytics.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanAnalytics.cshtml",
@@ -941,12 +947,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanAnalytics.cshtml",
               "ViewState": "AgIAAOEAAAAAAAAAAAAswPsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:51:54.358Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:51:54.358Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "script.js",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\wwwroot\\assets\\js\\script.js",
               "RelativeDocumentMoniker": "SkillBuilder\\wwwroot\\assets\\js\\script.js",
@@ -954,12 +959,11 @@
               "RelativeToolTip": "SkillBuilder\\wwwroot\\assets\\js\\script.js",
               "ViewState": "AgIAAJgBAAAAAAAAAAAkwKQBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-10-30T09:51:12.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T09:51:12.841Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "_SignupModal.cshtml",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_SignupModal.cshtml",
               "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_SignupModal.cshtml",
@@ -967,25 +971,11 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_SignupModal.cshtml",
               "ViewState": "AgIAAEwCAAAAAAAAAAAswGYCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T13:38:03.365Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T13:38:03.365Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
-              "Title": "_CourseForum.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseForum.cshtml",
-              "ViewState": "AgIAAPQBAAAAAAAAAAAswP4BAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-04T03:41:54.143Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\User.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\User.cs",
@@ -993,12 +983,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\User.cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAgwB8AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:41:00.568Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:41:00.568Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "20251204183905_AddEnrollmentRateToDouble.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251204183905_AddEnrollmentRateToDouble.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251204183905_AddEnrollmentRateToDouble.cs",
@@ -1006,12 +995,11 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251204183905_AddEnrollmentRateToDouble.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T18:39:06.024Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T18:39:06.024Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "CourseForumPost.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\CourseForumPost.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\CourseForumPost.cs",
@@ -1019,12 +1007,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\CourseForumPost.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T18:32:08.966Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T18:32:08.966Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "AdminProfileController.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Controllers\\AdminProfileController.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Controllers\\AdminProfileController.cs",
@@ -1032,12 +1019,11 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\AdminProfileController.cs",
               "ViewState": "AgIAAIcCAAAAAAAAAAAAwJYCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T09:50:49.758Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T09:50:49.758Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Data\\AppDbContext.cs",
@@ -1045,12 +1031,11 @@
               "RelativeToolTip": "SkillBuilder\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwBAAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:56:50.823Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T06:56:50.823Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "AdminProfileViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\AdminProfileViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\AdminProfileViewModel.cs",
@@ -1058,12 +1043,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\AdminProfileViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAcwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:37:36.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:37:36.53Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "AnalyticsService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\AnalyticsService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\AnalyticsService.cs",
@@ -1071,12 +1055,11 @@
               "RelativeToolTip": "SkillBuilder\\Services\\AnalyticsService.cs",
               "ViewState": "AgIAAMEBAAAAAAAAAAAswNsBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:44:18.104Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:44:18.104Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "AnalyticsDtos.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Analytics\\AnalyticsDtos.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Analytics\\AnalyticsDtos.cs",
@@ -1084,12 +1067,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\Analytics\\AnalyticsDtos.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAA0wBIAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:46:10.97Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:46:10.97Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "CommunityAnalyticsDto.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\Analytics\\CommunityAnalyticsDto.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\Analytics\\CommunityAnalyticsDto.cs",
@@ -1097,12 +1079,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\Analytics\\CommunityAnalyticsDto.cs",
               "ViewState": "AgIAACAAAAAAAAAAAIBWwDAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T01:26:56.226Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T01:26:56.226Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "ICommunityAnalyticsService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\ICommunityAnalyticsService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\ICommunityAnalyticsService.cs",
@@ -1110,12 +1091,11 @@
               "RelativeToolTip": "SkillBuilder\\Services\\ICommunityAnalyticsService.cs",
               "ViewState": "AgIAAHsAAAAAAAAAAAAswJUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T01:27:16.444Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T01:27:16.444Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "20251204034548_AddedInteractive.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Migrations\\20251204034548_AddedInteractive.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Migrations\\20251204034548_AddedInteractive.cs",
@@ -1123,12 +1103,11 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251204034548_AddedInteractive.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T03:45:51.98Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T03:45:51.98Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "InteractiveContent.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\InteractiveContent.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\InteractiveContent.cs",
@@ -1136,12 +1115,11 @@
               "RelativeToolTip": "SkillBuilder\\Models\\InteractiveContent.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T03:43:42.36Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T03:43:42.36Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "IAchievementService.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Services\\IAchievementService.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Services\\IAchievementService.cs",
@@ -1149,12 +1127,11 @@
               "RelativeToolTip": "SkillBuilder\\Services\\IAchievementService.cs",
               "ViewState": "AgIAAGwAAAAAAAAAAAAuwIcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:44:13.47Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:44:13.47Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "InteractiveContentViewModel.cs",
               "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Models\\ViewModels\\InteractiveContentViewModel.cs",
               "RelativeDocumentMoniker": "SkillBuilder\\Models\\ViewModels\\InteractiveContentViewModel.cs",
@@ -1162,21 +1139,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\InteractiveContentViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T03:43:17.226Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 45,
-              "Title": "_CourseModuleViewing.cshtml",
-              "DocumentMoniker": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "RelativeDocumentMoniker": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "ToolTip": "C:\\Users\\PREDATOR\\Desktop\\Tahi\\Community-Skill-Builder\\SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseModuleViewing.cshtml",
-              "ViewState": "AgIAAJABAAAAAAAAAAAuwKsBAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T00:59:29.036Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T03:43:17.226Z"
             },
             {
               "$type": "Document",
@@ -1188,8 +1151,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookCourses.cshtml",
               "ViewState": "AgIAAPEAAAAAAAAAAAAqwAwBAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:30:20.834Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:30:20.834Z"
             },
             {
               "$type": "Document",
@@ -1201,8 +1163,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ModuleContent.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-04T03:40:52.587Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-04T03:40:52.587Z"
             },
             {
               "$type": "Document",
@@ -1214,8 +1175,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\LessonViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAswBQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T04:21:40.738Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T04:21:40.738Z"
             },
             {
               "$type": "Document",
@@ -1227,8 +1187,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditCourseNotebooks\\_EditCourseMaterials.cshtml",
               "ViewState": "AgIAANgAAAAAAAAAAAAuwPMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:28:29.825Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:28:29.825Z"
             },
             {
               "$type": "Document",
@@ -1240,8 +1199,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAHoAAAAAAAAAAAAuwJUAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:51:26.161Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:51:26.161Z"
             },
             {
               "$type": "Document",
@@ -1253,8 +1211,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Actions\\ArtisanActions\\EditCourse.cshtml",
               "ViewState": "AgIAANgAAAAAAAAAAAAuwPMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T13:36:47.283Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T13:36:47.283Z"
             },
             {
               "$type": "Document",
@@ -1266,8 +1223,7 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251130233002_AddedIsFree.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T23:30:03.241Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:30:03.241Z"
             },
             {
               "$type": "Document",
@@ -1279,8 +1235,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_LoginModal.cshtml",
               "ViewState": "AgIAAAUDAAAAAAAAAAAwwBcDAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:27:19.219Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:27:19.219Z"
             },
             {
               "$type": "Document",
@@ -1292,8 +1247,7 @@
               "RelativeToolTip": "SkillBuilder\\wwwroot\\assets\\css\\style.css",
               "ViewState": "AgIAAG8DAAAAAAAAAAAIwI4DAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-31T08:06:31.665Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:06:31.665Z"
             },
             {
               "$type": "Document",
@@ -1305,8 +1259,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\SignUpRequest.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:52:48.623Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:52:48.623Z"
             },
             {
               "$type": "Document",
@@ -1318,8 +1271,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_TeachOnTahiModal.cshtml",
               "ViewState": "AgIAANsCAAAAAAAAAAAswPkCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T08:09:10.168Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T08:09:10.168Z"
             },
             {
               "$type": "Document",
@@ -1331,8 +1283,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\UserProfileController.cs",
               "ViewState": "AgIAAKACAAAAAAAAAAAwwL4CAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T11:20:50.882Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:20:50.882Z"
             },
             {
               "$type": "Document",
@@ -1344,8 +1295,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookUserManagement.cshtml",
               "ViewState": "AgIAAG4CAAAAAAAAAAAswIwCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:25:42.829Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:25:42.829Z"
             },
             {
               "$type": "Document",
@@ -1357,8 +1307,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCourseManagement.cshtml",
               "ViewState": "AgIAAI0CAAAAAAAAAAAswKsCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:25:12.359Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:25:12.359Z"
             },
             {
               "$type": "Document",
@@ -1370,8 +1319,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookCommunityManagement.cshtml",
               "ViewState": "AgIAAGQCAAAAAAAAAAAswIICAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:24:58.47Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:24:58.47Z"
             },
             {
               "$type": "Document",
@@ -1383,8 +1331,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanApplicationManagement.cshtml",
               "ViewState": "AgIAACQCAAAAAAAAAAAswEICAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:24:39.609Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:24:39.609Z"
             },
             {
               "$type": "Document",
@@ -1396,8 +1343,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookReportLogs.cshtml",
               "ViewState": "AgIAAG4BAAAAAAAAAAAwwIwBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:35:03.129Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:35:03.129Z"
             },
             {
               "$type": "Document",
@@ -1409,8 +1355,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\AdminNotebooks\\_AdminNotebookArtisanManagement.cshtml",
               "ViewState": "AgIAAGgCAAAAAAAAAAAswIYCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T07:06:42.927Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T07:06:42.927Z"
             },
             {
               "$type": "Document",
@@ -1422,8 +1367,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_LandingPageNavbar.cshtml",
               "ViewState": "AgIAAP0EAAAAAAAAAAAwwBsFAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:29:59.501Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:29:59.501Z"
             },
             {
               "$type": "Document",
@@ -1435,8 +1379,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAAcCAAAAAAAAAAAIwBcCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T09:50:57.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T09:50:57.375Z"
             },
             {
               "$type": "Document",
@@ -1448,8 +1391,7 @@
               "RelativeToolTip": "SkillBuilder\\Services\\WeeklyLeaderboardRewardService.cs",
               "ViewState": "AgIAAEIAAAAAAAAAAAAwwFYAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:44:56.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:44:56.591Z"
             },
             {
               "$type": "Document",
@@ -1461,8 +1403,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CourseCatalogNavbar.cshtml",
               "ViewState": "AgIAAHAFAAAAAAAAAAAwwI4FAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:30:35.703Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:30:35.703Z"
             },
             {
               "$type": "Document",
@@ -1474,8 +1415,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CreateCourseNotebooks\\_CreateCourseMaterials.cshtml",
               "ViewState": "AgIAAN0AAAAAAAAAAAAwwPsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-30T23:14:03.015Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-30T23:14:03.015Z"
             },
             {
               "$type": "Document",
@@ -1487,8 +1427,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditNotebooks\\_EditUserNotebookProfile.cshtml",
               "ViewState": "AgIAAAoCAAAAAAAAAAAswBkCAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:41:00.264Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:41:00.264Z"
             },
             {
               "$type": "Document",
@@ -1500,8 +1439,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookPortfolio.cshtml",
               "ViewState": "AgIAAEACAAAAAAAAAAAswF4CAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:07:45.126Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:07:45.126Z"
             },
             {
               "$type": "Document",
@@ -1513,8 +1451,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookReviewProjects.cshtml",
               "ViewState": "AgIAADYAAAAAAAAAAIBZwGcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:07:21.907Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:07:21.907Z"
             },
             {
               "$type": "Document",
@@ -1526,8 +1463,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_CommunityHighlightSection.cshtml",
               "ViewState": "AgIAAFkAAAAAAAAAAIBZwIoAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:39:11.123Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:39:11.123Z"
             },
             {
               "$type": "Document",
@@ -1539,8 +1475,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookMyCommunity.cshtml",
               "ViewState": "AgIAAO0DAAAAAAAAAAAswAsEAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:51:42.683Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:51:42.683Z"
             },
             {
               "$type": "Document",
@@ -1552,8 +1487,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\EditNotebooks\\_EditArtisanNotebookProfile.cshtml",
               "ViewState": "AgIAADECAAAAAAAAAAAwwE8CAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:00:18.265Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:00:18.265Z"
             },
             {
               "$type": "Document",
@@ -1565,8 +1499,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookCommunity.cshtml",
               "ViewState": "AgIAAIgDAAAAAAAAAAAswKYDAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:02:52Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:02:52Z"
             },
             {
               "$type": "Document",
@@ -1578,8 +1511,7 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251126013028_AddedCommunityAnalytics.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-26T01:30:29.284Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T01:30:29.284Z"
             },
             {
               "$type": "Document",
@@ -1591,8 +1523,7 @@
               "RelativeToolTip": "SkillBuilder\\Migrations\\20251125010019_addedNewModels.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T01:00:20.236Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T01:00:20.236Z"
             },
             {
               "$type": "Document",
@@ -1604,8 +1535,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\UserAchievement.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:57:29.276Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:57:29.276Z"
             },
             {
               "$type": "Document",
@@ -1617,8 +1547,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Modals\\_CelebrationModal.cshtml",
               "ViewState": "AgIAAGUAAAAAAAAAAIBZwIsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:57:00.339Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:57:00.339Z"
             },
             {
               "$type": "Document",
@@ -1630,8 +1559,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\AchievementViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T00:56:24.693Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:56:24.693Z"
             },
             {
               "$type": "Document",
@@ -1643,8 +1571,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\AchievementsNotebooks\\_AchievementsNotebookPending.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:10:29.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:10:29.028Z"
             },
             {
               "$type": "Document",
@@ -1656,8 +1583,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_HomeSection.cshtml",
               "ViewState": "AgIAAEMAAAAAAAAAAIBZwGoAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-25T00:48:32.224Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-25T00:48:32.224Z"
             },
             {
               "$type": "Document",
@@ -1669,8 +1595,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\_RecommendedCourses.cshtml",
               "ViewState": "AgIAAKYAAAAAAAAAAAAswMcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:17:39.781Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:17:39.781Z"
             },
             {
               "$type": "Document",
@@ -1682,8 +1607,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\LeaderBoardController.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAQwDEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T08:53:09.511Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:53:09.511Z"
             },
             {
               "$type": "Document",
@@ -1695,8 +1619,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\CommunityController.cs",
               "ViewState": "AgIAACMEAAAAAAAAAIBZwDoEAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T01:00:33.743Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:00:33.743Z"
             },
             {
               "$type": "Document",
@@ -1708,8 +1631,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\SupportSessionsNotebooks\\_SupportSessionsNotebookUpcoming.cshtml",
               "ViewState": "AgIAAGQAAAAAAAAAAAAnwHYAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:05:15.393Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:05:15.393Z"
             },
             {
               "$type": "Document",
@@ -1721,8 +1643,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\SupportSessionsNotebooks\\_SupportSessionsNotebookPending.cshtml",
               "ViewState": "AgIAAOAAAAAAAAAAAAAnwPQAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:10:14.746Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:10:14.746Z"
             },
             {
               "$type": "Document",
@@ -1734,8 +1655,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookDashboard.cshtml",
               "ViewState": "AgIAAEwAAAAAAAAAAAAYwGkAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:04:26.803Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:04:26.803Z"
             },
             {
               "$type": "Document",
@@ -1747,8 +1667,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ProjectsToReviewNotebooks\\_ReviewProjectsNotebookPending.cshtml",
               "ViewState": "AgIAAN4BAAAAAAAAAAAgwPsBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:08:14.662Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:08:14.662Z"
             },
             {
               "$type": "Document",
@@ -1760,8 +1679,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyProjectsNotebooks\\_ProjectsNotebookPending.cshtml",
               "ViewState": "AgIAAEkBAAAAAAAAAAAgwGYBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:09:12.468Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:09:12.468Z"
             },
             {
               "$type": "Document",
@@ -1773,8 +1691,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ArtisanCommunityNotebooks\\_ArtisanCommunityNotebookAllMembers.cshtml",
               "ViewState": "AgIAAB0BAAAAAAAAAAAYwCsBAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:02:32.858Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:02:32.858Z"
             },
             {
               "$type": "Document",
@@ -1786,8 +1703,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CourseNotebooks\\_CourseNotebookModule.cshtml",
               "ViewState": "AgIAAEUAAAAAAAAAAAAYwGIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:24:28.272Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:24:28.272Z"
             },
             {
               "$type": "Document",
@@ -1799,8 +1715,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CommunityNotebooks\\_CommunityNotebookCommunities.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAAAYwEoAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:23:23.327Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:23:23.327Z"
             },
             {
               "$type": "Document",
@@ -1812,8 +1727,7 @@
               "RelativeToolTip": "SkillBuilder\\Services\\CertificateService.cs",
               "ViewState": "AgIAAFEAAAAAAAAAAAAgwG4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T11:22:44.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:22:44.981Z"
             },
             {
               "$type": "Document",
@@ -1825,8 +1739,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CourseNotebooks\\_CourseNotebookMaterials.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:22:21.382Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:22:21.382Z"
             },
             {
               "$type": "Document",
@@ -1838,8 +1751,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyCommunityNotebooks\\_MyJoinedCommunities.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:21:48.853Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:21:48.853Z"
             },
             {
               "$type": "Document",
@@ -1851,8 +1763,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ArtisanCommunityNotebooks\\_ArtisanJoinedCommunities.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:21:22.719Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:21:22.719Z"
             },
             {
               "$type": "Document",
@@ -1864,8 +1775,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\ArtisanProfileViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T11:20:40.32Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:20:40.32Z"
             },
             {
               "$type": "Document",
@@ -1877,8 +1787,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\ArtisanProfileController.cs",
               "ViewState": "AgIAAHUAAAAAAAAAAIBZwIcAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T11:20:09.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:20:09.319Z"
             },
             {
               "$type": "Document",
@@ -1890,8 +1799,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyCommunityNotebooks\\_MyCommunityNotebookAllMembers.cshtml",
               "ViewState": "AgIAACcBAAAAAAAAAAAYwEQBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:49:21.745Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:49:21.745Z"
             },
             {
               "$type": "Document",
@@ -1903,8 +1811,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\ProfileController.cs",
               "ViewState": "AgIAAEcAAAAAAAAAAAAgwGQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:52:48.624Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T06:52:48.624Z"
             },
             {
               "$type": "Document",
@@ -1916,8 +1823,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\UserProfileViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAwwBwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T08:49:06.558Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:49:06.558Z"
             },
             {
               "$type": "Document",
@@ -1929,8 +1835,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookProgress.cshtml",
               "ViewState": "AgIAAHkAAAAAAAAAAAAYwJYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T11:17:20.091Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T11:17:20.091Z"
             },
             {
               "$type": "Document",
@@ -1942,8 +1847,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\CourseProjectSubmission.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:44:14.083Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:44:14.083Z"
             },
             {
               "$type": "Document",
@@ -1955,8 +1859,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Artisan\\ArtisanList.cshtml",
               "ViewState": "AgIAALcAAAAAAAAAAAAAwOIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T13:38:31.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T13:38:31.484Z"
             },
             {
               "$type": "Document",
@@ -1968,8 +1871,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyProjectsNotebooks\\_ProjectsNotebookApproved.cshtml",
               "ViewState": "AgIAAO4AAAAAAAAAAAAAwBkBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:44:00.595Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:44:00.595Z"
             },
             {
               "$type": "Document",
@@ -1981,8 +1883,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\SupportSessionsNotebooks\\_SupportSessionsNotebookDeclined.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:04:57.628Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:04:57.628Z"
             },
             {
               "$type": "Document",
@@ -1994,8 +1895,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyProjectsNotebooks\\_ProjectsNotebookRejected.cshtml",
               "ViewState": "AgIAAPQAAAAAAAAAAAAAwB8BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:10:57.414Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:10:57.414Z"
             },
             {
               "$type": "Document",
@@ -2007,8 +1907,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\SupportSessionsNotebooks\\_SupportSessionsNotebookCompleted.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAIBJwC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:06:12.663Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:06:12.663Z"
             },
             {
               "$type": "Document",
@@ -2020,8 +1919,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ProjectsToReviewNotebooks\\_ReviewProjectsNotebookRejected.cshtml",
               "ViewState": "AgIAAEEAAAAAAAAAAIBZwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:09:44.74Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:09:44.74Z"
             },
             {
               "$type": "Document",
@@ -2033,8 +1931,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ProjectsToReviewNotebooks\\_ReviewProjectsNotebookApproved.cshtml",
               "ViewState": "AgIAAEEAAAAAAAAAAIBZwHIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:09:39.251Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:09:39.251Z"
             },
             {
               "$type": "Document",
@@ -2046,8 +1943,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookMyCourses.cshtml",
               "ViewState": "AgIAACkAAAAAAAAAAAAiwFcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:04:20.923Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:04:20.923Z"
             },
             {
               "$type": "Document",
@@ -2059,8 +1955,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\RequestSessionsNotebooks\\_RequestSessionsNotebookUpcoming.cshtml",
               "ViewState": "AgIAAGoAAAAAAAAAAAAAwJUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:31:14.245Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:31:14.245Z"
             },
             {
               "$type": "Document",
@@ -2072,8 +1967,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\RequestSessionsNotebooks\\_RequestSessionsNotebookPending.cshtml",
               "ViewState": "AgIAAMQAAAAAAAAAAAAAwO8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:04:22.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:04:22.307Z"
             },
             {
               "$type": "Document",
@@ -2085,8 +1979,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\RequestSessionsNotebooks\\_RequestSessionsNotebookDeclined.cshtml",
               "ViewState": "AgIAAFYAAAAAAAAAAIBZwIcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:05:40.035Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:05:40.035Z"
             },
             {
               "$type": "Document",
@@ -2098,8 +1991,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\RequestSessionsNotebooks\\_RequestSessionsNotebookCompleted.cshtml",
               "ViewState": "AgIAAJMAAAAAAAAAAAAAwL4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-20T04:31:20.571Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:31:20.571Z"
             },
             {
               "$type": "Document",
@@ -2111,8 +2003,7 @@
               "RelativeToolTip": "SkillBuilder\\Controllers\\CourseProjectController.cs",
               "ViewState": "AgIAAIoAAAAAAAAAAAAAwLUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:38:36.907Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:38:36.907Z"
             },
             {
               "$type": "Document",
@@ -2124,8 +2015,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\CourseNotebooks\\_CourseNotebookReviews.cshtml",
               "ViewState": "AgIAABgCAAAAAAAAAIBZwEkCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-04T07:38:20.318Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:38:20.318Z"
             },
             {
               "$type": "Document",
@@ -2137,8 +2027,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\ReportLogViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:37:02.193Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:37:02.193Z"
             },
             {
               "$type": "Document",
@@ -2150,8 +2039,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\CommunityPostReport.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T07:36:33.78Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-04T07:36:33.78Z"
             },
             {
               "$type": "Document",
@@ -2163,8 +2051,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\CommunityReport.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T09:51:45.12Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T09:51:45.12Z"
             },
             {
               "$type": "Document",
@@ -2176,8 +2063,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookProjects.cshtml",
               "ViewState": "AgIAAFYAAAAAAAAAAAAiwIQAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:04:11.961Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:04:11.961Z"
             },
             {
               "$type": "Document",
@@ -2189,8 +2075,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookRequestSessions.cshtml",
               "ViewState": "AgIAADAAAAAAAAAAAAAiwF4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:04:44.432Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:04:44.432Z"
             },
             {
               "$type": "Document",
@@ -2202,8 +2087,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\_UserNotebookAchievements.cshtml",
               "ViewState": "AgIAABkAAAAAAAAAAAAiwEcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:10:45.274Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:10:45.274Z"
             },
             {
               "$type": "Document",
@@ -2215,8 +2099,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\_ArtisanNotebookSupportSessions.cshtml",
               "ViewState": "AgIAAFsAAAAAAAAAAAAiwIkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:05:57.008Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:05:57.008Z"
             },
             {
               "$type": "Document",
@@ -2228,8 +2111,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Profile\\ArtisanProfile.cshtml",
               "ViewState": "AgIAAJgAAAAAAAAAAAAmwMYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-02T01:02:29.76Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T01:02:29.76Z"
             },
             {
               "$type": "Document",
@@ -2241,8 +2123,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Leaderboard\\UserLeaderboard.cshtml",
               "ViewState": "AgIAAJIAAAAAAAAAAAAiwMAAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:53:35.14Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:53:35.14Z"
             },
             {
               "$type": "Document",
@@ -2254,8 +2135,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Profile\\UserProfile.cshtml",
               "ViewState": "AgIAAJ0AAAAAAAAAAAAmwMsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:52:48.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:52:48.962Z"
             },
             {
               "$type": "Document",
@@ -2267,8 +2147,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\CreateCommunityViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T08:50:31.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:50:31.979Z"
             },
             {
               "$type": "Document",
@@ -2280,8 +2159,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\CourseDetailsViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-02T00:59:49.527Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-02T00:59:49.527Z"
             },
             {
               "$type": "Document",
@@ -2293,8 +2171,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\AchievementsNotebooks\\_AchievementsNotebookAchieved.cshtml",
               "ViewState": "AgIAAAsAAAAAAAAAAAAwwB4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:10:36.527Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:10:36.527Z"
             },
             {
               "$type": "Document",
@@ -2306,8 +2183,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyCoursesNotebooks\\_MyCoursesNotebookCompleted.cshtml",
               "ViewState": "AgIAAFAAAAAAAAAAAAAwwGMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:07:07.637Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:07:07.637Z"
             },
             {
               "$type": "Document",
@@ -2319,8 +2195,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyCoursesNotebooks\\_MyCoursesNotebookInProgress.cshtml",
               "ViewState": "AgIAAE8AAAAAAAAAAAAwwGIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:06:53.484Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:06:53.484Z"
             },
             {
               "$type": "Document",
@@ -2332,8 +2207,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\ArtisanNotebooks\\ArtisanCommunityNotebooks\\_ArtisanCommunityNotebookPending.cshtml",
               "ViewState": "AgIAAGQBAAAAAAAAAAAwwHcBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-31T08:03:07.122Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-31T08:03:07.122Z"
             },
             {
               "$type": "Document",
@@ -2345,8 +2219,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Profile\\UserViewAsLearner.cshtml",
               "ViewState": "AgIAABcBAAAAAAAAAAAUwCwBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-15T06:50:16.555Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T06:50:16.555Z"
             },
             {
               "$type": "Document",
@@ -2358,8 +2231,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\CommunitiesViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-30T08:50:02.446Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:50:02.446Z"
             },
             {
               "$type": "Document",
@@ -2371,8 +2243,7 @@
               "RelativeToolTip": "SkillBuilder\\Views\\Shared\\Sections\\UserNotebooks\\MyCommunityNotebooks\\_MyCommunityNotebookPending.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-30T08:48:50.861Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-30T08:48:50.861Z"
             },
             {
               "$type": "Document",
@@ -2384,8 +2255,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\ViewModels\\CourseMaterialViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-20T04:29:32.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-20T04:29:32.631Z"
             },
             {
               "$type": "Document",
@@ -2397,8 +2267,7 @@
               "RelativeToolTip": "SkillBuilder\\Models\\UserReport.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T06:56:35.73Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-15T06:56:35.73Z"
             }
           ]
         }

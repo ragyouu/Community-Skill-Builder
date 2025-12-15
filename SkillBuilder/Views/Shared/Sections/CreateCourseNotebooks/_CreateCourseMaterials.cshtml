@@ -121,7 +121,7 @@
                         <span class="material-size">
                             @(item.FileSize > 0 ? $"{item.FileSize / 1024.0:F1} KB" : "")
                         </span>
-                        <span class="material-delete" onclick="removeMaterial(@i)">🗑️</span>
+                        <span class="material-delete">🗑️</span>
                     </div>
 
                     <div class="material-fields">
@@ -155,7 +155,97 @@
     </div>
 </div>
 
+<div id="course-material-delete-modal" class="course-material-delete-modal" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+">
+    <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    ">
+        <p style="font-size:1.1rem; margin-bottom: 1.5rem;">
+            Are you sure you want to delete this item?
+        </p>
+
+        <div style="display:flex; justify-content: center; gap:1rem;">
+            <button id="course-material-confirm-delete-btn" type="button" class="course-material-confirm-delete-btn" style="
+                padding:0.5rem 1rem;
+                background:#e74c3c;
+                color:white;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Yes, Delete
+            </button>
+
+            <button id="course-material-cancel-delete-btn" type="button" class="course-material-cancel-delete-btn" style="
+                padding:0.5rem 1rem;
+                background:#ccc;
+                color:black;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+            ">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    // Namespaced pending callback
+    window.courseMaterialPendingDelete = null;
+
+    // Namespaced show delete confirmation
+    window.showCourseMaterialDeleteConfirmation = function(callback) {
+        window.courseMaterialPendingDelete = callback;
+
+        const modal = document.getElementById("course-material-delete-modal");
+        modal.style.display = "flex";
+
+        document.getElementById("course-material-cancel-delete-btn").onclick = () => {
+            window.courseMaterialPendingDelete = null;
+            modal.style.display = "none";
+        };
+
+        document.getElementById("course-material-confirm-delete-btn").onclick = () => {
+            if (window.courseMaterialPendingDelete) window.courseMaterialPendingDelete();
+            window.courseMaterialPendingDelete = null;
+            modal.style.display = "none";
+        };
+    };
+
+    // Namespaced removeMaterial
+    window.removeMaterial = function(index) {
+        window.showCourseMaterialDeleteConfirmation(() => {
+            const item = document.querySelector(`.material-entry[data-index='${index}']`);
+            if (item) item.remove();
+            renumberMaterials();
+        });
+    };
+
+    // Event delegation for delete icons (works for preloaded and newly added)
+    document.getElementById('material-list').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('material-delete')) {
+            const entry = e.target.closest('.material-entry');
+            const index = parseInt(entry.getAttribute('data-index'));
+            window.removeMaterial(index);
+        }
+    });
+
     let materialIndex = @Model?.Materials?.Count ?? 0;
 
     const maxFileSize = 100 * 1024 * 1024; // 100 MB
@@ -221,12 +311,6 @@
 
         errorEl.style.display = "none";
         return true;
-    }
-
-    function removeMaterial(index) {
-        const item = document.querySelector(`.material-entry[data-index='${index}']`);
-        if (item) item.remove();
-        renumberMaterials();
     }
 
     function renumberMaterials() {
