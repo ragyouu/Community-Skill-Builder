@@ -17,12 +17,44 @@ namespace SkillBuilder.Controllers
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly INotificationService _notificationService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ArtisanCourseController(AppDbContext context, IWebHostEnvironment env, INotificationService notificationService)
+        public ArtisanCourseController(AppDbContext context, IWebHostEnvironment env, INotificationService notificationService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _env = env;
             _notificationService = notificationService;
+            _cloudinaryService = cloudinaryService;
+        }
+
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            try
+            {
+                var uri = new Uri(url);
+                var path = uri.AbsolutePath;
+
+                var uploadIndex = path.IndexOf("/upload/");
+                if (uploadIndex == -1) return null;
+
+                var publicIdWithVersion = path[(uploadIndex + 8)..];
+
+                // Remove version if exists (v1234567890)
+                var parts = publicIdWithVersion.Split('/');
+                if (parts.Length > 1 && parts[0].StartsWith("v"))
+                {
+                    parts = parts[1..]; // skip version
+                }
+
+                var publicId = string.Join("/", parts);
+                return Path.ChangeExtension(publicId, null);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         [HttpGet("CreateCourse")]
@@ -93,7 +125,10 @@ namespace SkillBuilder.Controllers
                     ModelState.AddModelError("ImageFile", "Image file must be under 5 MB.");
                     return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", model);
                 }
-                course.ImageUrl = await SaveFileAsync(model.ImageFile, "course-images");
+                course.ImageUrl = await _cloudinaryService.UploadImageAsync(
+                    model.ImageFile,
+                    "skillbuilder/courses/images"
+                );
             }
 
             if (model.VideoFile != null)
@@ -103,7 +138,20 @@ namespace SkillBuilder.Controllers
                     ModelState.AddModelError("VideoFile", "Video file must be under 50 MB.");
                     return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", model);
                 }
-                course.Video = await SaveFileAsync(model.VideoFile, "course-videos");
+
+                // 🔥 Delete old Cloudinary video if updating (optional, if editing)
+                if (!string.IsNullOrEmpty(course.Video))
+                {
+                    var oldId = ExtractCloudinaryPublicId(course.Video);
+                    if (oldId != null)
+                        await _cloudinaryService.DeleteVideoAsync(oldId);
+                }
+
+                // ☁️ Upload new video
+                course.Video = await _cloudinaryService.UploadVideoAsync(
+                    model.VideoFile,
+                    "skillbuilder/courses/videos"
+                );
             }
 
             if (model.ThumbnailFile != null)
@@ -113,7 +161,10 @@ namespace SkillBuilder.Controllers
                     ModelState.AddModelError("ThumbnailFile", "Thumbnail must be under 5 MB.");
                     return View("~/Views/Actions/ArtisanActions/CreateCourse.cshtml", model);
                 }
-                course.Thumbnail = await SaveFileAsync(model.ThumbnailFile, "course-thumbnails");
+                course.Thumbnail = await _cloudinaryService.UploadImageAsync(
+                    model.ThumbnailFile,
+                    "skillbuilder/courses/thumbnails"
+                );
             }
 
             // Generate course link if missing
@@ -167,10 +218,21 @@ namespace SkillBuilder.Controllers
                             ContentText = lesson.ContentText
                         };
 
-                        if (lesson.VideoFile != null)
-                            moduleContent.MediaUrl = await SaveFileAsync(lesson.VideoFile, "lesson-videos");
-                        else if (lesson.ImageFile != null)
-                            moduleContent.MediaUrl = await SaveFileAsync(lesson.ImageFile, "lesson-images");
+                        // -------------------- HANDLE LESSON MEDIA (CLOUDINARY) --------------------
+                        if (lesson.LessonType == "Image + Text" && lesson.ImageFile != null)
+                        {
+                            moduleContent.MediaUrl = await _cloudinaryService.UploadImageAsync(
+                                lesson.ImageFile,
+                                "skillbuilder/lessons/images"
+                            );
+                        }
+                        else if (lesson.LessonType == "Video + Text" && lesson.VideoFile != null)
+                        {
+                            moduleContent.MediaUrl = await _cloudinaryService.UploadVideoAsync(
+                                lesson.VideoFile,
+                                "skillbuilder/lessons/videos"
+                            );
+                        }
 
                         _context.ModuleContents.Add(moduleContent);
                         await _context.SaveChangesAsync();
@@ -471,11 +533,47 @@ namespace SkillBuilder.Controllers
 
             // Update media
             if (model.ImageFile != null)
-                course.ImageUrl = await SaveFileAsync(model.ImageFile, "course-images");
+            {
+                if (!string.IsNullOrEmpty(course.ImageUrl))
+                {
+                    var oldId = ExtractCloudinaryPublicId(course.ImageUrl);
+                    if (oldId != null)
+                        await _cloudinaryService.DeleteImageAsync(oldId);
+                }
+
+                course.ImageUrl = await _cloudinaryService.UploadImageAsync(
+                    model.ImageFile,
+                    "skillbuilder/courses/images"
+                );
+            }
             if (model.VideoFile != null)
-                course.Video = await SaveFileAsync(model.VideoFile, "course-videos");
+            {
+                if (!string.IsNullOrEmpty(course.Video))
+                {
+                    var oldId = ExtractCloudinaryPublicId(course.Video);
+                    if (oldId != null)
+                        await _cloudinaryService.DeleteVideoAsync(oldId);  // use DeleteVideoAsync
+                }
+
+                course.Video = await _cloudinaryService.UploadVideoAsync(    // use UploadVideoAsync
+                    model.VideoFile,
+                    "skillbuilder/courses/videos"
+                );
+            }
             if (model.ThumbnailFile != null)
-                course.Thumbnail = await SaveFileAsync(model.ThumbnailFile, "course-thumbnails");
+            {
+                if (!string.IsNullOrEmpty(course.Thumbnail))
+                {
+                    var oldId = ExtractCloudinaryPublicId(course.Thumbnail);
+                    if (oldId != null)
+                        await _cloudinaryService.DeleteImageAsync(oldId);
+                }
+
+                course.Thumbnail = await _cloudinaryService.UploadImageAsync(
+                    model.ThumbnailFile,
+                    "skillbuilder/courses/thumbnails"
+                );
+            }
 
             // ------------------ Update Final Project ------------------
             if (model.FinalProject != null)
@@ -530,7 +628,26 @@ namespace SkillBuilder.Controllers
                         var lessonsToDelete = courseModule.Contents
                             .Where(l => !lessonIds.Contains(l.Id))
                             .ToList();
-                        if (lessonsToDelete.Any()) _context.ModuleContents.RemoveRange(lessonsToDelete);
+
+                        if (lessonsToDelete.Any())
+                        {
+                            foreach (var lesson in lessonsToDelete)
+                            {
+                                if (!string.IsNullOrEmpty(lesson.MediaUrl))
+                                {
+                                    var publicId = ExtractCloudinaryPublicId(lesson.MediaUrl);
+                                    if (publicId != null)
+                                    {
+                                        if (lesson.ContentType == "Video + Text")
+                                            await _cloudinaryService.DeleteVideoAsync(publicId);
+                                        else
+                                            await _cloudinaryService.DeleteImageAsync(publicId);
+                                    }
+                                }
+                            }
+
+                            _context.ModuleContents.RemoveRange(lessonsToDelete);
+                        }
 
                         for (int j = 0; j < moduleVm.Lessons.Count; j++)
                         {
@@ -569,37 +686,65 @@ namespace SkillBuilder.Controllers
                             // ------------------ Handle media ------------------
                             if (lessonVm.LessonType == "Image + Text")
                             {
-                                if (lessonVm.ImageFile != null)
+                                if (lessonVm.ImageFile != null || string.IsNullOrEmpty(lessonVm.ExistingImageUrl))
                                 {
-                                    lesson.MediaUrl = await SaveFileAsync(lessonVm.ImageFile, "lesson-media");
-                                }
-                                else if (!string.IsNullOrWhiteSpace(lessonVm.ExistingImageUrl))
-                                {
-                                    lesson.MediaUrl = lessonVm.ExistingImageUrl;
-                                }
-                                else
-                                {
-                                    lesson.MediaUrl = null;
+                                    if (!string.IsNullOrEmpty(lesson.MediaUrl))
+                                    {
+                                        var oldId = ExtractCloudinaryPublicId(lesson.MediaUrl);
+                                        if (oldId != null)
+                                            await _cloudinaryService.DeleteImageAsync(oldId);
+                                    }
+
+                                    if (lessonVm.ImageFile != null)
+                                    {
+                                        lesson.MediaUrl = await _cloudinaryService.UploadImageAsync(
+                                            lessonVm.ImageFile,
+                                            "skillbuilder/lessons/images"
+                                        );
+                                    }
+                                    else
+                                    {
+                                        lesson.MediaUrl = null;
+                                    }
                                 }
                             }
                             else if (lessonVm.LessonType == "Video + Text")
                             {
-                                if (lessonVm.VideoFile != null)
+                                if (lessonVm.VideoFile != null || string.IsNullOrEmpty(lessonVm.ExistingVideoUrl))
                                 {
-                                    lesson.MediaUrl = await SaveFileAsync(lessonVm.VideoFile, "lesson-media");
-                                }
-                                else if (!string.IsNullOrWhiteSpace(lessonVm.ExistingVideoUrl))
-                                {
-                                    lesson.MediaUrl = lessonVm.ExistingVideoUrl;
-                                }
-                                else
-                                {
-                                    lesson.MediaUrl = null;
+                                    if (!string.IsNullOrEmpty(lesson.MediaUrl))
+                                    {
+                                        var oldId = ExtractCloudinaryPublicId(lesson.MediaUrl);
+                                        if (oldId != null)
+                                            await _cloudinaryService.DeleteVideoAsync(oldId);
+                                    }
+
+                                    if (lessonVm.VideoFile != null)
+                                    {
+                                        lesson.MediaUrl = await _cloudinaryService.UploadVideoAsync(
+                                            lessonVm.VideoFile,
+                                            "skillbuilder/lessons/videos"
+                                        );
+                                    }
+                                    else
+                                    {
+                                        lesson.MediaUrl = null;
+                                    }
                                 }
                             }
                             else
                             {
-                                // For Text, Quiz, Session → clear media
+                                if (!string.IsNullOrEmpty(lesson.MediaUrl))
+                                {
+                                    var oldId = ExtractCloudinaryPublicId(lesson.MediaUrl);
+                                    if (oldId != null)
+                                    {
+                                        if (lesson.ContentType?.StartsWith("Video") == true)
+                                            await _cloudinaryService.DeleteVideoAsync(oldId);
+                                        else
+                                            await _cloudinaryService.DeleteImageAsync(oldId);
+                                    }
+                                }
                                 lesson.MediaUrl = null;
                             }
 
@@ -670,8 +815,41 @@ namespace SkillBuilder.Controllers
                                     InteractiveContent ic;
                                     if (icVm.Id > 0)
                                     {
-                                        // Existing interactive
                                         ic = lesson.InteractiveContents.First(c => c.Id == icVm.Id);
+
+                                        bool mediaChanged = icVm.MediaFile != null || string.IsNullOrEmpty(icVm.ExistingMediaUrl);
+
+                                        if (mediaChanged)
+                                        {
+                                            if (!string.IsNullOrEmpty(ic.MediaUrl))
+                                            {
+                                                var oldId = ExtractCloudinaryPublicId(ic.MediaUrl);
+                                                if (oldId != null)
+                                                {
+                                                    if (ic.ContentType?.StartsWith("Video") == true)
+                                                        await _cloudinaryService.DeleteVideoAsync(oldId);
+                                                    else
+                                                        await _cloudinaryService.DeleteImageAsync(oldId);
+                                                }
+                                            }
+
+                                            if (icVm.MediaFile != null)
+                                            {
+                                                if (icVm.ContentType?.StartsWith("Video") == true)
+                                                    ic.MediaUrl = await _cloudinaryService.UploadVideoAsync(icVm.MediaFile, "skillbuilder/interactive");
+                                                else
+                                                    ic.MediaUrl = await _cloudinaryService.UploadImageAsync(icVm.MediaFile, "skillbuilder/interactive");
+                                            }
+                                            else
+                                            {
+                                                ic.MediaUrl = null;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ic.MediaUrl = icVm.ExistingMediaUrl;
+                                        }
+
                                         ic.ContentType = icVm.ContentType;
                                         ic.ContentText = System.Net.WebUtility.HtmlDecode(icVm.ContentText ?? "");
                                         ic.OptionA = icVm.OptionA;
@@ -680,11 +858,11 @@ namespace SkillBuilder.Controllers
                                         ic.OptionD = icVm.OptionD;
                                         ic.CorrectAnswer = icVm.CorrectAnswer;
                                         ic.ReflectionMinChars = icVm.ReflectionMinChars;
+
                                         _context.InteractiveContents.Update(ic);
                                     }
                                     else
                                     {
-                                        // New interactive
                                         ic = new InteractiveContent
                                         {
                                             ModuleContentId = lesson.Id,
@@ -697,6 +875,15 @@ namespace SkillBuilder.Controllers
                                             CorrectAnswer = icVm.CorrectAnswer,
                                             ReflectionMinChars = icVm.ReflectionMinChars
                                         };
+
+                                        if (icVm.MediaFile != null)
+                                        {
+                                            if (icVm.ContentType?.StartsWith("Video") == true)
+                                                ic.MediaUrl = await _cloudinaryService.UploadVideoAsync(icVm.MediaFile, "skillbuilder/interactive");
+                                            else
+                                                ic.MediaUrl = await _cloudinaryService.UploadImageAsync(icVm.MediaFile, "skillbuilder/interactive");
+                                        }
+
                                         _context.InteractiveContents.Add(ic);
                                         await _context.SaveChangesAsync();
                                     }
@@ -793,9 +980,11 @@ namespace SkillBuilder.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            var imageUrl = await SaveFileAsync(file, "interactive-images");
+            var imageUrl = await _cloudinaryService.UploadImageAsync(
+                file,
+                "skillbuilder/interactive"
+            );
 
-            // TinyMCE REQUIRED response format
             return Json(new { location = imageUrl });
         }
     }

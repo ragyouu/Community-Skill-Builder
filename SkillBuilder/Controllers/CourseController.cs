@@ -16,12 +16,15 @@ namespace SkillBuilder.Controllers
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
         private readonly IAchievementService _achievementService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public CoursesController(AppDbContext context, INotificationService notificationService, IAchievementService achievementService)
+        public CoursesController(AppDbContext context, INotificationService notificationService, IAchievementService achievementService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _notificationService = notificationService;
             _achievementService = achievementService;
+            _cloudinaryService = cloudinaryService;
+
         }
 
         [HttpGet("")]
@@ -390,21 +393,22 @@ namespace SkillBuilder.Controllers
 
             string mediaUrl = null;
 
+            // ✅ CLOUDINARY UPLOAD (via service)
             if (dto.File != null && dto.File.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "projects");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
+                mediaUrl = await _cloudinaryService.UploadImageAsync(
+                    dto.File,
+                    "skillbuilder/final-projects"
+                );
 
-                var fileName = $"{Guid.NewGuid()}_{dto.File.FileName}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (string.IsNullOrEmpty(mediaUrl))
                 {
-                    await dto.File.CopyToAsync(stream);
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "Failed to upload project file."
+                    });
                 }
-
-                mediaUrl = $"/uploads/projects/{fileName}";
             }
 
             var submission = new CourseProjectSubmission
@@ -424,26 +428,23 @@ namespace SkillBuilder.Controllers
             // 🔄 Recalculate course progress
             await RecalculateProgress(userId, dto.CourseId);
 
-            // 🏆 Award ProjectSubmitted achievement
+            // 🏆 Achievements
             var achievements = new List<AchievementViewModel>();
 
-            // First project submission
             var projectAchievement = await _achievementService.AwardAchievementAsync(userId, "ProjectSubmitted");
             if (projectAchievement != null)
                 achievements.Add(projectAchievement);
 
-            // Check if course completed achievement should also be awarded
             var completedAchievement = await _achievementService.AwardAchievementAsync(userId, "CourseCompleted");
             if (completedAchievement != null)
                 achievements.Add(completedAchievement);
 
-            // 🔔 Notifications to user
+            // 🔔 Notifications
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"Your final project \"{submission.Title}\" has been submitted successfully."
             );
 
-            // 🔔 Notify Artisan
             if (course.Artisan != null)
             {
                 await _notificationService.AddNotificationAsync(
@@ -456,7 +457,7 @@ namespace SkillBuilder.Controllers
             {
                 success = true,
                 submissionId = submission.Id,
-                achievements, // return all awarded achievements
+                achievements,
                 threads = user.Threads
             });
         }
@@ -674,6 +675,13 @@ namespace SkillBuilder.Controllers
 
             var course = await _context.Courses
                 .Include(c => c.Artisan)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(l => l.InteractiveContents)
+                .Include(c => c.CourseModules)
+                    .ThenInclude(m => m.Contents)
+                        .ThenInclude(l => l.QuizQuestions)
+                .Include(c => c.Materials)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (course == null)
@@ -682,17 +690,67 @@ namespace SkillBuilder.Controllers
             if (course.Artisan?.UserId != userId)
                 return Forbid();
 
-            // 🗂️ Soft delete (archive)
+            // Delete course-level media
+            if (!string.IsNullOrEmpty(course.ImageUrl))
+            {
+                var publicId = ExtractCloudinaryPublicId(course.ImageUrl);
+                if (publicId != null) await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+            if (!string.IsNullOrEmpty(course.Video))
+            {
+                var publicId = ExtractCloudinaryPublicId(course.Video);
+                if (publicId != null) await _cloudinaryService.DeleteVideoAsync(publicId);
+            }
+            if (!string.IsNullOrEmpty(course.Thumbnail))
+            {
+                var publicId = ExtractCloudinaryPublicId(course.Thumbnail);
+                if (publicId != null) await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
+            // Delete lesson and interactive media
+            foreach (var module in course.CourseModules)
+            {
+                foreach (var lesson in module.Contents)
+                {
+                    if (!string.IsNullOrEmpty(lesson.MediaUrl))
+                    {
+                        var publicId = ExtractCloudinaryPublicId(lesson.MediaUrl);
+                        if (publicId != null)
+                        {
+                            if (lesson.ContentType?.StartsWith("Video") == true)
+                                await _cloudinaryService.DeleteVideoAsync(publicId);
+                            else
+                                await _cloudinaryService.DeleteImageAsync(publicId);
+                        }
+                    }
+
+                    foreach (var ic in lesson.InteractiveContents)
+                    {
+                        if (!string.IsNullOrEmpty(ic.MediaUrl))
+                        {
+                            var publicId = ExtractCloudinaryPublicId(ic.MediaUrl);
+                            if (publicId != null)
+                            {
+                                if (ic.ContentType?.StartsWith("Video") == true)
+                                    await _cloudinaryService.DeleteVideoAsync(publicId);
+                                else
+                                    await _cloudinaryService.DeleteImageAsync(publicId);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Soft delete course
             course.IsArchived = true;
             await _context.SaveChangesAsync();
 
-            // ✅ Send notification to the artisan confirming success
+            // Send notification
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"Your course \"{course.Title}\" has been deleted successfully."
             );
 
-            // ✅ Return redirect URL with artisan ID (use Artisan.Id or Artisan.ArtisanId depending on your model)
             var artisanId = course.Artisan.ArtisanId;
             return Json(new
             {
@@ -926,6 +984,55 @@ namespace SkillBuilder.Controllers
             public string Description { get; set; } = "";
         }
 
+        private List<string> ExtractCloudinaryPublicIdsFromHtml(string html)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(html)) return result;
+
+            var matches = System.Text.RegularExpressions.Regex.Matches(
+                html,
+                @"https:\/\/res\.cloudinary\.com\/[^\/]+\/image\/upload\/[^\/]+\/([^""'>]+)"
+            );
+
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                var path = match.Groups[1].Value;
+                var publicId = Path.ChangeExtension(path, null);
+                if (!string.IsNullOrEmpty(publicId))
+                    result.Add(publicId);
+            }
+
+            return result;
+        }
+
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return null;
+
+            try
+            {
+                var uri = new Uri(url);
+                var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+                // Find the index of 'upload' folder in URL
+                int uploadIndex = Array.IndexOf(segments, "upload");
+                if (uploadIndex < 0 || uploadIndex + 1 >= segments.Length)
+                    return null;
+
+                // Everything after 'upload' is the public ID + extension
+                var publicIdWithExt = string.Join('/', segments[(uploadIndex + 1)..]);
+                var dotIndex = publicIdWithExt.LastIndexOf('.');
+                if (dotIndex > 0)
+                    return publicIdWithExt.Substring(0, dotIndex);
+                return publicIdWithExt;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         // GET: /Courses/Forum/5
         [HttpGet("Forum/{courseId}")]
         public async Task<IActionResult> Forum(int courseId)
@@ -985,26 +1092,22 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("UploadForumMedia")]
-        [AllowAnonymous] // Optional: allow anonymous uploads too
+        [AllowAnonymous]
         public async Task<IActionResult> UploadForumMedia(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest(new { location = "" });
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "uploads");
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
+            var imageUrl = await _cloudinaryService.UploadImageAsync(
+                file,
+                "skillbuilder/forum"
+            );
 
-            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            if (string.IsNullOrEmpty(imageUrl))
+                return StatusCode(500, new { location = "" });
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            var fileUrl = $"/assets/uploads/{fileName}";
-            return Json(new { location = fileUrl });
+            // TinyMCE expects { location: "url" }
+            return Json(new { location = imageUrl });
         }
 
         public class EditForumPostRequest
@@ -1030,6 +1133,13 @@ namespace SkillBuilder.Controllers
 
             if (post.UserId != userId)
                 return Forbid();
+
+            // 🧹 Delete old Cloudinary images
+            var oldImages = ExtractCloudinaryPublicIdsFromHtml(post.Content);
+            foreach (var publicId in oldImages)
+            {
+                await _cloudinaryService.DeleteImageAsync(publicId);
+            }
 
             post.Content = request.Content;
             post.UpdatedAt = DateTime.UtcNow;
@@ -1060,6 +1170,13 @@ namespace SkillBuilder.Controllers
 
             if (post.UserId != userId)
                 return Forbid();
+
+            // 🧹 Delete Cloudinary images in post
+            var imageIds = ExtractCloudinaryPublicIdsFromHtml(post.Content);
+            foreach (var publicId in imageIds)
+            {
+                await _cloudinaryService.DeleteImageAsync(publicId);
+            }
 
             _context.CourseForumPosts.Remove(post);
             await _context.SaveChangesAsync();

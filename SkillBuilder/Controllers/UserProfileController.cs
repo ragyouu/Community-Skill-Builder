@@ -16,12 +16,14 @@ namespace SkillBuilder.Controllers
         private readonly AppDbContext _context;
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public UserProfileController(AppDbContext context, IEmailService emailService, INotificationService notificationService)
+        public UserProfileController(AppDbContext context, IEmailService emailService, INotificationService notificationService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _emailService = emailService;
             _notificationService = notificationService;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("{id}")]
@@ -352,6 +354,29 @@ namespace SkillBuilder.Controllers
             return Redirect($"/UserProfile/{userId}");
         }
 
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath;
+
+            // /dxixefedd/image/upload/v123456/skillbuilder/avatars/abc.jpg
+            var uploadIndex = path.IndexOf("/upload/");
+            if (uploadIndex == -1) return null;
+
+            var publicIdWithVersion = path.Substring(uploadIndex + 8);
+
+            // remove version segment (v123456/)
+            var segments = publicIdWithVersion.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length < 2) return null;
+
+            var publicIdSegments = segments.Skip(1);
+            var publicId = string.Join("/", publicIdSegments);
+
+            return Path.ChangeExtension(publicId, null); // remove .jpg
+        }
+
         [HttpGet("EditProfile")]
         public async Task<IActionResult> EditProfile()
         {
@@ -414,17 +439,34 @@ namespace SkillBuilder.Controllers
 
             if (UserAvatar != null && UserAvatar.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/avatars");
-                Directory.CreateDirectory(uploadsFolder);
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(UserAvatar.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+                if (!allowedTypes.Contains(UserAvatar.ContentType))
                 {
-                    await UserAvatar.CopyToAsync(stream);
+                    TempData["ErrorMessage"] = "Only JPG, PNG, or WEBP images are allowed.";
+                    return RedirectToAction("EditProfile");
                 }
 
-                user.UserAvatar = $"/uploads/avatars/{fileName}";
+                // Upload new avatar FIRST
+                var newAvatarUrl = await _cloudinaryService.UploadImageAsync(
+                    UserAvatar,
+                    "skillbuilder/avatars"
+                );
+
+                if (!string.IsNullOrEmpty(newAvatarUrl))
+                {
+                    // Delete old avatar ONLY if it exists & is Cloudinary
+                    if (!string.IsNullOrEmpty(user.UserAvatar) &&
+                        user.UserAvatar.Contains("res.cloudinary.com"))
+                    {
+                        var oldPublicId = ExtractCloudinaryPublicId(user.UserAvatar);
+                        if (!string.IsNullOrEmpty(oldPublicId))
+                        {
+                            await _cloudinaryService.DeleteImageAsync(oldPublicId);
+                        }
+                    }
+
+                    user.UserAvatar = newAvatarUrl;
+                }
             }
 
             if (!string.IsNullOrEmpty(CurrentPassword) ||
@@ -517,23 +559,53 @@ namespace SkillBuilder.Controllers
                 return NotFound(new { success = false, message = "Project not found." });
 
             // Save uploaded file
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/projects");
-            Directory.CreateDirectory(uploadsFolder);
-
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(projectFile.FileName)}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var allowedTypes = new[]
             {
-                await projectFile.CopyToAsync(stream);
+                "image/jpeg", "image/png", "image/webp",
+                "application/pdf"
+            };
+
+            if (!allowedTypes.Contains(projectFile.ContentType))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid file type. Only images or PDF files are allowed."
+                });
+            }
+
+            // Upload NEW project file first
+            var folderPath = $"skillbuilder/projects/{project.CourseId}/{userId}";
+
+            var newProjectUrl = await _cloudinaryService.UploadImageAsync(
+                projectFile,
+                folderPath
+            );
+
+            if (string.IsNullOrEmpty(newProjectUrl))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Failed to upload project file."
+                });
+            }
+
+            // Delete OLD project file if it exists & is Cloudinary
+            if (!string.IsNullOrEmpty(project.MediaUrl) &&
+                project.MediaUrl.Contains("res.cloudinary.com"))
+            {
+                var oldPublicId = ExtractCloudinaryPublicId(project.MediaUrl);
+                if (!string.IsNullOrEmpty(oldPublicId))
+                {
+                    await _cloudinaryService.DeleteImageAsync(oldPublicId);
+                }
             }
 
             // Update project submission
-            project.MediaUrl = $"/uploads/projects/{fileName}";
+            project.MediaUrl = newProjectUrl;
             project.SubmittedAt = DateTime.Now;
             project.Status = "Pending";
-
-            // <-- Update title and description
             project.Title = Title;
             project.Description = Description;
 

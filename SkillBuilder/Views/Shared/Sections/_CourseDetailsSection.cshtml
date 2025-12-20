@@ -602,7 +602,7 @@
                                     </h1>
                                 }
                                 <button class="course-detail-enroll-btn"
-                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), '@desiredThreads', '@desiredThreadsStr')">
+                                        onclick="enrollCourse(@Model.Id, @Model.IsFree.ToString().ToLower(), '@desiredThreadsStr', '@userThreadsStr')">
                                     Enroll Now
                                 </button>
                             }
@@ -742,7 +742,7 @@
             <span class="course-detail-cc-close" id="insufficient-threads-close">&times;</span>
             <h2 class="course-detail-cc-title" style="color:#FF9900;">Insufficient Threads</h2>
             <p style="text-align:center; font-size:1rem; margin-top:1rem;">
-                You do not have enough Threads to enroll in this course. Please earn or purchase more Threads to proceed.
+                You do not have enough Threads to enroll in this course. Please earn more Threads to proceed.
             </p>
             <div class="enroll-modal-buttons">
                 <button class="course-detail-enroll-btn cancel-btn" id="insufficient-threads-ok">OK</button>

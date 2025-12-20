@@ -15,17 +15,19 @@ namespace SkillBuilder.Controllers
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly INotificationService _notificationService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ArtisanController(AppDbContext context, IWebHostEnvironment env, INotificationService notificationService)
+        public ArtisanController(AppDbContext context, IWebHostEnvironment env, INotificationService notificationService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _env = env;
             _notificationService = notificationService;
+            _cloudinaryService = cloudinaryService;
         }
 
         [AllowAnonymous]
-        [HttpGet("")] 
-        [HttpGet("List")] 
+        [HttpGet("")]
+        [HttpGet("List")]
         public async Task<IActionResult> ArtisanList(string? search)
         {
             var query = _context.Artisans
@@ -109,6 +111,28 @@ namespace SkillBuilder.Controllers
             return Json(new { success = true, message = "Application resubmitted successfully." });
         }
 
+        // Helper method
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath;
+
+            // /dxixefedd/image/upload/v123456/skillbuilder/works/abc.jpg
+            var uploadIndex = path.IndexOf("/upload/");
+            if (uploadIndex == -1) return null;
+
+            var publicIdWithVersion = path.Substring(uploadIndex + 8);
+            var segments = publicIdWithVersion.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length < 2) return null;
+
+            var publicIdSegments = segments.Skip(1);
+            var publicId = string.Join("/", publicIdSegments);
+
+            return Path.ChangeExtension(publicId, null); // remove extension
+        }
+
         [HttpPost("AddWork")]
         public async Task<IActionResult> AddWork(string Title, string Caption, IFormFile ImageFile)
         {
@@ -124,17 +148,11 @@ namespace SkillBuilder.Controllers
             if (artisan == null)
                 return Json(new { success = false, message = "Unauthorized" });
 
-            // Save file
-            var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "works");
-            if (!Directory.Exists(uploadsDir))
-                Directory.CreateDirectory(uploadsDir);
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-            var filePath = Path.Combine(uploadsDir, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            // --- Cloudinary upload ---
+            string imageUrl = await _cloudinaryService.UploadImageAsync(ImageFile, "skillbuilder/works");
+            if (string.IsNullOrEmpty(imageUrl))
             {
-                await ImageFile.CopyToAsync(stream);
+                return Json(new { success = false, message = "Failed to upload image." });
             }
 
             var newWork = new ArtisanWork
@@ -142,7 +160,7 @@ namespace SkillBuilder.Controllers
                 ArtisanId = artisan.ArtisanId,
                 Title = Title,
                 Caption = Caption,
-                ImageUrl = "/uploads/works/" + fileName,
+                ImageUrl = imageUrl,
                 PublishDate = DateTime.UtcNow
             };
 
@@ -217,18 +235,23 @@ namespace SkillBuilder.Controllers
 
             if (ImageFile != null && ImageFile.Length > 0)
             {
-                var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "works");
-                if (!Directory.Exists(uploadsDir))
-                    Directory.CreateDirectory(uploadsDir);
+                // Delete old Cloudinary image if exists
+                if (!string.IsNullOrEmpty(work.ImageUrl) && work.ImageUrl.Contains("res.cloudinary.com"))
+                {
+                    var oldPublicId = ExtractCloudinaryPublicId(work.ImageUrl);
+                    if (!string.IsNullOrEmpty(oldPublicId))
+                    {
+                        await _cloudinaryService.DeleteImageAsync(oldPublicId);
+                    }
+                }
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-                var filePath = Path.Combine(uploadsDir, fileName);
-
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await ImageFile.CopyToAsync(stream);
-
-                work.ImageUrl = "/uploads/works/" + fileName;
-                hasChanges = true;
+                // Upload new image to Cloudinary
+                var newImageUrl = await _cloudinaryService.UploadImageAsync(ImageFile, "skillbuilder/works");
+                if (!string.IsNullOrEmpty(newImageUrl))
+                {
+                    work.ImageUrl = newImageUrl;
+                    hasChanges = true;
+                }
             }
 
             if (hasChanges)
@@ -261,6 +284,16 @@ namespace SkillBuilder.Controllers
 
             if (work == null)
                 return Json(new { success = false, message = "Work not found" });
+
+            // --- Delete image from Cloudinary if exists ---
+            if (!string.IsNullOrEmpty(work.ImageUrl) && work.ImageUrl.Contains("res.cloudinary.com"))
+            {
+                var publicId = ExtractCloudinaryPublicId(work.ImageUrl);
+                if (!string.IsNullOrEmpty(publicId))
+                {
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+                }
+            }
 
             _context.ArtisanWorks.Remove(work);
 

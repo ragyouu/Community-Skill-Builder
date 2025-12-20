@@ -19,13 +19,15 @@ namespace SkillBuilder.Controllers
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IEmailService _emailService;
         private readonly INotificationService _notificationService;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ArtisanProfileController(AppDbContext context, IPasswordHasher<User> passwordHasher, IEmailService emailService, INotificationService notificationService)
+        public ArtisanProfileController(AppDbContext context, IPasswordHasher<User> passwordHasher, IEmailService emailService, INotificationService notificationService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _emailService = emailService;
             _notificationService = notificationService;
+            _cloudinaryService = cloudinaryService;
         }
 
         // Artisan Dashboard (Self view)
@@ -177,6 +179,29 @@ namespace SkillBuilder.Controllers
             return View("~/Views/Profile/ArtisanViewAsMentor.cshtml", viewModel);
         }
 
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath;
+
+            // /dxixefedd/image/upload/v123456/skillbuilder/avatars/abc.jpg
+            var uploadIndex = path.IndexOf("/upload/");
+            if (uploadIndex == -1) return null;
+
+            var publicIdWithVersion = path.Substring(uploadIndex + 8);
+
+            // remove version segment (v123456/)
+            var segments = publicIdWithVersion.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length < 2) return null;
+
+            var publicIdSegments = segments.Skip(1);
+            var publicId = string.Join("/", publicIdSegments);
+
+            return Path.ChangeExtension(publicId, null); // remove .jpg
+        }
+
         // GET: Edit profile (Artisan-specific)
         [HttpGet("EditProfileArtisan")]
         public async Task<IActionResult> EditProfileArtisan()
@@ -309,22 +334,36 @@ namespace SkillBuilder.Controllers
             // --- Avatar ---
             if (UserAvatar != null && UserAvatar.Length > 0 && artisan.User != null)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/avatars");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(UserAvatar.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+                if (!allowedTypes.Contains(UserAvatar.ContentType))
                 {
-                    await UserAvatar.CopyToAsync(stream);
+                    TempData["ErrorMessage"] = "Only JPG, PNG, or WEBP images are allowed.";
+                    return RedirectToAction("EditProfileArtisan");
                 }
 
-                var avatarPath = $"/uploads/avatars/{fileName}?t={DateTime.UtcNow.Ticks}";
-                artisan.User.UserAvatar = avatarPath;
-                artisan.UserAvatar = avatarPath;
-                _context.Entry(artisan.User).State = EntityState.Modified;
-                hasChanges = true;
+                // Upload new avatar to Cloudinary
+                var newAvatarUrl = await _cloudinaryService.UploadImageAsync(
+                    UserAvatar,
+                    "skillbuilder/avatars"
+                );
+
+                if (!string.IsNullOrEmpty(newAvatarUrl))
+                {
+                    // Delete old avatar if it exists in Cloudinary
+                    if (!string.IsNullOrEmpty(artisan.User.UserAvatar) &&
+                        artisan.User.UserAvatar.Contains("res.cloudinary.com"))
+                    {
+                        var oldPublicId = ExtractCloudinaryPublicId(artisan.User.UserAvatar);
+                        if (!string.IsNullOrEmpty(oldPublicId))
+                        {
+                            await _cloudinaryService.DeleteImageAsync(oldPublicId);
+                        }
+                    }
+
+                    artisan.User.UserAvatar = newAvatarUrl;
+                    artisan.UserAvatar = newAvatarUrl;
+                    hasChanges = true;
+                }
             }
 
             // --- Password ---

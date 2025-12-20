@@ -13,5 +13,8 @@
         public string? OptionD { get; set; }
         public string? CorrectAnswer { get; set; }
         public int? ReflectionMinChars { get; set; }
+
+        public IFormFile? MediaFile { get; set; }
+        public string? ExistingMediaUrl { get; set; }
     }
 }

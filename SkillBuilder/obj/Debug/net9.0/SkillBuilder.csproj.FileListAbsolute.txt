@@ -868,3 +868,4 @@ C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\ne
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\compressed\187hblwbyn-t7uokpxb7x.gz
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\compressed\gwr47kqyb5-gc9kuqjae3.gz
 C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\PREDATOR\Desktop\Tahi\Community-Skill-Builder\SkillBuilder\bin\Debug\net9.0\CloudinaryDotNet.dll

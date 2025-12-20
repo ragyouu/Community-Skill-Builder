@@ -983,6 +983,9 @@ namespace SkillBuilder.Migrations
                     b.Property<string>("CorrectAnswer")
                         .HasColumnType("text");
 
+                    b.Property<string>("MediaUrl")
+                        .HasColumnType("text");
+
                     b.Property<int>("ModuleContentId")
                         .HasColumnType("integer");
 

@@ -14,10 +14,12 @@ namespace SkillBuilder.Controllers
     {
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
-        public CommunityController(AppDbContext context, INotificationService notificationService)
+        private readonly ICloudinaryService _cloudinaryService;
+        public CommunityController(AppDbContext context, INotificationService notificationService, ICloudinaryService cloudinaryService)
         {
             _context = context;
             _notificationService = notificationService;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("Hub")]
@@ -231,6 +233,29 @@ namespace SkillBuilder.Controllers
             return PartialView("Sections/UserNotebooks/MyCommunityNotebooks/_MyCommunityNotebookAllMembers", model);
         }
 
+        private string? ExtractCloudinaryPublicId(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath;
+
+            // /dxixefedd/image/upload/v123456/skillbuilder/avatars/abc.jpg
+            var uploadIndex = path.IndexOf("/upload/");
+            if (uploadIndex == -1) return null;
+
+            var publicIdWithVersion = path.Substring(uploadIndex + 8);
+
+            // remove version segment (v123456/)
+            var segments = publicIdWithVersion.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length < 2) return null;
+
+            var publicIdSegments = segments.Skip(1);
+            var publicId = string.Join("/", publicIdSegments);
+
+            return Path.ChangeExtension(publicId, null); // remove .jpg
+        }
+
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] CreateCommunityPostViewModel model)
         {
@@ -245,9 +270,13 @@ namespace SkillBuilder.Controllers
             if (user == null)
                 return NotFound(new { success = false, message = "User not found." });
 
-            string? imagePath = null;
+            string? imageUrl = null;
             if (model.Image != null)
-                imagePath = await SaveImage(model.Image, "community-posts");
+            {
+                imageUrl = await _cloudinaryService.UploadImageAsync(model.Image, "community/posts");
+                if (string.IsNullOrEmpty(imageUrl))
+                    return BadRequest(new { success = false, message = "Failed to upload image." });
+            }
 
             var post = new CommunityPost
             {
@@ -256,7 +285,7 @@ namespace SkillBuilder.Controllers
                 Content = model.Content,
                 AuthorId = userId,
                 Category = model.Category,
-                ImageUrl = imagePath,
+                ImageUrl = imageUrl,
                 SubmittedAt = DateTime.UtcNow,
                 IsPublished = true
             };
@@ -282,7 +311,7 @@ namespace SkillBuilder.Controllers
                     submittedAt = post.SubmittedAt,
                     authorName = user.FirstName,
                     authorAvatarUrl = user.UserAvatar,
-                    communityName = "Public" // since no community
+                    communityName = "Public"
                 }
             });
         }
@@ -308,9 +337,13 @@ namespace SkillBuilder.Controllers
             if (community == null)
                 return NotFound(new { success = false, message = "Community not found." });
 
-            string? imagePath = null;
+            string? imageUrl = null;
             if (model.Image != null)
-                imagePath = await SaveImage(model.Image, "community-posts");
+            {
+                imageUrl = await _cloudinaryService.UploadImageAsync(model.Image, "community/posts");
+                if (string.IsNullOrEmpty(imageUrl))
+                    return BadRequest(new { success = false, message = "Failed to upload image." });
+            }
 
             var post = new CommunityPost
             {
@@ -319,7 +352,7 @@ namespace SkillBuilder.Controllers
                 Content = model.Content,
                 AuthorId = userId,
                 Category = string.IsNullOrEmpty(model.Category) ? "General" : model.Category,
-                ImageUrl = imagePath,
+                ImageUrl = imageUrl,
                 SubmittedAt = DateTime.UtcNow,
                 IsPublished = true
             };
@@ -399,11 +432,28 @@ namespace SkillBuilder.Controllers
             // ✅ Handle image update/removal logic
             if (model.RemoveImage)
             {
+                // Delete from Cloudinary if exists
+                if (!string.IsNullOrEmpty(post.ImageUrl) && post.ImageUrl.Contains("res.cloudinary.com"))
+                {
+                    var publicId = ExtractCloudinaryPublicId(post.ImageUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                        await _cloudinaryService.DeleteImageAsync(publicId);
+                }
+
                 post.ImageUrl = null; // remove image from DB
             }
             else if (model.Image != null)
             {
-                post.ImageUrl = await SaveImage(model.Image, "community-posts");
+                // Delete old Cloudinary image if exists
+                if (!string.IsNullOrEmpty(post.ImageUrl) && post.ImageUrl.Contains("res.cloudinary.com"))
+                {
+                    var publicId = ExtractCloudinaryPublicId(post.ImageUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                        await _cloudinaryService.DeleteImageAsync(publicId);
+                }
+
+                // Upload new image to Cloudinary
+                post.ImageUrl = await _cloudinaryService.UploadImageAsync(model.Image, "community/posts");
             }
 
             _context.CommunityPosts.Update(post);
@@ -515,6 +565,14 @@ namespace SkillBuilder.Controllers
             if (post.AuthorId != userId && communityOwnerId != userId)
                 return Forbid();
 
+            // ✅ Delete image from Cloudinary if exists
+            if (!string.IsNullOrEmpty(post.ImageUrl) && post.ImageUrl.Contains("res.cloudinary.com"))
+            {
+                var publicId = ExtractCloudinaryPublicId(post.ImageUrl);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
             _context.CommunityPosts.Remove(post);
             await _context.SaveChangesAsync();
 
@@ -542,7 +600,7 @@ namespace SkillBuilder.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
 
-            var userId = User.FindFirst("UserId")?.Value; // ✅ fixed
+            var userId = User.FindFirst("UserId")?.Value;
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
@@ -566,22 +624,22 @@ namespace SkillBuilder.Controllers
                 });
             }
 
-            string avatarPath = null;
-            string bannerPath = null;
+            string avatarUrl = "/assets/Images/default-community.png";
+            string bannerUrl = "/assets/Images/default-banner.png";
 
             if (model.Avatar != null)
-                avatarPath = await SaveImage(model.Avatar, "community-profile");
+                avatarUrl = await _cloudinaryService.UploadImageAsync(model.Avatar, "community/avatar");
 
             if (model.Banner != null)
-                bannerPath = await SaveImage(model.Banner, "community-banner");
+                bannerUrl = await _cloudinaryService.UploadImageAsync(model.Banner, "community/banner");
 
             var community = new Community
             {
                 Name = model.Name,
                 Description = model.Description,
                 Category = model.CategoryFinal,
-                AvatarUrl = avatarPath ?? "/assets/Images/default-community.png",
-                CoverImageUrl = bannerPath ?? "/assets/Images/default-banner.png",
+                AvatarUrl = avatarUrl,
+                CoverImageUrl = bannerUrl,
                 MembersCount = 1,
                 CreatorId = userId,
                 CreatedAt = DateTime.UtcNow
@@ -600,7 +658,6 @@ namespace SkillBuilder.Controllers
 
             user.Threads -= 100;
             _context.Users.Update(user);
-
             await _context.SaveChangesAsync();
 
             await _notificationService.AddNotificationAsync(
@@ -608,7 +665,7 @@ namespace SkillBuilder.Controllers
                 $"✅ Your Community '{community.Name}' has been created successfully."
             );
 
-            // ✅ Notify all Admins
+            // Notify admins
             var adminIds = await _context.Users
                 .Where(u => u.Role == "Admin")
                 .Select(u => u.Id)
@@ -850,25 +907,42 @@ namespace SkillBuilder.Controllers
             if (community.CreatorId != userId)
                 return Forbid();
 
-            // ✅ Update basic info
+            // Update basic info
             community.Name = model.Name;
             community.Description = model.Description;
 
-            // ✅ Handle image uploads if provided
+            // Handle avatar
             if (model.Avatar != null)
-                community.AvatarUrl = await SaveImage(model.Avatar, "community-profile");
+            {
+                if (!string.IsNullOrEmpty(community.AvatarUrl) && community.AvatarUrl.Contains("res.cloudinary.com"))
+                {
+                    var publicId = ExtractCloudinaryPublicId(community.AvatarUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                        await _cloudinaryService.DeleteImageAsync(publicId);
+                }
 
+                community.AvatarUrl = await _cloudinaryService.UploadImageAsync(model.Avatar, "community/avatar");
+            }
+
+            // Handle banner
             if (model.Banner != null)
-                community.CoverImageUrl = await SaveImage(model.Banner, "community-banner");
+            {
+                if (!string.IsNullOrEmpty(community.CoverImageUrl) && community.CoverImageUrl.Contains("res.cloudinary.com"))
+                {
+                    var publicId = ExtractCloudinaryPublicId(community.CoverImageUrl);
+                    if (!string.IsNullOrEmpty(publicId))
+                        await _cloudinaryService.DeleteImageAsync(publicId);
+                }
 
-            // ✅ Update category if included in model
+                community.CoverImageUrl = await _cloudinaryService.UploadImageAsync(model.Banner, "community/banner");
+            }
+
             if (!string.IsNullOrEmpty(model.Category))
                 community.Category = model.Category;
 
             _context.Communities.Update(community);
             await _context.SaveChangesAsync();
 
-            // 🔔 Notify the owner
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"✏️ Your community '{community.Name}' has been successfully updated."
@@ -916,11 +990,25 @@ namespace SkillBuilder.Controllers
             if (community == null)
                 return NotFound(new { success = false, message = "Community not found." });
 
-            // Only creator can delete
             if (community.CreatorId != userId)
                 return Forbid();
 
-            // Notify members about deletion
+            // Delete avatar/banner from Cloudinary
+            if (!string.IsNullOrEmpty(community.AvatarUrl) && community.AvatarUrl.Contains("res.cloudinary.com"))
+            {
+                var publicId = ExtractCloudinaryPublicId(community.AvatarUrl);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
+            if (!string.IsNullOrEmpty(community.CoverImageUrl) && community.CoverImageUrl.Contains("res.cloudinary.com"))
+            {
+                var publicId = ExtractCloudinaryPublicId(community.CoverImageUrl);
+                if (!string.IsNullOrEmpty(publicId))
+                    await _cloudinaryService.DeleteImageAsync(publicId);
+            }
+
+            // Notify members
             var memberIds = community.Memberships
                 .Where(m => m.UserId != userId)
                 .Select(m => m.UserId)
@@ -934,32 +1022,21 @@ namespace SkillBuilder.Controllers
                 );
             }
 
-            // Notify owner
             await _notificationService.AddNotificationAsync(
                 userId,
                 $"✅ You have successfully deleted the community '{community.Name}'."
             );
 
-            // Remove related posts
-            if (community.Posts != null && community.Posts.Any())
-                _context.CommunityPosts.RemoveRange(community.Posts);
+            // Remove related posts, memberships, join requests
+            if (community.Posts?.Any() == true) _context.CommunityPosts.RemoveRange(community.Posts);
+            if (community.Memberships?.Any() == true) _context.CommunityMemberships.RemoveRange(community.Memberships);
+            if (community.JoinRequests?.Any() == true) _context.CommunityJoinRequests.RemoveRange(community.JoinRequests);
 
-            // Remove memberships
-            if (community.Memberships != null && community.Memberships.Any())
-                _context.CommunityMemberships.RemoveRange(community.Memberships);
-
-            // Remove join requests
-            if (community.JoinRequests != null && community.JoinRequests.Any())
-                _context.CommunityJoinRequests.RemoveRange(community.JoinRequests);
-
-            // Finally, remove the community
             _context.Communities.Remove(community);
-
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true, message = "Community deleted successfully." });
         }
-
         [HttpPost("RemoveMember")]
         public async Task<IActionResult> RemoveMember([FromBody] RemoveMemberModel model)
         {
