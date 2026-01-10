@@ -26,18 +26,17 @@ namespace SkillBuilder.Services
 
             using var stream = file.OpenReadStream();
 
+            // Create upload parameters without any Transformation settings
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = folder,
-                Transformation = new Transformation()
-                    .Width(400)
-                    .Height(400)
-                    .Crop("fill")
-                    .Gravity("face")
+                Folder = folder
+                // Removed: Transformation = new Transformation()... 
             };
 
             var result = await _cloudinary.UploadAsync(uploadParams);
+
+            // This will now return the URL to the full-sized, original image
             return result.SecureUrl?.ToString();
         }
 
