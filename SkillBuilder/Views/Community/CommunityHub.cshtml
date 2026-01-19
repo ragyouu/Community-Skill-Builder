@@ -774,11 +774,11 @@
                         Start a new topic or ask the community—someone might just have the answer or the same idea!
                     </p>
 
-                    <form id="communityPostsForm" method="post" action="/Community/CreatePost"
-                          enctype="multipart/form-data" novalidate>
+                    <form id="communityPostsForm" asp-controller="Community" asp-action="CreatePost"
+                          method="post" enctype="multipart/form-data" novalidate>
 
                         <!-- Hidden fields -->
-                        <input type="hidden" name="Category" id="communityPostsCategory" />
+                        @Html.AntiForgeryToken() <input type="hidden" name="Category" id="communityPostsCategory" />
 
                         <!-- Title -->
                         <div class="community-posts-field">
@@ -976,6 +976,11 @@
 </div>
 
 <script>
+
+    function getAntiforgeryToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+    }
+
     function handleCategoryChange(select) {
         const otherWrapper = document.getElementById("OtherCategoryWrapper");
         const createBtn = document.getElementById("createCommunityBtn");
@@ -1055,7 +1060,10 @@
             try {
                 const response = await fetch(form.action, {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    headers: {
+                        "RequestVerificationToken": getAntiforgeryToken()
+                    }
                 });
                 const result = await response.json();
 
@@ -1085,7 +1093,10 @@
                 try {
                     const response = await fetch(form.action, {
                         method: "POST",
-                        body: formData
+                        body: formData,
+                        headers: {
+                            "RequestVerificationToken": getAntiforgeryToken()
+                        }
                     });
                     const result = await response.json();
                     if (result.success) {
@@ -1472,7 +1483,10 @@
                 try {
                     const response = await fetch(form.action, {
                         method: "POST",
-                        body: formData
+                        body: formData,
+                        headers: {
+                            "RequestVerificationToken": getAntiforgeryToken()
+                        }
                     });
 
                     const result = await response.json();
