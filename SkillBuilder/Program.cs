@@ -33,6 +33,7 @@ builder.Services.Configure<FormOptions>(options =>
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
+    serverOptions.AddServerHeader = false; // Prevents "Server: Kestrel" header
     serverOptions.Limits.MaxRequestBodySize = 200 * 1024 * 1024; // 200 MB
 });
 
@@ -48,6 +49,14 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IEmailService, SkillBuilder.Services.EmailService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<CertificateService>();
+
+builder.Services.AddAntiforgery(options =>
+{
+    // Fixes "Cookie Without Secure Flag" for Antiforgery
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true; // Extra security layer
+    options.Cookie.SameSite = SameSiteMode.Strict; // Recommended for CSRF
+});
 
 builder.Services.AddAuthentication("TahiAuth")
     .AddCookie("TahiAuth", options =>
@@ -96,6 +105,27 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline'; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self'; " +
+        "font-src 'self'; " +
+        "frame-ancestors 'none'; " +
+        "object-src 'none';");
+
+    // Fix: Missing Anti-clickjacking Header
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+
+    // Fix: X-Content-Type-Options Header Missing
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+
+    await next();
+});
+
 app.UseRouting();
 
 app.UseAuthentication();

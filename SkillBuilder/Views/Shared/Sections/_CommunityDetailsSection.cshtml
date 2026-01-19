@@ -900,6 +900,8 @@
                           enctype="multipart/form-data" method="post"
                           action="@Url.Action("CreatePostInsideCommunity", "Community")">
 
+                        @Html.AntiForgeryToken()
+
                         <!-- Hidden CommunityId -->
                         <input type="hidden" name="CommunityId" value="@community.Id" />
 

@@ -103,20 +103,7 @@
 
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="@(Url.Content("~/assets/js/script.js"))"></script>
-
-    <!-- Load Appwrite SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
-
-    <!-- Initialize Appwrite Client (Only Once) -->
-    <script>
-        window.appwriteClient = new Appwrite.Client()
-            .setEndpoint("https://fra.cloud.appwrite.io/v1")
-            .setProject("689ad4040030d8902c02");
-
-        window.appwriteAccount = new Appwrite.Account(window.appwriteClient);
-    </script>
 
     <script>
         function toggleDropdown() {

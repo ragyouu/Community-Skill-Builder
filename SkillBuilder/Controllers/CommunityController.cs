@@ -257,6 +257,7 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("CreatePost")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost([FromForm] CreateCommunityPostViewModel model)
         {
             if (!ModelState.IsValid)
@@ -317,6 +318,7 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("CreatePostInsideCommunity")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePostInsideCommunity([FromForm] CreateCommunityPostViewModel model)
         {
             if (!ModelState.IsValid)
