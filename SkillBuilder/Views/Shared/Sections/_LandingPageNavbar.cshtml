@@ -450,6 +450,14 @@
         cursor: pointer;
         font-weight: bold;
         color: #334af1;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .threads:hover {
+        background: rgba(51, 74, 241, 0.1);
+        transform: scale(1.05);
     }
 
     /* Tooltip box */
@@ -458,7 +466,7 @@
         width: 260px;
         max-width: 260px;
         height: auto;
-        background: linear-gradient(145deg, #334af1, #5566ff); /* gradient effect */
+        background: linear-gradient(145deg, #334af1, #5566ff);
         color: #fff;
         text-align: center;
         font-size: 1rem;
@@ -466,7 +474,7 @@
         padding: 12px 15px;
         border-radius: 10px;
         position: absolute;
-        top: 130%; /* below the coin */
+        top: 130%;
         left: 50%;
         transform: translateX(-50%);
         z-index: 1000;
@@ -476,23 +484,497 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-        /* Tooltip arrow */
         .tooltip-text::after {
             content: '';
             position: absolute;
-            bottom: 100%; /* arrow pointing up to the coin */
+            bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
             border-width: 6px;
             border-style: solid;
-            border-color: transparent transparent #334af1 transparent; /* arrow color */
+            border-color: transparent transparent #334af1 transparent;
         }
 
-    /* Show tooltip on hover */
     .threads:hover .tooltip-text {
         visibility: visible;
         opacity: 1;
         transform: translateX(-50%) translateY(5px);
+    }
+
+    /* Purchase Threads Modal */
+    #purchaseThreadsModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 2001;
+    }
+
+    .purchase-threads-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    @@keyframes slideInUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .purchase-header {
+        padding: 2rem 2rem 1rem;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .purchase-header h2 {
+        margin: 0;
+        color: #334af1;
+        font-size: 1.8rem;
+    }
+
+    .purchase-close-btn {
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: #999;
+        transition: color 0.2s;
+    }
+
+    .purchase-close-btn:hover {
+        color: #333;
+    }
+
+    .purchase-content {
+        padding: 2rem;
+    }
+
+    .threads-info-box {
+        background: linear-gradient(135deg, #334af1 0%, #5566ff 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        color: white;
+        text-align: center;
+    }
+
+    .current-threads {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .current-threads-amount {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .payment-method-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .payment-method-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .payment-method-card:hover {
+        border-color: #334af1;
+        background: #f8f9ff;
+    }
+
+    .payment-method-card.selected {
+        border-color: #334af1;
+        background: #f0f3ff;
+        box-shadow: 0 0 0 3px rgba(51, 74, 241, 0.1);
+    }
+
+    .payment-method-radio {
+        display: none;
+    }
+
+    .payment-method-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .payment-method-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-right: 1rem;
+    }
+
+    .payment-method-card[data-method="ewallet"] .payment-method-icon {
+        background: #ff6b6b;
+    }
+
+    .payment-method-card[data-method="creditcard"] .payment-method-icon {
+        background: #4d96ff;
+    }
+
+    .payment-method-info h4 {
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .payment-method-info p {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.85rem;
+        color: #999;
+    }
+
+    .ewallet-options,
+    .creditcard-form {
+        margin-top: 1rem;
+        padding: 1.5rem;
+        background: #f8f9ff;
+        border-radius: 10px;
+        display: none;
+    }
+
+    .ewallet-options.active,
+    .creditcard-form.active {
+        display: block;
+    }
+
+    .ewallet-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .ewallet-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .ewallet-btn:hover {
+        border-color: #334af1;
+        color: #334af1;
+    }
+
+    .ewallet-btn.active {
+        border-color: #334af1;
+        background: #334af1;
+        color: white;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #334af1;
+        box-shadow: 0 0 0 3px rgba(51, 74, 241, 0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+    }
+
+    .threads-input-section {
+        margin-bottom: 2rem;
+    }
+
+    .threads-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .threads-input-wrapper input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .threads-input-wrapper button {
+        padding: 0.75rem 1.5rem;
+        background: #f0f0f0;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .threads-input-wrapper button:hover {
+        background: #334af1;
+        color: white;
+        border-color: #334af1;
+    }
+
+    .threads-summary {
+        background: #f8f9ff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .summary-row:last-child {
+        margin-bottom: 0;
+        padding-top: 0.75rem;
+        border-top: 2px solid #e0e0e0;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .summary-label {
+        color: #666;
+    }
+
+    .summary-value {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .summary-row:last-child .summary-value {
+        color: #334af1;
+        font-size: 1.3rem;
+    }
+
+    .purchase-actions {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        border-top: 2px solid #f0f0f0;
+        background: #fafafa;
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        background: #e0e0e0;
+        color: #333;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .btn-cancel:hover {
+        background: #bdbdbd;
+    }
+
+    .btn-confirm {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #334af1 0%, #5566ff 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .btn-confirm:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(51, 74, 241, 0.3);
+    }
+
+    .btn-confirm:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .btn-confirm.processing {
+        background: linear-gradient(135deg, #5566ff 0%, #334af1 100%);
+    }
+
+    .error-message {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+        font-size: 0.9rem;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    .success-message {
+        background: #d4edda;
+        border: 1px solid #28a745;
+        color: #155724;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+        font-size: 0.9rem;
+    }
+
+    .success-message.show {
+        display: block;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #334af1;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 0.5rem;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Payment Processing Modal Styles */
+    .payment-processing-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    .payment-processing-content {
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+    .payment-spinner {
+        width: 80px;
+        height: 80px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #334af1;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto;
+    }
+
+    .payment-success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        margin: 0 auto;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    @@keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* E-Wallet Phone Number Styling */
+    #ewalletPhoneNumber {
+        font-size: 1rem !important;
+        letter-spacing: 2px;
+    }
+
+    #ewalletPhoneNumber:focus {
+        border-color: #334af1 !important;
+        box-shadow: 0 0 0 3px rgba(51, 74, 241, 0.1) !important;
     }
 
 </style>
@@ -580,19 +1062,33 @@
         @if (!string.IsNullOrEmpty(userId))
         {
 
-            @if (!string.IsNullOrEmpty(userId) && userRole != "Artisan" && userRole != "Admin")
+            @if (!string.IsNullOrEmpty(userId) && userRole != "Admin")
             {
                 @if (User.Identity.IsAuthenticated)
                 {
                     <div class="coin-display" style="display:flex; align-items:center; gap:0.4rem; margin-right:1rem; position:relative;">
-                        <span class="threads">
-                            @currentThreads.ToString("0.00")
-                            <img src="/assets/icons/coin.ico" class="coin-icon" />
-                            <span class="tooltip-text">
-                                This is your current threads.<br>
-                                These threads are very useful for unlocking live sessions, courses, and community creation.
+                        @if (userRole == "Artisan")
+                        {
+                            <span class="threads" title="Your earned threads from course enrollments">
+                                @currentThreads.ToString("0.00")
+                                <img src="/assets/icons/coin.ico" class="coin-icon" />
+                                <span class="tooltip-text">
+                                    Threads earned from your courses<br>
+                                    These are earned when learners enroll in your paid courses.
+                                </span>
                             </span>
-                        </span>
+                        }
+                        else
+                        {
+                            <span class="threads" onclick="openPurchaseThreadsModal('@currentThreads')" title="Click to purchase more threads">
+                                @currentThreads.ToString("0.00")
+                                <img src="/assets/icons/coin.ico" class="coin-icon" />
+                                <span class="tooltip-text">
+                                    Click to purchase threads!<br>
+                                    Add more threads to unlock sessions, courses, and community features.
+                                </span>
+                            </span>
+                        }
                     </div>
                 }
             }
@@ -737,6 +1233,206 @@
         <p id="congratsModalText" class="logout-modal-text">Your action was successful.</p>
         <div class="logout-modal-actions">
             <button type="button" class="logout-modal-btn logout-modal-btn-confirm" onclick="closeCongratsModal()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Purchase Threads Modal -->
+<div id="purchaseThreadsModal" class="logout-modal-overlay">
+    <div class="purchase-threads-container">
+        <div class="purchase-header">
+            <h2>💳 Purchase Threads</h2>
+            <button class="purchase-close-btn" onclick="closePurchaseThreadsModal()">&times;</button>
+        </div>
+
+        <div class="purchase-content">
+            <div class="error-message" id="purchaseErrorMessage"></div>
+            <div class="success-message" id="purchaseSuccessMessage"></div>
+
+            <!-- Current Threads Display -->
+            <div class="threads-info-box">
+                <div class="current-threads">Your Current Threads</div>
+                <div class="current-threads-amount" id="currentThreadsDisplay">0.00</div>
+            </div>
+
+            <!-- Threads Amount Selection -->
+            <div class="threads-input-section">
+                <label class="section-title">How many threads do you want to add?</label>
+                <div class="threads-input-wrapper">
+                    <input type="number" id="threadsAmount" placeholder="Enter amount (minimum 100)" min="100" step="1" />
+                </div>
+            </div>
+
+            <!-- Payment Method Selection -->
+            <label class="section-title">Select Payment Method</label>
+            <div class="payment-method-grid">
+                <!-- E-Wallet -->
+                <label class="payment-method-card" data-method="ewallet">
+                    <input type="radio" name="paymentMethod" value="ewallet" class="payment-method-radio" />
+                    <div class="payment-method-label">
+                        <div class="payment-method-icon">📱</div>
+                        <div class="payment-method-info">
+                            <h4>E-Wallet</h4>
+                            <p>GCash, PayMaya</p>
+                        </div>
+                    </div>
+                </label>
+
+                <!-- Credit Card -->
+                <label class="payment-method-card" data-method="creditcard">
+                    <input type="radio" name="paymentMethod" value="creditcard" class="payment-method-radio" />
+                    <div class="payment-method-label">
+                        <div class="payment-method-icon">💳</div>
+                        <div class="payment-method-info">
+                            <h4>Credit Card</h4>
+                            <p>Visa, Mastercard</p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- E-Wallet Payment Options -->
+            <div class="ewallet-options" id="ewalletOptions">
+                <label class="section-title" style="margin-top: 0;">Select E-Wallet</label>
+                <div class="ewallet-buttons">
+                    <button type="button" class="ewallet-btn" data-ewallet="gcash" onclick="selectEwallet('gcash')">
+                        🏦 GCash
+                    </button>
+                    <button type="button" class="ewallet-btn" data-ewallet="paymaya" onclick="selectEwallet('paymaya')">
+                        💰 PayMaya
+                    </button>
+                </div>
+
+                <!-- E-Wallet Phone Number Input -->
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label>Mobile Number (Primary Account)</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <span style="font-weight: 600; color: #333; font-size: 0.95rem;">+63</span>
+                        <input type="text" id="ewalletPhoneNumber" placeholder="9XXXXXXXXX" maxlength="10" 
+                               style="flex: 1; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.95rem; font-family: monospace;" />
+                    </div>
+                    <small style="color: #999; margin-top: 0.5rem; display: block;">
+                        Enter 10 digits (e.g., 9171234567)
+                    </small>
+                </div>
+            </div>
+
+            <!-- Credit Card Form -->
+            <div class="creditcard-form" id="creditcardForm">
+                <label class="section-title" style="margin-top: 0;">Card Details</label>
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" id="cardholderName" placeholder="John Doe" maxlength="50" />
+                </div>
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expiry Date (MM/YY)</label>
+                        <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" />
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="cardCVV" placeholder="123" maxlength="4" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="threads-summary" id="paymentSummary" style="display: none;">
+                <div class="summary-row">
+                    <span class="summary-label">Threads Amount:</span>
+                    <span class="summary-value" id="summaryThreads">0</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Unit Price:</span>
+                    <span class="summary-value">₱1.00/thread</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Payment Method:</span>
+                    <span class="summary-value" id="summaryMethod">-</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Total Amount:</span>
+                    <span class="summary-value" id="summaryTotal">₱0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="purchase-actions">
+            <button type="button" class="btn-cancel" onclick="closePurchaseThreadsModal()">Cancel</button>
+            <button type="button" class="btn-confirm" id="confirmPurchaseBtn" disabled onclick="confirmThreadsPurchase()">
+                Confirm Purchase
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- OTP Verification Modal -->
+<div id="otpVerificationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 3000;">
+    <div class="payment-processing-container">
+        <div class="payment-processing-content">
+            <h3 style="color: #334af1; margin: 0 0 0.5rem 0; font-size: 1.3rem;">Verify Your Phone Number</h3>
+            <p style="color: #666; margin: 0.5rem 0 1.5rem 0; font-size: 0.95rem;">
+                We've sent a 6-digit OTP to <strong id="otpPhoneDisplay">+639171234567</strong>
+            </p>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-weight: 600; color: #333; margin-bottom: 0.5rem; font-size: 0.9rem;">Enter OTP</label>
+                <input type="text" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6" 
+                       style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 0.5rem; font-family: monospace;" />
+                <div id="otpErrorMessage" style="color: #dc3545; margin-top: 0.5rem; font-size: 0.85rem; display: none;"></div>
+            </div>
+
+            <div style="margin-bottom: 1rem; text-align: center;">
+                <p style="color: #666; font-size: 0.85rem; margin: 0;">
+                    Didn't receive the OTP? <a href="javascript:resendOtp()" style="color: #334af1; text-decoration: none; font-weight: 600; cursor: pointer;">Resend OTP</a>
+                </p>
+                <p id="resendTimer" style="color: #999; font-size: 0.85rem; margin: 0.5rem 0 0 0; display: none;"></p>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn-cancel" style="flex: 1;" onclick="closeOtpModal()">Cancel</button>
+                <button type="button" class="btn-confirm" id="verifyOtpBtn" style="flex: 1;" onclick="verifyOtp()" disabled>Verify OTP</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Processing Modal -->
+<div id="paymentProcessingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 3000;">
+    <div class="payment-processing-container">
+        <div class="payment-processing-content">
+            <div id="processingStep" style="text-align: center;">
+                <!-- Processing Animation -->
+                <div class="payment-spinner"></div>
+                <h3 style="color: #334af1; margin: 1.5rem 0 0.5rem 0; font-size: 1.3rem;">Processing Payment</h3>
+                <p style="color: #666; margin: 0.5rem 0; font-size: 0.95rem;" id="processingText">
+                    Please wait while we process your transaction...
+                </p>
+            </div>
+
+            <div id="successStep" style="display: none; text-align: center;">
+                <!-- Success Animation -->
+                <div class="payment-success-icon">✓</div>
+                <h3 style="color: #28a745; margin: 1.5rem 0 0.5rem 0; font-size: 1.3rem;">Payment Successful!</h3>
+                <p style="color: #666; margin: 0.5rem 0 1rem 0; font-size: 0.95rem;" id="successMessage">
+                    Your threads have been added successfully.
+                </p>
+                <div style="background: #f0f3ff; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <p style="margin: 0.5rem 0; color: #333; font-size: 0.9rem;">
+                        <strong>Threads Added:</strong> <span id="successThreadsAmount">0</span>
+                    </p>
+                    <p style="margin: 0.5rem 0; color: #333; font-size: 0.9rem;">
+                        <strong>Total Paid:</strong> ₱<span id="successTotalAmount">0</span>.00
+                    </p>
+                </div>
+                <button type="button" class="btn-confirm" style="width: 100%; margin-top: 1.5rem; cursor: pointer;" onclick="closePaymentProcessingModal()">
+                    Okay
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -1305,4 +2001,443 @@
             openResubmitModal(appId, type, notifId);
         }
     };
+
+    // --- Purchase Threads Modal Functions ---
+    let selectedPaymentMethod = null;
+    let selectedEwallet = null;
+    let purchaseState = {
+        threads: 0,
+        method: null,
+        ewallet: null
+    };
+
+    window.openPurchaseThreadsModal = function(currentThreads) {
+        const modal = document.getElementById("purchaseThreadsModal");
+        const display = document.getElementById("currentThreadsDisplay");
+        const currentAmount = parseFloat(currentThreads).toFixed(2);
+        display.textContent = currentAmount;
+
+        // Store current threads for later use
+        window.currentThreadsDisplay = currentAmount;
+
+        // Reset form
+        resetPurchaseForm();
+        modal.style.display = "flex";
+    };
+
+    window.closePurchaseThreadsModal = function() {
+        const modal = document.getElementById("purchaseThreadsModal");
+        modal.style.display = "none";
+        resetPurchaseForm();
+    };
+
+    function resetPurchaseForm() {
+        selectedPaymentMethod = null;
+        selectedEwallet = null;
+        purchaseState = { threads: 0, method: null, ewallet: null };
+
+        document.getElementById("threadsAmount").value = "";
+        document.getElementById("ewalletPhoneNumber").value = "";
+        document.querySelectorAll(".payment-method-radio").forEach(r => r.checked = false);
+        document.querySelectorAll(".payment-method-card").forEach(c => c.classList.remove("selected"));
+        document.getElementById("ewalletOptions").classList.remove("active");
+        document.getElementById("creditcardForm").classList.remove("active");
+        document.getElementById("paymentSummary").style.display = "none";
+        document.getElementById("confirmPurchaseBtn").disabled = true;
+        document.getElementById("cardholderName").value = "";
+        document.getElementById("cardNumber").value = "";
+        document.getElementById("cardExpiry").value = "";
+        document.getElementById("cardCVV").value = "";
+        clearMessages();
+    }
+
+    function clearMessages() {
+        const errorMsg = document.getElementById("purchaseErrorMessage");
+        const successMsg = document.getElementById("purchaseSuccessMessage");
+        errorMsg.classList.remove("show");
+        successMsg.classList.remove("show");
+    }
+
+    function showError(message) {
+        const errorMsg = document.getElementById("purchaseErrorMessage");
+        errorMsg.textContent = message;
+        errorMsg.classList.add("show");
+        setTimeout(() => errorMsg.classList.remove("show"), 5000);
+    }
+
+    function showSuccess(message) {
+        const successMsg = document.getElementById("purchaseSuccessMessage");
+        successMsg.textContent = message;
+        successMsg.classList.add("show");
+    }
+
+    // Payment method selection
+    document.querySelectorAll(".payment-method-card").forEach(card => {
+        card.addEventListener("click", function() {
+            const method = this.dataset.method;
+            selectedPaymentMethod = method;
+            purchaseState.method = method;
+
+            // Update UI
+            document.querySelectorAll(".payment-method-card").forEach(c => c.classList.remove("selected"));
+            this.classList.add("selected");
+            this.querySelector(".payment-method-radio").checked = true;
+
+            // Show/hide payment options
+            document.getElementById("ewalletOptions").classList.toggle("active", method === "ewallet");
+            document.getElementById("creditcardForm").classList.toggle("active", method === "creditcard");
+
+            selectedEwallet = null;
+            purchaseState.ewallet = null;
+            updateSummary();
+        });
+    });
+
+    window.selectEwallet = function(ewallet) {
+        selectedEwallet = ewallet;
+        purchaseState.ewallet = ewallet;
+
+        document.querySelectorAll(".ewallet-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelector(`.ewallet-btn[data-ewallet="${ewallet}"]`).classList.add("active");
+
+        updateSummary();
+    };
+
+    // Threads input validation
+    document.getElementById("threadsAmount").addEventListener("input", function() {
+        const amount = parseInt(this.value) || 0;
+        if (amount < 100 && amount > 0) {
+            showError("Minimum purchase is 100 threads");
+            this.value = "";
+            return;
+        }
+        purchaseState.threads = amount;
+        updateSummary();
+    });
+
+    // Card input formatting
+    document.getElementById("cardNumber").addEventListener("input", function() {
+        let value = this.value.replace(/\s/g, "").replace(/\D/g, "");
+        let formatted = value.replace(/(\d{4})/g, "$1 ").trim();
+        this.value = formatted;
+    });
+
+    document.getElementById("cardExpiry").addEventListener("input", function() {
+        let value = this.value.replace(/\D/g, "");
+        if (value.length >= 2) {
+            value = value.slice(0, 2) + "/" + value.slice(2, 4);
+        }
+        this.value = value;
+    });
+
+    document.getElementById("cardCVV").addEventListener("input", function() {
+        this.value = this.value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    function updateSummary() {
+        const threadsAmount = purchaseState.threads;
+        const method = purchaseState.method;
+        const ewallet = purchaseState.ewallet;
+
+        if (threadsAmount > 0 && method) {
+            document.getElementById("paymentSummary").style.display = "block";
+            document.getElementById("summaryThreads").textContent = threadsAmount;
+
+            let methodText = method === "ewallet" ? (ewallet ? ewallet.toUpperCase() : "E-Wallet") : "Credit Card";
+            if (method === "creditcard" && document.getElementById("cardholderName").value) {
+                methodText = "Credit Card - " + document.getElementById("cardholderName").value;
+            }
+
+            document.getElementById("summaryMethod").textContent = methodText;
+            document.getElementById("summaryTotal").textContent = `₱${threadsAmount}.00`;
+
+            // Enable confirm button if valid
+            const isValid = validatePaymentForm();
+            document.getElementById("confirmPurchaseBtn").disabled = !isValid;
+        } else {
+            document.getElementById("paymentSummary").style.display = "none";
+            document.getElementById("confirmPurchaseBtn").disabled = true;
+        }
+    }
+
+    document.getElementById("cardholderName").addEventListener("input", updateSummary);
+
+    // E-Wallet phone number input formatting and validation
+    const ewalletPhoneInput = document.getElementById("ewalletPhoneNumber");
+    if (ewalletPhoneInput) {
+        ewalletPhoneInput.addEventListener("input", function() {
+            // Only allow numbers
+            this.value = this.value.replace(/\D/g, "");
+            // Limit to 10 digits
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+            purchaseState.ewalletPhone = this.value;
+            updateSummary();
+        });
+    }
+
+    function validatePaymentForm() {
+        const threads = purchaseState.threads;
+        const method = purchaseState.method;
+
+        if (threads < 100) return false;
+        if (!method) return false;
+
+        if (method === "ewallet") {
+            const phoneNum = document.getElementById("ewalletPhoneNumber").value;
+            return !!purchaseState.ewallet && phoneNum.length === 10;
+        } else if (method === "creditcard") {
+            const cardName = document.getElementById("cardholderName").value.trim();
+            const cardNum = document.getElementById("cardNumber").value.replace(/\s/g, "");
+            const cardExp = document.getElementById("cardExpiry").value;
+            const cardCVV = document.getElementById("cardCVV").value;
+
+            return cardName && cardNum.length === 16 && cardExp.length === 5 && cardCVV.length >= 3;
+        }
+
+        return false;
+    }
+
+    window.confirmThreadsPurchase = async function() {
+        const btn = document.getElementById("confirmPurchaseBtn");
+
+        if (!validatePaymentForm()) {
+            showError("Please fill in all required fields correctly");
+            return;
+        }
+
+        // Save values before any modal changes
+        const threadsToAdd = purchaseState.threads;
+        const paymentMethod = purchaseState.method;
+        const phoneNum = document.getElementById("ewalletPhoneNumber").value;
+
+        // If e-wallet selected, show OTP verification instead of proceeding to payment
+        if (paymentMethod === "ewallet") {
+            closePurchaseThreadsModal();
+            showOtpVerificationModal(
+                phoneNum,
+                threadsToAdd,
+                paymentMethod
+            );
+            return;
+        }
+
+        // For credit card, proceed directly to payment processing
+        closePurchaseThreadsModal();
+        await processPayment(threadsToAdd, paymentMethod);
+    };
+
+    window.pendingPayment = {};
+
+    window.showOtpVerificationModal = function(phoneNum, threadsToAdd, paymentMethod) {
+
+        // Convert 9756113912 -> 09756113912
+        const formattedPhone = "0" + phoneNum;
+
+        console.log("OTP sent to:", formattedPhone);
+
+        // Save pending payment data
+        window.pendingPayment = {
+            threadsToAdd,
+            paymentMethod
+        };
+
+        // Show phone number
+        document.getElementById("otpPhoneDisplay").textContent = formattedPhone;
+
+        // Reset OTP input
+        document.getElementById("otpInput").value = "";
+        document.getElementById("otpErrorMessage").style.display = "none";
+
+        // Disable verify button initially
+        document.getElementById("verifyOtpBtn").disabled = true;
+
+        // Show modal
+        document.getElementById("otpVerificationModal").style.display = "flex";
+    };
+
+    window.verifyOtp = async function() {
+
+        const otp = document.getElementById("otpInput").value;
+
+        if (otp.length !== 6) {
+            return;
+        }
+
+        // Demo OTP
+        // Change this later to backend verification
+        if (otp !== "916482") {
+
+            const errorDiv = document.getElementById("otpErrorMessage");
+
+            errorDiv.textContent = "Invalid OTP";
+            errorDiv.style.display = "block";
+
+            return;
+        }
+
+        // Close OTP modal
+        closeOtpModal();
+
+        // Continue payment
+        await processPayment(
+            window.pendingPayment.threadsToAdd,
+            window.pendingPayment.paymentMethod
+        );
+    };
+
+    window.closeOtpModal = function() {
+
+        document.getElementById("otpVerificationModal").style.display = "none";
+    };
+
+    document.getElementById("otpInput").addEventListener("input", function () {
+
+        // numbers only
+        this.value = this.value.replace(/\D/g, "");
+
+        const isValid = this.value.length === 6;
+
+        document.getElementById("verifyOtpBtn").disabled = !isValid;
+    });
+
+    // Process Payment Function (shared by both OTP-verified e-wallet and credit card payments)
+    async function processPayment(threadsToAdd, paymentMethod) {
+        showPaymentProcessingModal();
+
+        try {
+            const userId = window.currentUserId;
+
+            if (!userId) {
+                showPaymentError("User ID not found");
+                return;
+            }
+
+            let paymentDetails = {
+                userId: userId,
+                threads: threadsToAdd,
+                paymentMethod: paymentMethod
+            };
+
+            // E-wallet details
+            if (paymentMethod === "ewallet") {
+                const phoneNum = document.getElementById("ewalletPhoneNumber").value;
+
+                paymentDetails.ewalletProvider = purchaseState.ewallet;
+                paymentDetails.ewalletNumber = "0" + phoneNum;
+            }
+
+            // Credit card details
+            else if (paymentMethod === "creditcard") {
+                const cardNum = document.getElementById("cardNumber").value.replace(/\s/g, "");
+
+                paymentDetails.cardholderName = document.getElementById("cardholderName").value;
+                paymentDetails.cardLast4 = cardNum.slice(-4);
+            }
+
+            // Simulate payment delay
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
+            console.log({
+                userId: userId,
+                threadsToAdd: threadsToAdd,
+                paymentMethod: paymentMethod
+            });
+
+            // Call backend
+            const response = await fetch(`/api/threads/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    threadsToAdd: threadsToAdd,
+                    paymentMethod: paymentMethod
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to add threads");
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                showPaymentSuccess(threadsToAdd, threadsToAdd);
+            } else {
+                showPaymentError(result.message || "Failed to add threads");
+            }
+
+        } catch (err) {
+            console.error("Purchase error:", err);
+            showPaymentError("Payment processing failed. Please try again.");
+        }
+    }
+
+    // Payment Processing Modal Functions
+    function showPaymentProcessingModal() {
+        const modal = document.getElementById("paymentProcessingModal");
+        const processingStep = document.getElementById("processingStep");
+        const successStep = document.getElementById("successStep");
+
+        // Reset to processing state
+        processingStep.style.display = "block";
+        successStep.style.display = "none";
+
+        modal.style.display = "flex";
+        console.log("Payment processing modal opened");
+    }
+
+    window.closePaymentProcessingModal = function() {
+        const modal = document.getElementById("paymentProcessingModal");
+        modal.style.display = "none";
+        console.log("Payment processing modal closed - reloading page");
+        window.location.reload();
+    };
+
+    function showPaymentSuccess(threadsAdded, totalAmount) {
+        const processingStep = document.getElementById("processingStep");
+        const successStep = document.getElementById("successStep");
+
+        console.log("Showing payment success - Threads:", threadsAdded, "Amount:", totalAmount);
+
+        document.getElementById("successThreadsAmount").textContent = threadsAdded;
+        document.getElementById("successTotalAmount").textContent = totalAmount;
+
+        // Hide processing, show success
+        processingStep.style.display = "none";
+        successStep.style.display = "block";
+
+        console.log("Success step now visible");
+    }
+
+    function showPaymentError(errorMessage) {
+        const modal = document.getElementById("paymentProcessingModal");
+        modal.style.display = "none";
+
+        // Show error in purchase modal
+        openPurchaseThreadsModal(window.currentThreadsDisplay);
+        showError(errorMessage);
+
+        const btn = document.getElementById("confirmPurchaseBtn");
+        btn.disabled = false;
+        btn.innerHTML = "Confirm Purchase";
+    }
+
+    // Close modal on background click
+    document.getElementById("purchaseThreadsModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            closePurchaseThreadsModal();
+        }
+    });
+
+    // Prevent closing payment processing modal on background click
+    document.getElementById("paymentProcessingModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            // Do nothing - prevent closing during payment
+            console.log("Attempted to close payment modal - blocked");
+        }
+    });
 </script>

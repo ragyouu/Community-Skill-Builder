@@ -33,6 +33,7 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("/signup")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Signup([FromBody] SignupRequest model)
         {
             if (!ModelState.IsValid)
@@ -98,6 +99,7 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("/signup-artisan")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignupArtisan([FromBody] ArtisanSignupRequest model)
         {
             if (!ModelState.IsValid)
@@ -193,6 +195,7 @@ namespace SkillBuilder.Controllers
         }
 
         [HttpPost("/submit-artisan-application")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SubmitArtisanApplication(IFormFile file, string profession, string hometown, string introduction)
         {
             var userId = User.FindFirst("UserId")?.Value;

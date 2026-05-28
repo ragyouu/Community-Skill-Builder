@@ -185,6 +185,18 @@ namespace SkillBuilder.Controllers
 
             user.Threads -= threadsToDeduct;
 
+            // ✅ Transfer threads to artisan if course is paid (DesiredThreads > 0)
+            if (threadsToDeduct > 0 && !string.IsNullOrEmpty(course.CreatedBy))
+            {
+                var artisan = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Id == course.CreatedBy);
+
+                if (artisan != null)
+                {
+                    artisan.Threads += threadsToDeduct;
+                }
+            }
+
             int previousCount = user.Enrollments?.Count() ?? 0;
 
             _context.Enrollments.Add(new Enrollment

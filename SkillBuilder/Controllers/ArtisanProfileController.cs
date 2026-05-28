@@ -506,5 +506,40 @@ namespace SkillBuilder.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        public class CashOutRequest
+        {
+            public string UserId { get; set; }
+            public int ThreadsCashOut { get; set; }
+            public string GcashPhone { get; set; }
+        }
+
+        [HttpPost("/api/threads/cashout")]
+        public async Task<IActionResult> CashOutThreads([FromBody] CashOutRequest request)
+        {
+            if (request == null)
+                return BadRequest(new { success = false, message = "Invalid request" });
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
+
+            if (user == null)
+                return NotFound(new { success = false, message = "User not found" });
+
+            if (request.ThreadsCashOut < 50)
+                return BadRequest(new { success = false, message = "Minimum cash-out is 50 threads" });
+
+            if (user.Threads < request.ThreadsCashOut)
+                return BadRequest(new { success = false, message = "Insufficient balance" });
+
+            user.Threads -= request.ThreadsCashOut;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                message = "Cash-out successful"
+            });
+        }
     }
 }

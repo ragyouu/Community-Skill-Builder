@@ -107,6 +107,330 @@
     .artisan-tab.active .tab-icon {
         filter: none;
     }
+
+    /* Cash-out Threads Display */
+    .artisan-earnings-card {
+        background: linear-gradient(135deg, #334af1 0%, #5566ff 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 15px rgba(51, 74, 241, 0.2);
+    }
+
+    .artisan-earnings-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(51, 74, 241, 0.3);
+    }
+
+    .earnings-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .earnings-amount {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .earnings-description {
+        font-size: 0.8rem;
+        opacity: 0.85;
+    }
+
+    /* Modal Styles */
+    .cashout-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .cashout-modal-content {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        padding: 2rem;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .cashout-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
+    }
+
+    .cashout-modal-header h2 {
+        margin: 0;
+        color: #334af1;
+        font-size: 1.5rem;
+    }
+
+    .cashout-close-btn {
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: #999;
+        transition: color 0.2s;
+    }
+
+    .cashout-close-btn:hover {
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #334af1;
+        box-shadow: 0 0 0 3px rgba(51, 74, 241, 0.1);
+    }
+
+    .phone-input-wrapper {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .phone-prefix {
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .phone-input-wrapper input {
+        flex: 1;
+    }
+
+    .form-hint {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 0.5rem;
+    }
+
+    .cashout-summary {
+        background: #f8f9ff;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .summary-row:last-child {
+        margin-bottom: 0;
+        padding-top: 0.75rem;
+        border-top: 2px solid #e0e0e0;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .summary-label {
+        color: #666;
+    }
+
+    .summary-value {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .summary-row:last-child .summary-value {
+        color: #334af1;
+    }
+
+    .available-balance {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .error-message {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+        font-size: 0.9rem;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        background: #e0e0e0;
+        color: #333;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .btn-cancel:hover {
+        background: #bdbdbd;
+    }
+
+    .btn-confirm {
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #334af1 0%, #5566ff 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .btn-confirm:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(51, 74, 241, 0.3);
+    }
+
+    .btn-confirm:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* Processing Modal */
+    .processing-spinner {
+        width: 80px;
+        height: 80px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #334af1;
+        border-radius: 50%;
+        animation: spin 1.5s linear infinite;
+        margin: 0 auto 1.5rem;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        margin: 0 auto 1.5rem;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    @@keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .processing-content {
+        text-align: center;
+    }
+
+    .processing-content h3 {
+        color: #334af1;
+        margin: 0 0 0.5rem 0;
+        font-size: 1.3rem;
+    }
+
+    .processing-content p {
+        color: #666;
+        margin: 0.5rem 0 1rem 0;
+        font-size: 0.95rem;
+    }
+
+    .success-details {
+        background: #f0f3ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+    }
+
+    .success-details p {
+        margin: 0.5rem 0;
+        color: #333;
+        font-size: 0.9rem;
+    }
 </style>
 
 <div class="artisan-dashboard-wrapper">
@@ -116,6 +440,13 @@
         <img src="@Model.Artisan.UserAvatar" class="artisan-avatar" />
         <div class="artisan-name">@Model.Artisan.User.FirstName @Model.Artisan.User.LastName</div>
         <div class="artisan-role">Instructor</div>
+
+        <!-- Earnings Card - Clickable for Cash-Out -->
+        <div class="artisan-earnings-card" onclick="openCashOutModal()">
+            <div class="earnings-label">💰 Your Earnings</div>
+            <div class="earnings-amount" id="artisanThreadsDisplay">@Model.Artisan.User.Threads.ToString("0.00")</div>
+            <div class="earnings-description">Click to cash out</div>
+        </div>
 
         <div class="artisan-tabs">
             <button class="artisan-tab active" data-tab="dashboard">
@@ -162,6 +493,129 @@
     </div>
 </div>
 
+<!-- Cash-Out Amount Modal -->
+<div id="cashOutModal" class="cashout-modal-overlay">
+    <div class="cashout-modal-content">
+        <div class="cashout-modal-header">
+            <h2>💳 Cash Out Threads</h2>
+            <button class="cashout-close-btn" onclick="closeCashOutModal()">&times;</button>
+        </div>
+
+        <div id="cashOutErrorMessage" class="error-message"></div>
+
+        <div class="available-balance">
+            Available Balance: <strong id="availableBalance">0.00</strong> threads (₱<strong id="availableBalancePeso">0.00</strong>)
+        </div>
+
+        <!-- Amount Input -->
+        <div class="form-group">
+            <label>Amount to Cash Out (Minimum: 50 threads)</label>
+            <input type="number" id="cashOutAmountInput" placeholder="Enter amount" min="50" step="1" />
+            <div class="form-hint">50 threads = ₱50.00</div>
+        </div>
+
+        <!-- GCash Number Input -->
+        <div class="form-group">
+            <label>GCash Phone Number</label>
+            <div class="phone-input-wrapper">
+                <span class="phone-prefix">+63</span>
+                <input type="text" id="gcashNumberInput" placeholder="9XXXXXXXXX" maxlength="10" />
+            </div>
+            <div class="form-hint">Enter 10 digits (e.g., 9171234567)</div>
+        </div>
+
+        <!-- Summary -->
+        <div class="cashout-summary" id="cashOutSummary" style="display: none;">
+            <div class="summary-row">
+                <span class="summary-label">Threads to Cash Out:</span>
+                <span class="summary-value" id="summaryCashOutThreads">0</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Conversion Rate:</span>
+                <span class="summary-value">₱1.00/thread</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Amount in Pesos:</span>
+                <span class="summary-value" id="summaryCashOutPeso">₱0.00</span>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeCashOutModal()">Cancel</button>
+            <button type="button" class="btn-confirm" id="proceedCashOutBtn" disabled onclick="proceedToCashOutConfirmation()">
+                Proceed
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Cash-Out Confirmation Modal -->
+<div id="cashOutConfirmationModal" class="cashout-modal-overlay">
+    <div class="cashout-modal-content">
+        <div class="cashout-modal-header">
+            <h2>✓ Confirm Cash Out</h2>
+            <button class="cashout-close-btn" onclick="closeCashOutConfirmationModal()">&times;</button>
+        </div>
+
+        <p style="color: #666; font-size: 0.95rem; margin-bottom: 1.5rem;">
+            You are about to withdraw <strong id="confirmCashOutThreads">0</strong> threads (₱<strong id="confirmCashOutPeso">0</strong>.00) to your GCash account ending in <strong id="confirmGcashNumber">****</strong>
+        </p>
+
+        <div class="cashout-summary">
+            <div class="summary-row">
+                <span class="summary-label">GCash Number:</span>
+                <span class="summary-value" id="confirmDisplayGcash">+63</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Threads to Withdraw:</span>
+                <span class="summary-value" id="confirmDisplayThreads">0</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Amount in Pesos:</span>
+                <span class="summary-value" id="confirmDisplayPeso">₱0.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Threads After:</span>
+                <span class="summary-value" id="threadsAfterCashOut">0.00</span>
+            </div>
+        </div>
+
+        <p style="color: #999; font-size: 0.85rem; margin-bottom: 1.5rem;">
+            Processing typically takes 1-2 minutes. Do not refresh the page.
+        </p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeCashOutConfirmationModal()">Cancel</button>
+            <button type="button" class="btn-confirm" onclick="processCashOut()">Confirm Cash Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Modal -->
+<div id="cashOutProcessingModal" class="cashout-modal-overlay">
+    <div class="cashout-modal-content" style="max-width: 500px; text-align: center;">
+        <div id="processingStep">
+            <div class="processing-spinner"></div>
+            <h3>Processing Cash Out</h3>
+            <p>Please wait while we transfer your threads to GCash...</p>
+        </div>
+
+        <div id="successStep" style="display: none;">
+            <div class="success-icon">✓</div>
+            <h3 style="color: #28a745;">Cash Out Successful!</h3>
+            <p>Your threads have been transferred to your GCash account.</p>
+
+            <div class="success-details">
+                <p><strong>Threads Withdrawn:</strong> <span id="successThreads">0</span></p>
+                <p><strong>Amount Transferred:</strong> ₱<span id="successPeso">0</span>.00</p>
+                <p><strong>GCash Account:</strong> <span id="successGcash">+63</span></p>
+            </div>
+
+            <button type="button" class="btn-confirm" style="width: 100%;" onclick="closeCashOutProcessingModal()">Done</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const artisanTabs = document.querySelectorAll(".artisan-tab");
     const artisanPanels = document.querySelectorAll(".artisan-panel");
@@ -196,4 +650,250 @@
         const observer = new ResizeObserver(matchArtisanMainToSidebar);
         observer.observe(artisanSidebar);
     }
+
+    // ===== CASH-OUT THREADS FUNCTIONS =====
+    let cashOutState = {
+        threads: 0,
+        gcashNumber: null,
+        userId: '@User.FindFirst("UserId")?.Value'
+    };
+
+    let availableThreads = @Model.Artisan.User.Threads;
+
+    window.openCashOutModal = function() {
+        const modal = document.getElementById("cashOutModal");
+
+        // Reset form
+        resetCashOutForm();
+
+        // Update available balance
+        document.getElementById("availableBalance").textContent = availableThreads.toFixed(2);
+        document.getElementById("availableBalancePeso").textContent = availableThreads.toFixed(2);
+
+        modal.style.display = "flex";
+    };
+
+    window.closeCashOutModal = function() {
+        const modal = document.getElementById("cashOutModal");
+        modal.style.display = "none";
+        resetCashOutForm();
+    };
+
+    function resetCashOutForm() {
+        cashOutState.threads = 0;
+        cashOutState.gcashNumber = null;
+
+        document.getElementById("cashOutAmountInput").value = "";
+        document.getElementById("gcashNumberInput").value = "";
+        document.getElementById("cashOutSummary").style.display = "none";
+        document.getElementById("proceedCashOutBtn").disabled = true;
+        document.getElementById("cashOutErrorMessage").textContent = "";
+        document.getElementById("cashOutErrorMessage").classList.remove("show");
+    }
+
+    // Amount input listener
+    document.getElementById("cashOutAmountInput").addEventListener("input", function() {
+        const amount = parseInt(this.value) || 0;
+
+        cashOutState.threads = amount;
+
+        if (amount > 0 && amount < 50) {
+            showCashOutError("Minimum cash-out is 50 threads");
+            return;
+        }
+
+        if (amount > availableThreads) {
+            showCashOutError(`You only have ₱${availableThreads.toFixed(2)} available`);
+            return;
+        }
+
+        document.getElementById("cashOutErrorMessage").classList.remove("show");
+        updateCashOutSummary();
+    });
+
+    // GCash number input listener
+    document.getElementById("gcashNumberInput").addEventListener("input", function() {
+        // Only allow numbers
+        this.value = this.value.replace(/\D/g, "");
+
+        // Limit to 10 digits
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10);
+        }
+
+        cashOutState.gcashNumber = this.value;
+        updateCashOutSummary();
+    });
+
+    function updateCashOutSummary() {
+        const amount = cashOutState.threads;
+        const gcash = cashOutState.gcashNumber;
+
+        if (amount >= 50 && gcash && gcash.length === 10) {
+            document.getElementById("cashOutSummary").style.display = "block";
+            document.getElementById("summaryCashOutThreads").textContent = amount;
+            document.getElementById("summaryCashOutPeso").textContent = `₱${amount}.00`;
+            document.getElementById("proceedCashOutBtn").disabled = false;
+        } else {
+            document.getElementById("cashOutSummary").style.display = "none";
+            document.getElementById("proceedCashOutBtn").disabled = true;
+        }
+    }
+
+    function showCashOutError(message) {
+        const errorMsg = document.getElementById("cashOutErrorMessage");
+        errorMsg.textContent = message;
+        errorMsg.classList.add("show");
+        setTimeout(() => {
+            errorMsg.classList.remove("show");
+        }, 5000);
+    }
+
+    window.proceedToCashOutConfirmation = function() {
+        const amount = cashOutState.threads;
+        const gcash = cashOutState.gcashNumber;
+
+        if (amount < 50) {
+            showCashOutError("Minimum cash-out is 50 threads");
+            return;
+        }
+
+        if (!gcash || gcash.length !== 10) {
+            showCashOutError("Please enter a valid 10-digit GCash number");
+            return;
+        }
+
+        if (amount > availableThreads) {
+            showCashOutError(`You only have ₱${availableThreads.toFixed(2)} available`);
+            return;
+        }
+
+        // Show confirmation modal
+        showCashOutConfirmation(amount, gcash, availableThreads);
+    };
+
+    window.showCashOutConfirmation = function(threads, gcash, available) {
+        const confirmModal = document.getElementById("cashOutConfirmationModal");
+        const cashOutModal = document.getElementById("cashOutModal");
+
+        // Format GCash number
+        const formattedGcash = "+63" + gcash;
+        const threadsAfter = (available - threads).toFixed(2);
+        const last4 = gcash.slice(-4);
+
+        // Update confirmation modal
+        document.getElementById("confirmCashOutThreads").textContent = threads;
+        document.getElementById("confirmCashOutPeso").textContent = threads;
+        document.getElementById("confirmGcashNumber").textContent = last4;
+        document.getElementById("confirmDisplayGcash").textContent = formattedGcash;
+        document.getElementById("confirmDisplayThreads").textContent = threads;
+        document.getElementById("confirmDisplayPeso").textContent = `₱${threads}.00`;
+        document.getElementById("threadsAfterCashOut").textContent = threadsAfter + " threads";
+
+        cashOutModal.style.display = "none";
+        confirmModal.style.display = "flex";
+    };
+
+    window.closeCashOutConfirmationModal = function() {
+        const confirmModal = document.getElementById("cashOutConfirmationModal");
+        confirmModal.style.display = "none";
+    };
+
+    window.processCashOut = async function() {
+        const confirmModal = document.getElementById("cashOutConfirmationModal");
+        const processingModal = document.getElementById("cashOutProcessingModal");
+        const processingStep = document.getElementById("processingStep");
+        const successStep = document.getElementById("successStep");
+
+        const threads = cashOutState.threads;
+        const gcash = cashOutState.gcashNumber;
+        const formattedGcash = "+63" + gcash;
+
+        confirmModal.style.display = "none";
+        processingModal.style.display = "flex";
+
+        try {
+            // Simulate 5-second processing delay
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
+            // Call backend to process cash-out
+            const response = await fetch(`/api/threads/cashout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId: cashOutState.userId,
+                    threadsCashOut: threads,
+                    gcashPhone: formattedGcash
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+
+            if (result.success) {
+                // Update available threads
+                availableThreads -= threads;
+
+                // Update display
+                document.getElementById("artisanThreadsDisplay").textContent = availableThreads.toFixed(2);
+
+                // Show success
+                processingStep.style.display = "none";
+                successStep.style.display = "block";
+
+                document.getElementById("successThreads").textContent = threads;
+                document.getElementById("successPeso").textContent = threads;
+                document.getElementById("successGcash").textContent = formattedGcash;
+            } else {
+                throw new Error(result.message || "Cash-out failed");
+            }
+
+        } catch (err) {
+            console.error("Cash-out error:", err);
+            processingModal.style.display = "none";
+            openCashOutModal();
+            showCashOutError("Cash-out processing failed. Please try again.");
+        }
+    };
+
+    window.closeCashOutProcessingModal = function() {
+        const processingModal = document.getElementById("cashOutProcessingModal");
+        const processingStep = document.getElementById("processingStep");
+        const successStep = document.getElementById("successStep");
+
+        // Reset modal to processing state
+        processingStep.style.display = "block";
+        successStep.style.display = "none";
+
+        processingModal.style.display = "none";
+
+        // Reload page to refresh data
+        window.location.reload();
+    };
+
+    // Close modals on background click
+    document.getElementById("cashOutModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            closeCashOutModal();
+        }
+    });
+
+    document.getElementById("cashOutConfirmationModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            closeCashOutConfirmationModal();
+        }
+    });
+
+    // Prevent closing processing modal on background click
+    document.getElementById("cashOutProcessingModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            // Do nothing - prevent closing during processing
+        }
+    });
 </script>
